@@ -91,6 +91,20 @@ public static class ApiEndpoints
         public static string SyncRuns(Guid id) => $"{Base}/{id}/sync-runs";
         public static string DeadLetter(Guid id) => $"{Base}/{id}/outbox/dead-letter";
         public static string RetryDeadLetter(Guid id, Guid outboxId) => $"{Base}/{id}/outbox/{outboxId}/retry";
+        public static string OAuthStart(Guid id, string provider) => $"{Base}/{id}/oauth/{provider}/start";
+        public static string OAuthDisconnect(Guid id, string provider) => $"{Base}/{id}/oauth/{provider}/disconnect";
+    }
+
+    public static class TenantOAuthAppSettings
+    {
+        public const string Base = $"{ApiBase}/tenant/oauth-app-settings";
+        public static string ByProvider(string provider) => $"{Base}/{provider}";
+    }
+
+    public static class SystemOAuthAppSettings
+    {
+        public const string Base = $"{ApiBase}/superadmin/oauth-app-settings";
+        public static string ByProvider(string provider) => $"{Base}/{provider}";
     }
 
     // Manufacturers

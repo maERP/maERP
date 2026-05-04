@@ -285,6 +285,69 @@
                 </StackPanel>
               </StackPanel>
             </Border>
+
+            <!-- OAuth Card (eBay / Amazon) — replaces the Username/Password block. Two states:
+                 (1) channel not yet saved → SaveFirst hint;
+                 (2) channel saved → Connect / Disconnect button + status. -->
+            <Border x:Name="OAuthCard"
+                    Grid.Column="1"
+                    Grid.Row="0"
+                    Margin="8,0,0,16"
+                    Background="{ThemeResource SurfaceBrush}"
+                    CornerRadius="12"
+                    Translation="0,0,8"
+                    Visibility="{Binding IsOAuthChannel, Converter={StaticResource BoolToVisibilityConverter}}">
+              <Border.Shadow>
+                <ThemeShadow />
+              </Border.Shadow>
+              <StackPanel Spacing="0">
+                <Grid Padding="16,16,16,8">
+                  <StackPanel Orientation="Horizontal">
+                    <FontIcon Glyph="&#xE72E;"
+                              FontSize="20"
+                              Foreground="{ThemeResource PrimaryBrush}"
+                              Margin="0,0,12,0" />
+                    <TextBlock x:Uid="SalesChannelEditPage.Section.OAuth"
+                               Style="{StaticResource TitleMedium}"
+                               Foreground="{ThemeResource OnSurfaceBrush}" />
+                  </StackPanel>
+                </Grid>
+
+                <StackPanel Padding="16,0,16,16" Spacing="12">
+                  <!-- Save-first hint when the channel has not been persisted yet. -->
+                  <TextBlock x:Uid="SalesChannelEditPage.OAuth.SaveFirst"
+                             Style="{StaticResource BodyMedium}"
+                             Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                             TextWrapping="Wrap"
+                             Visibility="{Binding ShowOAuthSaveFirstHint, Converter={StaticResource BoolToVisibilityConverter}}" />
+
+                  <!-- Status pill + Connect / Disconnect buttons. -->
+                  <StackPanel Spacing="8"
+                              Visibility="{Binding ShowOAuthSection, Converter={StaticResource BoolToVisibilityConverter}}">
+                    <TextBlock Text="{Binding ConnectionStatusLabel}"
+                               Style="{StaticResource BodyMedium}"
+                               Foreground="{ThemeResource OnSurfaceBrush}"
+                               TextWrapping="Wrap" />
+
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                      <Button x:Uid="SalesChannelEditPage.OAuth.Connect"
+                              Click="ConnectOAuthButton_Click"
+                              Style="{StaticResource FilledButtonStyle}"
+                              IsEnabled="{Binding IsConnecting, Converter={StaticResource InvertBoolConverter}}" />
+                      <Button x:Uid="SalesChannelEditPage.OAuth.Disconnect"
+                              Click="DisconnectOAuthButton_Click"
+                              IsEnabled="{Binding IsConnected}"
+                              Visibility="{Binding IsConnected, Converter={StaticResource BoolToVisibilityConverter}}" />
+                    </StackPanel>
+
+                    <TextBlock Text="{Binding OAuthStatusMessage}"
+                               Style="{StaticResource BodySmall}"
+                               Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                               TextWrapping="Wrap" />
+                  </StackPanel>
+                </StackPanel>
+              </StackPanel>
+            </Border>
           </Grid>
 
           <!-- Synchronization Settings Section Header (hidden for PointOfSale) -->
@@ -339,26 +402,62 @@
                 <!-- Import Settings -->
                 <StackPanel Padding="16,0,16,16"
                             Spacing="12">
-                  <ToggleSwitch IsOn="{Binding ImportProducts, Mode=TwoWay}"
-                                IsEnabled="{Binding IsNotLoading}">
-                    <ToggleSwitch.Header>
-                      <TextBlock x:Uid="SalesChannelEditPage.Field.ImportProducts" />
-                    </ToggleSwitch.Header>
-                  </ToggleSwitch>
+                  <Grid>
+                    <Grid.ColumnDefinitions>
+                      <ColumnDefinition Width="*" />
+                      <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0"
+                               x:Uid="SalesChannelEditPage.Field.ImportProducts"
+                               Style="{StaticResource BodyMedium}"
+                               Foreground="{ThemeResource OnSurfaceBrush}"
+                               TextWrapping="Wrap"
+                               VerticalAlignment="Center" />
+                    <ToggleSwitch Grid.Column="1"
+                                  IsOn="{Binding ImportProducts, Mode=TwoWay}"
+                                  IsEnabled="{Binding IsNotLoading}"
+                                  MinWidth="0"
+                                  OnContent=""
+                                  OffContent="" />
+                  </Grid>
 
-                  <ToggleSwitch IsOn="{Binding ImportCustomers, Mode=TwoWay}"
-                                IsEnabled="{Binding IsNotLoading}">
-                    <ToggleSwitch.Header>
-                      <TextBlock x:Uid="SalesChannelEditPage.Field.ImportCustomers" />
-                    </ToggleSwitch.Header>
-                  </ToggleSwitch>
+                  <Grid>
+                    <Grid.ColumnDefinitions>
+                      <ColumnDefinition Width="*" />
+                      <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0"
+                               x:Uid="SalesChannelEditPage.Field.ImportCustomers"
+                               Style="{StaticResource BodyMedium}"
+                               Foreground="{ThemeResource OnSurfaceBrush}"
+                               TextWrapping="Wrap"
+                               VerticalAlignment="Center" />
+                    <ToggleSwitch Grid.Column="1"
+                                  IsOn="{Binding ImportCustomers, Mode=TwoWay}"
+                                  IsEnabled="{Binding IsNotLoading}"
+                                  MinWidth="0"
+                                  OnContent=""
+                                  OffContent="" />
+                  </Grid>
 
-                  <ToggleSwitch IsOn="{Binding ImportOrders, Mode=TwoWay}"
-                                IsEnabled="{Binding IsNotLoading}">
-                    <ToggleSwitch.Header>
-                      <TextBlock x:Uid="SalesChannelEditPage.Field.ImportOrders" />
-                    </ToggleSwitch.Header>
-                  </ToggleSwitch>
+                  <Grid>
+                    <Grid.ColumnDefinitions>
+                      <ColumnDefinition Width="*" />
+                      <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0"
+                               x:Uid="SalesChannelEditPage.Field.ImportOrders"
+                               Style="{StaticResource BodyMedium}"
+                               Foreground="{ThemeResource OnSurfaceBrush}"
+                               TextWrapping="Wrap"
+                               VerticalAlignment="Center" />
+                    <ToggleSwitch Grid.Column="1"
+                                  IsOn="{Binding ImportOrders, Mode=TwoWay}"
+                                  IsEnabled="{Binding IsNotLoading}"
+                                  MinWidth="0"
+                                  OnContent=""
+                                  OffContent="" />
+                  </Grid>
                 </StackPanel>
               </StackPanel>
             </Border>
@@ -391,26 +490,62 @@
                 <!-- Export Settings -->
                 <StackPanel Padding="16,0,16,16"
                             Spacing="12">
-                  <ToggleSwitch IsOn="{Binding ExportProducts, Mode=TwoWay}"
-                                IsEnabled="{Binding IsNotLoading}">
-                    <ToggleSwitch.Header>
-                      <TextBlock x:Uid="SalesChannelEditPage.Field.ExportProducts" />
-                    </ToggleSwitch.Header>
-                  </ToggleSwitch>
+                  <Grid>
+                    <Grid.ColumnDefinitions>
+                      <ColumnDefinition Width="*" />
+                      <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0"
+                               x:Uid="SalesChannelEditPage.Field.ExportProducts"
+                               Style="{StaticResource BodyMedium}"
+                               Foreground="{ThemeResource OnSurfaceBrush}"
+                               TextWrapping="Wrap"
+                               VerticalAlignment="Center" />
+                    <ToggleSwitch Grid.Column="1"
+                                  IsOn="{Binding ExportProducts, Mode=TwoWay}"
+                                  IsEnabled="{Binding IsNotLoading}"
+                                  MinWidth="0"
+                                  OnContent=""
+                                  OffContent="" />
+                  </Grid>
 
-                  <ToggleSwitch IsOn="{Binding ExportCustomers, Mode=TwoWay}"
-                                IsEnabled="{Binding IsNotLoading}">
-                    <ToggleSwitch.Header>
-                      <TextBlock x:Uid="SalesChannelEditPage.Field.ExportCustomers" />
-                    </ToggleSwitch.Header>
-                  </ToggleSwitch>
+                  <Grid>
+                    <Grid.ColumnDefinitions>
+                      <ColumnDefinition Width="*" />
+                      <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0"
+                               x:Uid="SalesChannelEditPage.Field.ExportCustomers"
+                               Style="{StaticResource BodyMedium}"
+                               Foreground="{ThemeResource OnSurfaceBrush}"
+                               TextWrapping="Wrap"
+                               VerticalAlignment="Center" />
+                    <ToggleSwitch Grid.Column="1"
+                                  IsOn="{Binding ExportCustomers, Mode=TwoWay}"
+                                  IsEnabled="{Binding IsNotLoading}"
+                                  MinWidth="0"
+                                  OnContent=""
+                                  OffContent="" />
+                  </Grid>
 
-                  <ToggleSwitch IsOn="{Binding ExportOrders, Mode=TwoWay}"
-                                IsEnabled="{Binding IsNotLoading}">
-                    <ToggleSwitch.Header>
-                      <TextBlock x:Uid="SalesChannelEditPage.Field.ExportOrders" />
-                    </ToggleSwitch.Header>
-                  </ToggleSwitch>
+                  <Grid>
+                    <Grid.ColumnDefinitions>
+                      <ColumnDefinition Width="*" />
+                      <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0"
+                               x:Uid="SalesChannelEditPage.Field.ExportOrders"
+                               Style="{StaticResource BodyMedium}"
+                               Foreground="{ThemeResource OnSurfaceBrush}"
+                               TextWrapping="Wrap"
+                               VerticalAlignment="Center" />
+                    <ToggleSwitch Grid.Column="1"
+                                  IsOn="{Binding ExportOrders, Mode=TwoWay}"
+                                  IsEnabled="{Binding IsNotLoading}"
+                                  MinWidth="0"
+                                  OnContent=""
+                                  OffContent="" />
+                  </Grid>
                 </StackPanel>
               </StackPanel>
             </Border>
@@ -442,21 +577,45 @@
                   <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
 
-                <ToggleSwitch Grid.Column="0"
-                              IsOn="{Binding InitialProductImportCompleted, Mode=TwoWay}"
-                              IsEnabled="{Binding IsNotLoading}">
-                  <ToggleSwitch.Header>
-                    <TextBlock x:Uid="SalesChannelEditPage.Field.InitialProductImportCompleted" />
-                  </ToggleSwitch.Header>
-                </ToggleSwitch>
+                <Grid Grid.Column="0">
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                  </Grid.ColumnDefinitions>
+                  <TextBlock Grid.Column="0"
+                             x:Uid="SalesChannelEditPage.Field.InitialProductImportCompleted"
+                             Style="{StaticResource BodyMedium}"
+                             Foreground="{ThemeResource OnSurfaceBrush}"
+                             TextWrapping="Wrap"
+                             VerticalAlignment="Center"
+                             Margin="0,0,8,0" />
+                  <ToggleSwitch Grid.Column="1"
+                                IsOn="{Binding InitialProductImportCompleted, Mode=TwoWay}"
+                                IsEnabled="{Binding IsNotLoading}"
+                                MinWidth="0"
+                                OnContent=""
+                                OffContent="" />
+                </Grid>
 
-                <ToggleSwitch Grid.Column="1"
-                              IsOn="{Binding InitialProductExportCompleted, Mode=TwoWay}"
-                              IsEnabled="{Binding IsNotLoading}">
-                  <ToggleSwitch.Header>
-                    <TextBlock x:Uid="SalesChannelEditPage.Field.InitialProductExportCompleted" />
-                  </ToggleSwitch.Header>
-                </ToggleSwitch>
+                <Grid Grid.Column="1">
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                  </Grid.ColumnDefinitions>
+                  <TextBlock Grid.Column="0"
+                             x:Uid="SalesChannelEditPage.Field.InitialProductExportCompleted"
+                             Style="{StaticResource BodyMedium}"
+                             Foreground="{ThemeResource OnSurfaceBrush}"
+                             TextWrapping="Wrap"
+                             VerticalAlignment="Center"
+                             Margin="0,0,8,0" />
+                  <ToggleSwitch Grid.Column="1"
+                                IsOn="{Binding InitialProductExportCompleted, Mode=TwoWay}"
+                                IsEnabled="{Binding IsNotLoading}"
+                                MinWidth="0"
+                                OnContent=""
+                                OffContent="" />
+                </Grid>
               </Grid>
             </Border>
           </StackPanel>
@@ -592,11 +751,12 @@
             </Border>
           </StackPanel>
 
-          <!-- Hint Card -->
+          <!-- Hint Card — only shown for credential-style channels (Shopware5/6, WooCommerce);
+               hidden for OAuth channels (eBay/Amazon) and PointOfSale because they don't use URL/credentials. -->
           <Border Background="{ThemeResource SecondaryContainerBrush}"
                   CornerRadius="12"
                   Padding="16"
-                  Visibility="{Binding IsNotLoading, Converter={StaticResource BoolToVisibilityConverter}}">
+                  Visibility="{Binding ShowConnectionHint, Converter={StaticResource BoolToVisibilityConverter}}">
             <Grid>
               <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />

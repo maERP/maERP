@@ -1,0 +1,150 @@
+<Page x:Class="maERP.Client.Features.SystemOAuthSettings.Views.SystemOAuthSettingsPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:utu="using:Uno.Toolkit.UI"
+      Background="{ThemeResource BackgroundBrush}">
+
+  <Grid utu:SafeArea.Insets="VisibleBounds">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="*" />
+    </Grid.RowDefinitions>
+
+    <utu:NavigationBar Grid.Row="0" x:Uid="SystemOAuthSettingsPage.NavigationBar">
+      <utu:NavigationBar.MainCommand>
+        <AppBarButton Icon="Back"
+                      x:Uid="SystemOAuthSettingsPage.AppBarButton.Back"
+                      Click="BackButton_Click" />
+      </utu:NavigationBar.MainCommand>
+      <utu:NavigationBar.PrimaryCommands>
+        <AppBarButton Icon="Save"
+                      x:Uid="SystemOAuthSettingsPage.AppBarButton.Save"
+                      Click="SaveButton_Click"
+                      IsEnabled="{Binding IsSaving, Converter={StaticResource InvertBoolConverter}}" />
+      </utu:NavigationBar.PrimaryCommands>
+    </utu:NavigationBar>
+
+    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+      <Grid Padding="24">
+        <StackPanel Spacing="20" MaxWidth="700" HorizontalAlignment="Center">
+
+          <!-- Provider selector -->
+          <Border Background="{ThemeResource SurfaceBrush}"
+                  CornerRadius="12"
+                  Translation="0,0,8"
+                  Padding="16">
+            <Border.Shadow>
+              <ThemeShadow />
+            </Border.Shadow>
+            <StackPanel Spacing="12">
+              <TextBlock x:Uid="SystemOAuthSettingsPage.Section.Provider"
+                         Style="{StaticResource TitleMedium}"
+                         Foreground="{ThemeResource OnSurfaceBrush}" />
+              <StackPanel Orientation="Horizontal" Spacing="8">
+                <RadioButton x:Uid="SystemOAuthSettingsPage.Provider.Ebay"
+                             IsChecked="{Binding IsEbaySelected, Mode=TwoWay}"
+                             GroupName="OAuthProvider" />
+                <RadioButton x:Uid="SystemOAuthSettingsPage.Provider.Amazon"
+                             IsChecked="{Binding IsAmazonSelected, Mode=TwoWay}"
+                             GroupName="OAuthProvider" />
+              </StackPanel>
+            </StackPanel>
+          </Border>
+
+          <!-- App credentials -->
+          <Border Background="{ThemeResource SurfaceBrush}"
+                  CornerRadius="12"
+                  Translation="0,0,8"
+                  Padding="16">
+            <Border.Shadow>
+              <ThemeShadow />
+            </Border.Shadow>
+            <StackPanel Spacing="12">
+              <TextBlock x:Uid="SystemOAuthSettingsPage.Section.AppCredentials"
+                         Style="{StaticResource TitleMedium}"
+                         Foreground="{ThemeResource OnSurfaceBrush}" />
+
+              <TextBox x:Uid="SystemOAuthSettingsPage.Field.ClientId"
+                       Text="{Binding ClientId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+              <PasswordBox x:Uid="SystemOAuthSettingsPage.Field.ClientSecret"
+                           Password="{Binding ClientSecret, Mode=TwoWay}"
+                           PlaceholderText="{Binding ClientSecretPlaceholder}" />
+              <TextBlock Text="{Binding ClientSecretPlaceholder}"
+                         Style="{StaticResource BodySmall}"
+                         Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+
+              <!-- eBay-only RuName -->
+              <TextBox x:Uid="SystemOAuthSettingsPage.Field.RuName"
+                       Text="{Binding RuName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                       Visibility="{Binding IsRuNameRelevant, Converter={StaticResource BoolToVisibilityConverter}}" />
+
+              <!-- Amazon-only RedirectUri -->
+              <TextBox x:Uid="SystemOAuthSettingsPage.Field.RedirectUri"
+                       Text="{Binding RedirectUri, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                       Visibility="{Binding IsRedirectUriRelevant, Converter={StaticResource BoolToVisibilityConverter}}" />
+            </StackPanel>
+          </Border>
+
+          <!-- Endpoints -->
+          <Border Background="{ThemeResource SurfaceBrush}"
+                  CornerRadius="12"
+                  Translation="0,0,8"
+                  Padding="16">
+            <Border.Shadow>
+              <ThemeShadow />
+            </Border.Shadow>
+            <StackPanel Spacing="12">
+              <TextBlock x:Uid="SystemOAuthSettingsPage.Section.Endpoints"
+                         Style="{StaticResource TitleMedium}"
+                         Foreground="{ThemeResource OnSurfaceBrush}" />
+              <TextBox x:Uid="SystemOAuthSettingsPage.Field.AuthorizationEndpoint"
+                       Text="{Binding AuthorizationEndpoint, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+              <TextBox x:Uid="SystemOAuthSettingsPage.Field.TokenEndpoint"
+                       Text="{Binding TokenEndpoint, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+              <TextBox x:Uid="SystemOAuthSettingsPage.Field.Scopes"
+                       Text="{Binding Scopes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                       AcceptsReturn="True"
+                       TextWrapping="Wrap"
+                       Height="80" />
+              <ToggleSwitch x:Uid="SystemOAuthSettingsPage.Field.UseSandbox"
+                            IsOn="{Binding UseSandbox, Mode=TwoWay}" />
+            </StackPanel>
+          </Border>
+
+          <!-- Public base URL (shared across providers) -->
+          <Border Background="{ThemeResource SurfaceBrush}"
+                  CornerRadius="12"
+                  Translation="0,0,8"
+                  Padding="16">
+            <Border.Shadow>
+              <ThemeShadow />
+            </Border.Shadow>
+            <StackPanel Spacing="8">
+              <TextBlock x:Uid="SystemOAuthSettingsPage.Section.PublicBaseUrl"
+                         Style="{StaticResource TitleMedium}"
+                         Foreground="{ThemeResource OnSurfaceBrush}" />
+              <TextBox x:Uid="SystemOAuthSettingsPage.Field.PublicBaseUrl"
+                       Text="{Binding PublicBaseUrl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                       InputScope="Url" />
+              <TextBlock x:Uid="SystemOAuthSettingsPage.Field.PublicBaseUrl.Hint"
+                         Style="{StaticResource BodySmall}"
+                         Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                         TextWrapping="Wrap" />
+            </StackPanel>
+          </Border>
+
+          <!-- Status / Error -->
+          <TextBlock Text="{Binding StatusMessage}"
+                     Style="{StaticResource BodyMedium}"
+                     Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                     TextWrapping="Wrap" />
+          <TextBlock Text="{Binding ErrorMessage}"
+                     Style="{StaticResource BodyMedium}"
+                     Foreground="{ThemeResource ErrorBrush}"
+                     TextWrapping="Wrap" />
+        </StackPanel>
+      </Grid>
+    </ScrollViewer>
+  </Grid>
+</Page>

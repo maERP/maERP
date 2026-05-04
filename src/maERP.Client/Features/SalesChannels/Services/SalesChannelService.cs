@@ -144,4 +144,26 @@ public class SalesChannelService : ISalesChannelService
         var response = await _httpClient.PostAsync(url, content: null, ct);
         await response.EnsureSuccessOrThrowApiExceptionAsync(ct);
     }
+
+    public async Task<OAuthStartResult> StartOAuthAsync(Guid id, string provider, CancellationToken ct = default)
+    {
+        var baseUrl = await GetBaseUrlAsync();
+        var url = $"{baseUrl}{ApiEndpoints.SalesChannels.OAuthStart(id, provider)}";
+        var response = await _httpClient.PostAsync(url, content: null, ct);
+        await response.EnsureSuccessOrThrowApiExceptionAsync(ct);
+
+        var apiResponse = await response.Content.ReadFromJsonAsync(
+            AppJsonSerializerContext.Default.ApiResponseOAuthStartResponseDto, ct);
+        var dto = apiResponse?.Data
+                  ?? throw new InvalidOperationException("OAuth start response was empty.");
+        return new OAuthStartResult(dto.AuthorizeUrl, dto.State);
+    }
+
+    public async Task DisconnectOAuthAsync(Guid id, string provider, CancellationToken ct = default)
+    {
+        var baseUrl = await GetBaseUrlAsync();
+        var url = $"{baseUrl}{ApiEndpoints.SalesChannels.OAuthDisconnect(id, provider)}";
+        var response = await _httpClient.PostAsync(url, content: null, ct);
+        await response.EnsureSuccessOrThrowApiExceptionAsync(ct);
+    }
 }

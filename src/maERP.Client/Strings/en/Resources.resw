@@ -1694,6 +1694,77 @@
   <data name="SalesChannelEditPage.Section.ConnectionInfo.Text" xml:space="preserve">
     <value>Connection</value>
   </data>
+  <data name="SalesChannelEditPage.Section.OAuth.Text" xml:space="preserve">
+    <value>OAuth connection</value>
+  </data>
+  <data name="SalesChannelEditPage.OAuth.Connect.Content" xml:space="preserve">
+    <value>Connect with provider</value>
+  </data>
+  <data name="SalesChannelEditPage.OAuth.Disconnect.Content" xml:space="preserve">
+    <value>Disconnect</value>
+  </data>
+  <data name="SalesChannelEditPage.OAuth.SaveFirst.Text" xml:space="preserve">
+    <value>Save the sales channel first to start the OAuth connection.</value>
+  </data>
+  <data name="SalesChannelEditPage.OAuth.StatusConnected" xml:space="preserve">
+    <value>Connected — token expires at</value>
+  </data>
+  <data name="SalesChannelEditPage.OAuth.StatusNotConnected" xml:space="preserve">
+    <value>Not connected</value>
+  </data>
+  <data name="SalesChannelEditPage.OAuth.WaitingForCallback" xml:space="preserve">
+    <value>Browser opened — please sign in at the provider. The status will refresh automatically.</value>
+  </data>
+  <data name="SalesChannelEditPage.OAuth.Connected" xml:space="preserve">
+    <value>Successfully connected.</value>
+  </data>
+  <data name="SalesChannelEditPage.OAuth.Disconnected" xml:space="preserve">
+    <value>Connection disconnected.</value>
+  </data>
+
+  <!-- System OAuth settings -->
+  <data name="SystemOAuthSettingsPage.NavigationBar.Content" xml:space="preserve"><value>OAuth apps (system)</value></data>
+  <data name="SystemOAuthSettingsPage.AppBarButton.Back.Label" xml:space="preserve"><value>Back</value></data>
+  <data name="SystemOAuthSettingsPage.AppBarButton.Save.Label" xml:space="preserve"><value>Save</value></data>
+  <data name="SystemOAuthSettingsPage.Section.Provider.Text" xml:space="preserve"><value>Provider</value></data>
+  <data name="SystemOAuthSettingsPage.Section.AppCredentials.Text" xml:space="preserve"><value>App credentials</value></data>
+  <data name="SystemOAuthSettingsPage.Section.Endpoints.Text" xml:space="preserve"><value>Endpoints</value></data>
+  <data name="SystemOAuthSettingsPage.Section.PublicBaseUrl.Text" xml:space="preserve"><value>Public base URL</value></data>
+  <data name="SystemOAuthSettingsPage.Provider.Ebay.Content" xml:space="preserve"><value>eBay</value></data>
+  <data name="SystemOAuthSettingsPage.Provider.Amazon.Content" xml:space="preserve"><value>Amazon</value></data>
+  <data name="SystemOAuthSettingsPage.Field.ClientId.Header" xml:space="preserve"><value>Client id</value></data>
+  <data name="SystemOAuthSettingsPage.Field.ClientSecret.Header" xml:space="preserve"><value>Client secret (enter only to set / rotate)</value></data>
+  <data name="SystemOAuthSettingsPage.Field.RuName.Header" xml:space="preserve"><value>RuName (eBay alias)</value></data>
+  <data name="SystemOAuthSettingsPage.Field.RedirectUri.Header" xml:space="preserve"><value>Redirect URI</value></data>
+  <data name="SystemOAuthSettingsPage.Field.AuthorizationEndpoint.Header" xml:space="preserve"><value>Authorize URL</value></data>
+  <data name="SystemOAuthSettingsPage.Field.TokenEndpoint.Header" xml:space="preserve"><value>Token URL</value></data>
+  <data name="SystemOAuthSettingsPage.Field.Scopes.Header" xml:space="preserve"><value>Scopes (space-separated)</value></data>
+  <data name="SystemOAuthSettingsPage.Field.UseSandbox.Header" xml:space="preserve"><value>Sandbox mode</value></data>
+  <data name="SystemOAuthSettingsPage.Field.PublicBaseUrl.Header" xml:space="preserve"><value>Server base URL (HTTPS) for browser callbacks</value></data>
+  <data name="SystemOAuthSettingsPage.Field.PublicBaseUrl.Hint.Text" xml:space="preserve"><value>Example: https://erp.yourdomain.com — used by the OAuth callback endpoint.</value></data>
+  <data name="SystemOAuthSettings.ClientSecretSetHint" xml:space="preserve"><value>A secret is stored. Leave empty to keep it unchanged.</value></data>
+  <data name="SystemOAuthSettings.SaveSucceeded" xml:space="preserve"><value>Settings saved.</value></data>
+
+  <!-- Tenant OAuth settings -->
+  <data name="TenantOAuthSettingsPage.NavigationBar.Content" xml:space="preserve"><value>OAuth apps (tenant)</value></data>
+  <data name="TenantOAuthSettingsPage.AppBarButton.Back.Label" xml:space="preserve"><value>Back</value></data>
+  <data name="TenantOAuthSettingsPage.AppBarButton.Save.Label" xml:space="preserve"><value>Save</value></data>
+  <data name="TenantOAuthSettingsPage.AppBarButton.Delete.Label" xml:space="preserve"><value>Remove override</value></data>
+  <data name="TenantOAuthSettingsPage.Section.Provider.Text" xml:space="preserve"><value>Provider</value></data>
+  <data name="TenantOAuthSettingsPage.Section.Override.Text" xml:space="preserve"><value>Tenant override</value></data>
+  <data name="TenantOAuthSettingsPage.Provider.Ebay.Content" xml:space="preserve"><value>eBay</value></data>
+  <data name="TenantOAuthSettingsPage.Provider.Amazon.Content" xml:space="preserve"><value>Amazon</value></data>
+  <data name="TenantOAuthSettingsPage.FallbackHint.Text" xml:space="preserve"><value>Empty fields fall back to the system settings. Toggle "Active" off to pause the entire tenant override.</value></data>
+  <data name="TenantOAuthSettingsPage.Field.IsActive.Header" xml:space="preserve"><value>Active</value></data>
+  <data name="TenantOAuthSettingsPage.Field.ClientId.Header" xml:space="preserve"><value>Client id (override)</value></data>
+  <data name="TenantOAuthSettingsPage.Field.ClientSecret.Header" xml:space="preserve"><value>Client secret (override — enter only to set)</value></data>
+  <data name="TenantOAuthSettingsPage.Field.RuName.Header" xml:space="preserve"><value>RuName (override)</value></data>
+  <data name="TenantOAuthSettingsPage.Field.RedirectUri.Header" xml:space="preserve"><value>Redirect URI (override)</value></data>
+  <data name="TenantOAuthSettingsPage.Field.Scopes.Header" xml:space="preserve"><value>Scopes (override, optional)</value></data>
+  <data name="TenantOAuthSettings.ClientSecretSetHint" xml:space="preserve"><value>Tenant secret is stored. Leave empty to keep it.</value></data>
+  <data name="TenantOAuthSettings.ClientSecretFallbackHint" xml:space="preserve"><value>No tenant secret stored — the system setting is used.</value></data>
+  <data name="TenantOAuthSettings.SaveSucceeded" xml:space="preserve"><value>Tenant override saved.</value></data>
+  <data name="TenantOAuthSettings.DeleteSucceeded" xml:space="preserve"><value>Tenant override removed.</value></data>
   <data name="SalesChannelEditPage.Section.SyncSettings.Text" xml:space="preserve">
     <value>Synchronization Settings</value>
   </data>
@@ -3600,6 +3671,12 @@
   </data>
   <data name="Shell.NavItem.AllTenants.Text" xml:space="preserve">
     <value>All Tenants</value>
+  </data>
+  <data name="Shell.NavItem.TenantOAuthSettings.Text" xml:space="preserve">
+    <value>OAuth apps</value>
+  </data>
+  <data name="Shell.NavItem.SystemOAuthSettings.Text" xml:space="preserve">
+    <value>OAuth apps (system)</value>
   </data>
   <data name="Shell.Search.Placeholder.Text" xml:space="preserve">
     <value>Quick search…</value>

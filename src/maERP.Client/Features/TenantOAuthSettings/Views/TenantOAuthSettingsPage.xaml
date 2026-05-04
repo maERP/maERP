@@ -1,0 +1,113 @@
+<Page x:Class="maERP.Client.Features.TenantOAuthSettings.Views.TenantOAuthSettingsPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:utu="using:Uno.Toolkit.UI"
+      Background="{ThemeResource BackgroundBrush}">
+
+  <Grid utu:SafeArea.Insets="VisibleBounds">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="*" />
+    </Grid.RowDefinitions>
+
+    <utu:NavigationBar Grid.Row="0" x:Uid="TenantOAuthSettingsPage.NavigationBar">
+      <utu:NavigationBar.MainCommand>
+        <AppBarButton Icon="Back"
+                      x:Uid="TenantOAuthSettingsPage.AppBarButton.Back"
+                      Click="BackButton_Click" />
+      </utu:NavigationBar.MainCommand>
+      <utu:NavigationBar.PrimaryCommands>
+        <AppBarButton Icon="Save"
+                      x:Uid="TenantOAuthSettingsPage.AppBarButton.Save"
+                      Click="SaveButton_Click"
+                      IsEnabled="{Binding IsSaving, Converter={StaticResource InvertBoolConverter}}" />
+        <AppBarButton Icon="Delete"
+                      x:Uid="TenantOAuthSettingsPage.AppBarButton.Delete"
+                      Click="DeleteButton_Click"
+                      IsEnabled="{Binding IsSaving, Converter={StaticResource InvertBoolConverter}}" />
+      </utu:NavigationBar.PrimaryCommands>
+    </utu:NavigationBar>
+
+    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+      <Grid Padding="24">
+        <StackPanel Spacing="20" MaxWidth="700" HorizontalAlignment="Center">
+
+          <Border Background="{ThemeResource SurfaceBrush}"
+                  CornerRadius="12"
+                  Translation="0,0,8"
+                  Padding="16">
+            <Border.Shadow>
+              <ThemeShadow />
+            </Border.Shadow>
+            <StackPanel Spacing="12">
+              <TextBlock x:Uid="TenantOAuthSettingsPage.Section.Provider"
+                         Style="{StaticResource TitleMedium}"
+                         Foreground="{ThemeResource OnSurfaceBrush}" />
+              <StackPanel Orientation="Horizontal" Spacing="8">
+                <RadioButton x:Uid="TenantOAuthSettingsPage.Provider.Ebay"
+                             IsChecked="{Binding IsEbaySelected, Mode=TwoWay}"
+                             GroupName="OAuthProviderTenant" />
+                <RadioButton x:Uid="TenantOAuthSettingsPage.Provider.Amazon"
+                             IsChecked="{Binding IsAmazonSelected, Mode=TwoWay}"
+                             GroupName="OAuthProviderTenant" />
+              </StackPanel>
+              <TextBlock x:Uid="TenantOAuthSettingsPage.FallbackHint"
+                         Style="{StaticResource BodySmall}"
+                         Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                         TextWrapping="Wrap" />
+            </StackPanel>
+          </Border>
+
+          <Border Background="{ThemeResource SurfaceBrush}"
+                  CornerRadius="12"
+                  Translation="0,0,8"
+                  Padding="16">
+            <Border.Shadow>
+              <ThemeShadow />
+            </Border.Shadow>
+            <StackPanel Spacing="12">
+              <TextBlock x:Uid="TenantOAuthSettingsPage.Section.Override"
+                         Style="{StaticResource TitleMedium}"
+                         Foreground="{ThemeResource OnSurfaceBrush}" />
+
+              <ToggleSwitch x:Uid="TenantOAuthSettingsPage.Field.IsActive"
+                            IsOn="{Binding IsActive, Mode=TwoWay}" />
+
+              <TextBox x:Uid="TenantOAuthSettingsPage.Field.ClientId"
+                       Text="{Binding ClientId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+              <PasswordBox x:Uid="TenantOAuthSettingsPage.Field.ClientSecret"
+                           Password="{Binding ClientSecret, Mode=TwoWay}" />
+              <TextBlock Text="{Binding ClientSecretPlaceholder}"
+                         Style="{StaticResource BodySmall}"
+                         Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+
+              <TextBox x:Uid="TenantOAuthSettingsPage.Field.RuName"
+                       Text="{Binding RuName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                       Visibility="{Binding IsRuNameRelevant, Converter={StaticResource BoolToVisibilityConverter}}" />
+
+              <TextBox x:Uid="TenantOAuthSettingsPage.Field.RedirectUri"
+                       Text="{Binding RedirectUri, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                       Visibility="{Binding IsRedirectUriRelevant, Converter={StaticResource BoolToVisibilityConverter}}" />
+
+              <TextBox x:Uid="TenantOAuthSettingsPage.Field.Scopes"
+                       Text="{Binding Scopes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                       AcceptsReturn="True"
+                       TextWrapping="Wrap"
+                       Height="80" />
+            </StackPanel>
+          </Border>
+
+          <TextBlock Text="{Binding StatusMessage}"
+                     Style="{StaticResource BodyMedium}"
+                     Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                     TextWrapping="Wrap" />
+          <TextBlock Text="{Binding ErrorMessage}"
+                     Style="{StaticResource BodyMedium}"
+                     Foreground="{ThemeResource ErrorBrush}"
+                     TextWrapping="Wrap" />
+        </StackPanel>
+      </Grid>
+    </ScrollViewer>
+  </Grid>
+</Page>

@@ -422,6 +422,18 @@
                            VerticalAlignment="Center" />
               </StackPanel>
             </Button>
+
+            <Button x:Name="NavItemTenantOAuthSettings"
+                    Style="{StaticResource SidebarNavItemStyle}"
+                    Tag="TenantOAuthSettings"
+                    Click="OnNavItemClick">
+              <StackPanel Orientation="Horizontal" Spacing="12">
+                <FontIcon Glyph="&#xE72E;" FontSize="16" />
+                <TextBlock x:Uid="Shell.NavItem.TenantOAuthSettings"
+                           Style="{StaticResource BodyMedium}"
+                           VerticalAlignment="Center" />
+              </StackPanel>
+            </Button>
           </StackPanel>
 
           <!-- SUPERADMIN -->
@@ -457,6 +469,17 @@
                 <StackPanel Orientation="Horizontal" Spacing="12">
                   <FontIcon Glyph="&#xE7EE;" FontSize="16" />
                   <TextBlock x:Uid="Shell.NavItem.AllTenants"
+                             Style="{StaticResource BodyMedium}"
+                             VerticalAlignment="Center" />
+                </StackPanel>
+              </Button>
+              <Button x:Name="NavItemSystemOAuthSettings"
+                      Style="{StaticResource SidebarNavItemStyle}"
+                      Tag="SystemOAuthSettings"
+                      Click="OnNavItemClick">
+                <StackPanel Orientation="Horizontal" Spacing="12">
+                  <FontIcon Glyph="&#xE72E;" FontSize="16" />
+                  <TextBlock x:Uid="Shell.NavItem.SystemOAuthSettings"
                              Style="{StaticResource BodyMedium}"
                              VerticalAlignment="Center" />
                 </StackPanel>

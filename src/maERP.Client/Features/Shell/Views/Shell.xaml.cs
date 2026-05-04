@@ -81,7 +81,9 @@ public sealed partial class Shell : UserControl, IContentControlProvider
             { "Warehouses", NavItemWarehouses },
             { "AiModels", NavItemAiModels },
             { "AiPrompts", NavItemAiPrompts },
-            { "SuperadminTenants", NavItemSuperadminTenants }
+            { "TenantOAuthSettings", NavItemTenantOAuthSettings },
+            { "SuperadminTenants", NavItemSuperadminTenants },
+            { "SystemOAuthSettings", NavItemSystemOAuthSettings }
         };
     }
 
@@ -268,6 +270,7 @@ public sealed partial class Shell : UserControl, IContentControlProvider
         NavItemWarehouses.Visibility = Visibility.Visible;
         NavItemAiModels.Visibility = Visibility.Visible;
         NavItemAiPrompts.Visibility = Visibility.Visible;
+        NavItemTenantOAuthSettings.Visibility = Visibility.Visible;
 
         TabItemDashboard.Visibility = Visibility.Visible;
         TabItemCustomers.Visibility = Visibility.Visible;
@@ -468,6 +471,12 @@ public sealed partial class Shell : UserControl, IContentControlProvider
                     break;
                 case "SuperadminTenants":
                     await navigator.NavigateViewModelAsync<SuperadminTenantListModel>(this);
+                    break;
+                case "SystemOAuthSettings":
+                    await navigator.NavigateViewModelAsync<maERP.Client.Features.SystemOAuthSettings.Models.SystemOAuthSettingsModel>(this);
+                    break;
+                case "TenantOAuthSettings":
+                    await navigator.NavigateViewModelAsync<maERP.Client.Features.TenantOAuthSettings.Models.TenantOAuthSettingsModel>(this);
                     break;
                 case "UserProfile":
                     await navigator.NavigateViewModelAsync<AccountModel>(this);

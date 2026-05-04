@@ -17,6 +17,8 @@ using maERP.Client.Features.Superadmin;
 using maERP.Client.Features.TaxClasses;
 using maERP.Client.Features.Tenants;
 using maERP.Client.Features.Warehouses;
+using maERP.Client.Features.SystemOAuthSettings;
+using maERP.Client.Features.TenantOAuthSettings;
 using maERP.Client.Features.Shell.Views;
 using maERP.Client.Features.Shell.Models;
 using maERP.Domain.Dtos.Auth;
@@ -171,7 +173,7 @@ public partial class App : Application
         MainWindow = builder.Window;
 
 #if DEBUG
-        MainWindow.UseStudio();
+        // MainWindow.UseStudio();
 #endif
         MainWindow.SetWindowIcon();
 
@@ -283,6 +285,8 @@ public partial class App : Application
         TaxClassesModule.RegisterServices(services);
         TenantsModule.RegisterServices(services);
         AccountModule.RegisterServices(services);
+        SystemOAuthSettingsModule.RegisterServices(services);
+        TenantOAuthSettingsModule.RegisterServices(services);
     }
 
     /// <summary>
@@ -308,6 +312,8 @@ public partial class App : Application
         TaxClassesModule.RegisterViews(views);
         TenantsModule.RegisterViews(views);
         AccountModule.RegisterViews(views);
+        SystemOAuthSettingsModule.RegisterViews(views);
+        TenantOAuthSettingsModule.RegisterViews(views);
 
         // Collect routes from all feature modules
         var nestedRoutes = new List<RouteMap>();
@@ -327,6 +333,8 @@ public partial class App : Application
         nestedRoutes.AddRange(TaxClassesModule.GetRoutes(views));
         nestedRoutes.AddRange(TenantsModule.GetRoutes(views));
         nestedRoutes.AddRange(AccountModule.GetRoutes(views));
+        nestedRoutes.AddRange(SystemOAuthSettingsModule.GetRoutes(views));
+        nestedRoutes.AddRange(TenantOAuthSettingsModule.GetRoutes(views));
 
         // Register the root route with all nested routes
         routes.Register(ShellModule.GetRootRoute(views, nestedRoutes));

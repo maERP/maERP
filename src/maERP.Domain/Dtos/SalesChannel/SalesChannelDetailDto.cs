@@ -21,6 +21,15 @@ public class SalesChannelDetailDto
     public bool ImportOrders { get; set; }
     public bool ExportOrders { get; set; }
 
+    /// <summary>
+    /// True if the channel has a stored refresh token (OAuth flow has been completed).
+    /// The token itself is never exposed in the DTO.
+    /// </summary>
+    public bool HasRefreshToken { get; set; }
+
+    /// <summary>UTC expiry of the current access token; null if not connected or never used.</summary>
+    public DateTime? TokenExpiresAt { get; set; }
+
     public List<WarehouseDetailDto> Warehouses { get; set; } = new();
 }
 

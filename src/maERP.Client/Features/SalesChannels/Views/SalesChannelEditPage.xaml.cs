@@ -47,4 +47,20 @@ public sealed partial class SalesChannelEditPage : Page
             }
         }
     }
+
+    private async void ConnectOAuthButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (DataContext is SalesChannelEditModel model)
+        {
+            await model.ConnectOAuthAsync();
+        }
+    }
+
+    private async void DisconnectOAuthButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (DataContext is SalesChannelEditModel model)
+        {
+            await model.DisconnectOAuthAsync();
+        }
+    }
 }

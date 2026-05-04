@@ -44,4 +44,13 @@ public interface ISalesChannelService
 
     /// <summary>Reset a DeadLetter outbox row back to Pending so the drainer retries it.</summary>
     Task RetryDeadLetterAsync(Guid id, Guid outboxId, CancellationToken ct = default);
+
+    /// <summary>Begin OAuth flow — returns the authorize URL the Client should open in the system browser.</summary>
+    Task<OAuthStartResult> StartOAuthAsync(Guid id, string provider, CancellationToken ct = default);
+
+    /// <summary>Disconnect OAuth — clears stored refresh / access tokens on the channel.</summary>
+    Task DisconnectOAuthAsync(Guid id, string provider, CancellationToken ct = default);
 }
+
+/// <summary>Lightweight DTO for the OAuth-start response (kept here to avoid a Domain dependency in the existing JsonContext bindings).</summary>
+public sealed record OAuthStartResult(string AuthorizeUrl, string State);

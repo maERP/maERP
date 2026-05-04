@@ -56,6 +56,12 @@ public class SalesChannelEditModel : AsyncInitializableModel
     // Warehouses
     private ObservableCollection<SelectableWarehouse> _warehouses = new();
 
+    // OAuth state — populated for eBay / Amazon channels after the channel has been saved.
+    private bool _hasRefreshToken;
+    private DateTime? _tokenExpiresAt;
+    private string _oAuthStatusMessage = string.Empty;
+    private bool _isConnecting;
+
     // UI State
     private bool _isSaving;
     private string _errorMessage = string.Empty;
@@ -142,7 +148,12 @@ public class SalesChannelEditModel : AsyncInitializableModel
             if (SetProperty(ref _salesChannelType, value))
             {
                 // Update visibility properties when type changes
+                OnPropertyChanged(nameof(IsOAuthChannel));
                 OnPropertyChanged(nameof(ShowConnectionInfo));
+                OnPropertyChanged(nameof(ShowConnectionHint));
+                OnPropertyChanged(nameof(ShowOAuthSection));
+                OnPropertyChanged(nameof(ShowOAuthSaveFirstHint));
+                OnPropertyChanged(nameof(ConnectionStatusLabel));
                 OnPropertyChanged(nameof(ShowUrlField));
                 OnPropertyChanged(nameof(ShowImportExportSettings));
                 OnPropertyChanged(nameof(CanSave));
@@ -155,13 +166,63 @@ public class SalesChannelEditModel : AsyncInitializableModel
     #region Type-Specific Visibility
 
     /// <summary>
-    /// Shows connection info section for all types except PointOfSale.
+    /// True for OAuth Authorization-Code channels (eBay, Amazon). These hide the
+    /// Username/Password inputs in favor of a "Connect" button that triggers the OAuth flow.
     /// </summary>
-    public bool ShowConnectionInfo => SalesChannelType != SalesChannelType.PointOfSale;
+    public bool IsOAuthChannel => SalesChannelType is SalesChannelType.eBay or SalesChannelType.Amazon;
+
+    /// <summary>
+    /// Shows the Username/Password connection block for credential-style channels (Shopware5/6,
+    /// WooCommerce). PointOfSale skips it entirely; OAuth channels use <see cref="ShowOAuthSection"/>.
+    /// </summary>
+    public bool ShowConnectionInfo =>
+        SalesChannelType != SalesChannelType.PointOfSale && !IsOAuthChannel;
+
+    /// <summary>OAuth section is only useful once the channel has been persisted (we need its id).</summary>
+    public bool ShowOAuthSection => IsOAuthChannel && IsEditMode;
+
+    /// <summary>Hint shown on the OAuth section when the channel has never been saved.</summary>
+    public bool ShowOAuthSaveFirstHint => IsOAuthChannel && !IsEditMode;
+
+    public bool IsConnected => _hasRefreshToken;
+
+    public string ConnectionStatusLabel
+    {
+        get
+        {
+            if (!IsOAuthChannel) return string.Empty;
+            if (!_hasRefreshToken) return _localizer["SalesChannelEditPage.OAuth.StatusNotConnected"];
+            var expiry = _tokenExpiresAt is null
+                ? string.Empty
+                : $" — {_tokenExpiresAt.Value.ToLocalTime():g}";
+            return _localizer["SalesChannelEditPage.OAuth.StatusConnected"] + expiry;
+        }
+    }
+
+    public string OAuthStatusMessage
+    {
+        get => _oAuthStatusMessage;
+        private set => SetProperty(ref _oAuthStatusMessage, value);
+    }
+
+    public bool IsConnecting
+    {
+        get => _isConnecting;
+        private set
+        {
+            if (SetProperty(ref _isConnecting, value))
+            {
+                OnPropertyChanged(nameof(IsLoading));
+                OnPropertyChanged(nameof(IsNotLoading));
+                OnPropertyChanged(nameof(ShowConnectionHint));
+                OnPropertyChanged(nameof(CanSave));
+            }
+        }
+    }
 
     /// <summary>
     /// Shows URL field only for Shopware5, Shopware6, and WooCommerce.
-    /// eBay and PointOfSale do not require URL.
+    /// eBay, Amazon and PointOfSale do not require URL.
     /// </summary>
     public bool ShowUrlField => SalesChannelType is
         SalesChannelType.Shopware5 or
@@ -172,6 +233,13 @@ public class SalesChannelEditModel : AsyncInitializableModel
     /// Shows import/export settings for all types except PointOfSale.
     /// </summary>
     public bool ShowImportExportSettings => SalesChannelType != SalesChannelType.PointOfSale;
+
+    /// <summary>
+    /// Shows the bottom-of-page hint that explains URL/credentials configuration.
+    /// Only meaningful for credential-style channels (Shopware5/6, WooCommerce). Hidden for
+    /// PointOfSale (no remote endpoint) and OAuth channels (eBay/Amazon — no URL/credentials).
+    /// </summary>
+    public bool ShowConnectionHint => IsNotLoading && ShowConnectionInfo;
 
     #endregion
 
@@ -283,6 +351,7 @@ public class SalesChannelEditModel : AsyncInitializableModel
             {
                 OnPropertyChanged(nameof(IsLoading));
                 OnPropertyChanged(nameof(IsNotLoading));
+                OnPropertyChanged(nameof(ShowConnectionHint));
                 OnPropertyChanged(nameof(CanSave));
             }
         }
@@ -320,11 +389,10 @@ public class SalesChannelEditModel : AsyncInitializableModel
                 // PointOfSale: Only Name required
                 SalesChannelType.PointOfSale => true,
 
-                // eBay / Amazon: Name + Username + Password (LWA / OAuth credentials live there)
-                // — no URL prompt; further config via AdditionalConfigJson once OAuth is completed.
-                SalesChannelType.eBay or SalesChannelType.Amazon =>
-                    !string.IsNullOrWhiteSpace(Username) &&
-                    !string.IsNullOrWhiteSpace(Password),
+                // eBay / Amazon: only Name required at save time. The OAuth flow runs after save
+                // (it needs the channel id) and persists the refresh token onto the channel.
+                // Developer-App credentials live in TenantOAuthAppSettings or system Settings.
+                SalesChannelType.eBay or SalesChannelType.Amazon => true,
 
                 // Shopware5, Shopware6, WooCommerce: Name, URL, Username, Password required
                 _ => !string.IsNullOrWhiteSpace(Url) &&
@@ -366,11 +434,111 @@ public class SalesChannelEditModel : AsyncInitializableModel
             // are not returned by the API in DetailDto, so we keep them as default (false).
             // They are only used for initial setup when creating/updating a sales channel.
 
+            // OAuth status (only meaningful for eBay / Amazon channels).
+            _hasRefreshToken = salesChannel.HasRefreshToken;
+            _tokenExpiresAt = salesChannel.TokenExpiresAt;
+            OnPropertyChanged(nameof(IsConnected));
+            OnPropertyChanged(nameof(ConnectionStatusLabel));
+
             // Mark associated warehouses as selected
             var warehouseIds = salesChannel.Warehouses?.Select(w => w.Id).ToHashSet() ?? new HashSet<Guid>();
             foreach (var warehouse in Warehouses)
             {
                 warehouse.IsSelected = warehouseIds.Contains(warehouse.Id);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Begin OAuth flow: ask the Server for the authorize URL and open it in the system browser.
+    /// Then poll the channel detail every 3 seconds for the connected state until either
+    /// connected, the user navigates away, or 5 minutes elapse.
+    /// </summary>
+    public async Task ConnectOAuthAsync(CancellationToken ct = default)
+    {
+        if (!_salesChannelId.HasValue || !IsOAuthChannel) return;
+
+        IsConnecting = true;
+        OAuthStatusMessage = string.Empty;
+        try
+        {
+            var providerSlug = SalesChannelType.ToString().ToLowerInvariant();
+            var startResult = await _salesChannelService.StartOAuthAsync(_salesChannelId.Value, providerSlug, ct);
+
+            await Windows.System.Launcher.LaunchUriAsync(new Uri(startResult.AuthorizeUrl));
+            OAuthStatusMessage = _localizer["SalesChannelEditPage.OAuth.WaitingForCallback"];
+
+            await PollForConnectionAsync(TimeSpan.FromMinutes(5), TimeSpan.FromSeconds(3), ct);
+        }
+        catch (ApiException ex)
+        {
+            OAuthStatusMessage = ex.CombinedMessage;
+        }
+        catch (Exception ex)
+        {
+            OAuthStatusMessage = ex.Message;
+        }
+        finally
+        {
+            IsConnecting = false;
+        }
+    }
+
+    public async Task DisconnectOAuthAsync(CancellationToken ct = default)
+    {
+        if (!_salesChannelId.HasValue || !IsOAuthChannel) return;
+
+        IsConnecting = true;
+        try
+        {
+            var providerSlug = SalesChannelType.ToString().ToLowerInvariant();
+            await _salesChannelService.DisconnectOAuthAsync(_salesChannelId.Value, providerSlug, ct);
+
+            _hasRefreshToken = false;
+            _tokenExpiresAt = null;
+            OnPropertyChanged(nameof(IsConnected));
+            OnPropertyChanged(nameof(ConnectionStatusLabel));
+            OAuthStatusMessage = _localizer["SalesChannelEditPage.OAuth.Disconnected"];
+        }
+        catch (ApiException ex)
+        {
+            OAuthStatusMessage = ex.CombinedMessage;
+        }
+        finally
+        {
+            IsConnecting = false;
+        }
+    }
+
+    private async Task PollForConnectionAsync(TimeSpan timeout, TimeSpan interval, CancellationToken ct)
+    {
+        if (!_salesChannelId.HasValue) return;
+
+        var deadline = DateTime.UtcNow + timeout;
+        while (DateTime.UtcNow < deadline)
+        {
+            try
+            {
+                await Task.Delay(interval, ct);
+            }
+            catch (TaskCanceledException) { return; }
+
+            try
+            {
+                var refreshed = await _salesChannelService.GetSalesChannelAsync(_salesChannelId.Value, ct);
+                if (refreshed?.HasRefreshToken == true)
+                {
+                    _hasRefreshToken = true;
+                    _tokenExpiresAt = refreshed.TokenExpiresAt;
+                    OnPropertyChanged(nameof(IsConnected));
+                    OnPropertyChanged(nameof(ConnectionStatusLabel));
+                    OAuthStatusMessage = _localizer["SalesChannelEditPage.OAuth.Connected"];
+                    return;
+                }
+            }
+            catch
+            {
+                // transient — keep polling
             }
         }
     }
@@ -453,6 +621,7 @@ public class SalesChannelEditModel : AsyncInitializableModel
         {
             base.OnPropertyChanged(nameof(IsLoading));
             base.OnPropertyChanged(nameof(IsNotLoading));
+            base.OnPropertyChanged(nameof(ShowConnectionHint));
             base.OnPropertyChanged(nameof(CanSave));
         }
     }

@@ -80,22 +80,23 @@ namespace maERP.Persistence.PostgreSQL.Migrations
                 type: "timestamp with time zone",
                 nullable: true);
 
-            migrationBuilder.AlterColumn<int>(
-                name: "RepricingType",
-                table: "product_saleschannel",
-                type: "integer",
-                nullable: false,
-                oldClrType: typeof(bool),
-                oldType: "boolean");
+            // PostgreSQL cannot auto-cast boolean -> integer. Map old bool values explicitly:
+            // false -> 0 (RepricingType.None), true -> 1 (RepricingType.Marketplace).
+            migrationBuilder.Sql(
+                @"ALTER TABLE product_saleschannel
+                  ALTER COLUMN ""RepricingType"" DROP DEFAULT,
+                  ALTER COLUMN ""RepricingType"" TYPE integer
+                      USING CASE WHEN ""RepricingType"" THEN 1 ELSE 0 END,
+                  ALTER COLUMN ""RepricingType"" SET DEFAULT 0;");
 
-            migrationBuilder.AlterColumn<string>(
-                name: "RemoteProductId",
-                table: "product_saleschannel",
-                type: "character varying(128)",
-                maxLength: 128,
-                nullable: true,
-                oldClrType: typeof(Guid),
-                oldType: "uuid");
+            // PostgreSQL cannot auto-cast uuid -> varchar. Render the existing GUID values as
+            // their canonical lowercase string representation; new RemoteProductId values are
+            // channel-side ids (eBay SKU, Amazon ASIN, ...) that are not GUIDs.
+            migrationBuilder.Sql(
+                @"ALTER TABLE product_saleschannel
+                  ALTER COLUMN ""RemoteProductId"" TYPE character varying(128)
+                      USING ""RemoteProductId""::text,
+                  ALTER COLUMN ""RemoteProductId"" DROP NOT NULL;");
 
             migrationBuilder.AddColumn<string>(
                 name: "Currency",
@@ -1552,24 +1553,26 @@ namespace maERP.Persistence.PostgreSQL.Migrations
                 oldType: "character varying(4096)",
                 oldMaxLength: 4096);
 
-            migrationBuilder.AlterColumn<bool>(
-                name: "RepricingType",
-                table: "product_saleschannel",
-                type: "boolean",
-                nullable: false,
-                oldClrType: typeof(int),
-                oldType: "integer");
+            // Down-path: integer -> boolean. 0 stays false, anything else becomes true.
+            migrationBuilder.Sql(
+                @"ALTER TABLE product_saleschannel
+                  ALTER COLUMN ""RepricingType"" DROP DEFAULT,
+                  ALTER COLUMN ""RepricingType"" TYPE boolean
+                      USING (""RepricingType"" <> 0),
+                  ALTER COLUMN ""RepricingType"" SET DEFAULT false;");
 
-            migrationBuilder.AlterColumn<Guid>(
-                name: "RemoteProductId",
-                table: "product_saleschannel",
-                type: "uuid",
-                nullable: false,
-                defaultValue: new Guid("00000000-0000-0000-0000-000000000000"),
-                oldClrType: typeof(string),
-                oldType: "character varying(128)",
-                oldMaxLength: 128,
-                oldNullable: true);
+            // Down-path: varchar -> uuid. Strings that are not valid GUIDs become NULL/zero;
+            // EF's Down should rarely run in production, but we keep it correct.
+            migrationBuilder.Sql(
+                @"ALTER TABLE product_saleschannel
+                  ALTER COLUMN ""RemoteProductId"" TYPE uuid
+                      USING CASE
+                          WHEN ""RemoteProductId"" ~ '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
+                          THEN ""RemoteProductId""::uuid
+                          ELSE '00000000-0000-0000-0000-000000000000'::uuid
+                      END,
+                  ALTER COLUMN ""RemoteProductId"" SET NOT NULL,
+                  ALTER COLUMN ""RemoteProductId"" SET DEFAULT '00000000-0000-0000-0000-000000000000';");
 
             migrationBuilder.UpdateData(
                 table: "country",
