@@ -147,7 +147,7 @@ public class CountryListQueryTests : TenantIsolatedTestBase
     }
 
     [Fact]
-    public async Task GetCountryList_WithOrderBy_ShouldReturnOrderedResults()
+    public async Task GetCountryList_WithSalesBy_ShouldReturnSalesedResults()
     {
         // Arrange
         await SeedTestDataAsync();
@@ -157,7 +157,7 @@ public class CountryListQueryTests : TenantIsolatedTestBase
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
-        var response = await Client.GetAsync("/api/v1/Countries?orderBy=Name");
+        var response = await Client.GetAsync("/api/v1/Countries?salesBy=Name");
 
         // Assert
         TestAssertions.AssertHttpSuccess(response);
@@ -165,7 +165,7 @@ public class CountryListQueryTests : TenantIsolatedTestBase
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
 
-        // Verify ordering
+        // Verify salesing
         if (result.Data.Count > 1)
         {
             for (int i = 0; i < result.Data.Count - 1; i++)
@@ -383,14 +383,14 @@ public class CountryListQueryTests : TenantIsolatedTestBase
     }
 
     [Fact]
-    public async Task GetCountryList_WithMultipleOrderByFields_ShouldHandleCorrectly()
+    public async Task GetCountryList_WithMultipleSalesByFields_ShouldHandleCorrectly()
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
-        var response = await Client.GetAsync("/api/v1/Countries?orderBy=Name,CountryCode");
+        var response = await Client.GetAsync("/api/v1/Countries?salesBy=Name,CountryCode");
 
         // Assert
         TestAssertions.AssertHttpSuccess(response);
@@ -560,7 +560,7 @@ public class CountryListQueryTests : TenantIsolatedTestBase
     }
 
     [Fact]
-    public async Task GetCountryList_OrderByCountryCode_ShouldReturnOrderedResults()
+    public async Task GetCountryList_SalesByCountryCode_ShouldReturnSalesedResults()
     {
         // Arrange
         await SeedTestDataAsync();
@@ -570,7 +570,7 @@ public class CountryListQueryTests : TenantIsolatedTestBase
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
-        var response = await Client.GetAsync("/api/v1/Countries?orderBy=CountryCode");
+        var response = await Client.GetAsync("/api/v1/Countries?salesBy=CountryCode");
 
         // Assert
         TestAssertions.AssertHttpSuccess(response);
@@ -578,7 +578,7 @@ public class CountryListQueryTests : TenantIsolatedTestBase
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
 
-        // Verify ordering by country code
+        // Verify salesing by country code
         if (result.Data.Count > 1)
         {
             for (int i = 0; i < result.Data.Count - 1; i++)

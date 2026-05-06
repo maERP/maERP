@@ -30,9 +30,9 @@ public interface IInvoiceRepository : IGenericRepository<Invoice>
     Task<ICollection<Invoice>> GetInvoicesByStatusAsync(InvoiceStatus status);
 
     /// <summary>
-    /// Creates an invoice from an order, including all invoice items from order items
+    /// Creates an invoice from an sales, including all invoice items from sales items
     /// </summary>
-    /// <param name="order">The order with details to create invoice from</param>
+    /// <param name="sales">The sales with details to create invoice from</param>
     /// <returns>The created invoice</returns>
-    Task<Invoice> CreateInvoiceFromOrderAsync(Order order);
+    Task<Invoice> CreateInvoiceFromSalesAsync(Sales sales);
 }

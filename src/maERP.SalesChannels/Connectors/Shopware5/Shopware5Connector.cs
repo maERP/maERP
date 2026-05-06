@@ -17,7 +17,7 @@ namespace maERP.SalesChannels.Connectors.Shopware5;
 
 /// <summary>
 /// Shopware 5 REST API connector (Basic-Auth). Migrated from <c>Shopware5ProductImportTask</c>
-/// and <c>Shopware5OrderImportTask</c> in <c>Tasks/</c> — same endpoints, same payload shape,
+/// and <c>Shopware5SalesImportTask</c> in <c>Tasks/</c> — same endpoints, same payload shape,
 /// same status mapping. Differences from the legacy tasks:
 /// — uses the typed <see cref="HttpClient"/> from <see cref="SalesChannelContext"/> (Polly + IHttpClientFactory),
 /// — paginates inside a single connector call instead of running an infinite poll loop,
@@ -31,18 +31,18 @@ public sealed class Shopware5Connector : ConnectorBase
     private const int PageSize = 100;
 
     private readonly IProductImportRepository _productImportRepository;
-    private readonly IOrderImportRepository _orderImportRepository;
+    private readonly ISalesImportRepository _salesImportRepository;
     private readonly ISalesChannelRepository _salesChannelRepository;
     private readonly ILogger<Shopware5Connector> _logger;
 
     public Shopware5Connector(
         IProductImportRepository productImportRepository,
-        IOrderImportRepository orderImportRepository,
+        ISalesImportRepository salesImportRepository,
         ISalesChannelRepository salesChannelRepository,
         ILogger<Shopware5Connector> logger)
     {
         _productImportRepository = productImportRepository;
-        _orderImportRepository = orderImportRepository;
+        _salesImportRepository = salesImportRepository;
         _salesChannelRepository = salesChannelRepository;
         _logger = logger;
     }
@@ -51,7 +51,7 @@ public sealed class Shopware5Connector : ConnectorBase
 
     public override SalesChannelCapabilities Capabilities =>
         SalesChannelCapabilities.ImportProducts |
-        SalesChannelCapabilities.ImportOrders |
+        SalesChannelCapabilities.ImportSaless |
         SalesChannelCapabilities.UpdateStock |
         SalesChannelCapabilities.UpdatePrice;
 
@@ -153,13 +153,13 @@ public sealed class Shopware5Connector : ConnectorBase
         return new SyncResult(processed, failed);
     }
 
-    public override async Task<SyncResult> ImportOrdersAsync(SalesChannelContext context)
+    public override async Task<SyncResult> ImportSalessAsync(SalesChannelContext context)
     {
         var salesChannel = context.SalesChannel;
 
         if (salesChannel.ImportProducts && !salesChannel.InitialProductImportCompleted)
         {
-            return SyncResult.Failed("Initial product import not yet completed — skipping orders.");
+            return SyncResult.Failed("Initial product import not yet completed — skipping saless.");
         }
 
         try
@@ -182,34 +182,34 @@ public sealed class Shopware5Connector : ConnectorBase
         {
             try
             {
-                var requestUrl = salesChannel.Url + $"/api/orders?start={requestStart}&limit={PageSize}";
+                var requestUrl = salesChannel.Url + $"/api/saless?start={requestStart}&limit={PageSize}";
                 var listResponse = await context.HttpClient.GetAsync(requestUrl, context.CancellationToken).ConfigureAwait(false);
                 if (!listResponse.IsSuccessStatusCode)
                 {
-                    _logger.LogWarning("Shopware5 orders list HTTP {Status} for {Url}", (int)listResponse.StatusCode, requestUrl);
+                    _logger.LogWarning("Shopware5 saless list HTTP {Status} for {Url}", (int)listResponse.StatusCode, requestUrl);
                     failed++;
                     break;
                 }
 
                 var listRaw = await listResponse.Content.ReadAsStringAsync(context.CancellationToken).ConfigureAwait(false);
-                var remoteOrders = JsonSerializer.Deserialize<BaseListResponse<OrderResponse>>(listRaw);
-                if (remoteOrders?.data is null || !remoteOrders.success)
+                var remoteSaless = JsonSerializer.Deserialize<BaseListResponse<SalesResponse>>(listRaw);
+                if (remoteSaless?.data is null || !remoteSaless.success)
                 {
                     failed++;
                     break;
                 }
-                requestMax = remoteOrders.total;
+                requestMax = remoteSaless.total;
 
-                foreach (var remoteOrder in remoteOrders.data)
+                foreach (var remoteSales in remoteSaless.data)
                 {
-                    if (remoteOrder.orderStatusId == -1)
+                    if (remoteSales.salesStatusId == -1)
                     {
                         continue;
                     }
 
                     try
                     {
-                        var detailUrl = salesChannel.Url + $"/api/orders/{remoteOrder.id}";
+                        var detailUrl = salesChannel.Url + $"/api/saless/{remoteSales.id}";
                         var detailResponse = await context.HttpClient.GetAsync(detailUrl, context.CancellationToken).ConfigureAwait(false);
                         if (!detailResponse.IsSuccessStatusCode)
                         {
@@ -218,21 +218,21 @@ public sealed class Shopware5Connector : ConnectorBase
                         }
 
                         var detailRaw = await detailResponse.Content.ReadAsStringAsync(context.CancellationToken).ConfigureAwait(false);
-                        var detailWrapper = JsonSerializer.Deserialize<BaseResponse<OrderDetailResponse>>(detailRaw);
+                        var detailWrapper = JsonSerializer.Deserialize<BaseResponse<SalesDetailResponse>>(detailRaw);
                         if (detailWrapper?.data is null || !detailWrapper.success)
                         {
                             failed++;
                             continue;
                         }
 
-                        var importOrder = MapOrder(remoteOrder, detailWrapper.data);
-                        await _orderImportRepository.ImportOrUpdateFromSalesChannel(salesChannel, importOrder);
+                        var importSales = MapSales(remoteSales, detailWrapper.data);
+                        await _salesImportRepository.ImportOrUpdateFromSalesChannel(salesChannel, importSales);
                         processed++;
                     }
                     catch (Exception ex)
                     {
                         failed++;
-                        _logger.LogError(ex, "Shopware5 order import failed for {Id}", remoteOrder.id);
+                        _logger.LogError(ex, "Shopware5 sales import failed for {Id}", remoteSales.id);
                     }
                 }
 
@@ -241,7 +241,7 @@ public sealed class Shopware5Connector : ConnectorBase
             catch (Exception ex)
             {
                 failed++;
-                _logger.LogError(ex, "Shopware5 order import page error");
+                _logger.LogError(ex, "Shopware5 sales import page error");
                 break;
             }
         }
@@ -334,7 +334,7 @@ public sealed class Shopware5Connector : ConnectorBase
         };
     }
 
-    private static SalesChannelImportOrder MapOrder(OrderResponse listEntry, OrderDetailResponse detail)
+    private static SalesChannelImportSales MapSales(SalesResponse listEntry, SalesDetailResponse detail)
     {
         if (detail.customer is null)
         {
@@ -344,12 +344,12 @@ public sealed class Shopware5Connector : ConnectorBase
             };
         }
 
-        return new SalesChannelImportOrder
+        return new SalesChannelImportSales
         {
-            RemoteOrderId = listEntry.id.ToString(),
+            RemoteSalesId = listEntry.id.ToString(),
             RemoteCustomerId = detail.customer.id.ToString(),
-            DateOrdered = DateTime.Parse(detail.orderTime).ToUniversalTime(),
-            Status = MapOrderStatus(listEntry.orderStatusId),
+            DateSalesed = DateTime.Parse(detail.salesTime).ToUniversalTime(),
+            Status = MapSalesStatus(listEntry.salesStatusId),
             PaymentStatus = MapPaymentStatus(listEntry.paymentStatusId),
             Subtotal = listEntry.invoiceAmountNet,
             ShippingCost = listEntry.invoiceShippingNet,
@@ -384,7 +384,7 @@ public sealed class Shopware5Connector : ConnectorBase
                 Zip = detail.shipping.zipCode,
                 Country = detail.shipping.country.iso,
             },
-            OrderItems = detail.details.Select(item => new SalesChannelImportOrderItem
+            SalesItems = detail.details.Select(item => new SalesChannelImportSalesItem
             {
                 Name = item.articleName,
                 Sku = item.articleNumber,
@@ -396,15 +396,15 @@ public sealed class Shopware5Connector : ConnectorBase
         };
     }
 
-    private static OrderStatus MapOrderStatus(int orderStatusId) => orderStatusId switch
+    private static SalesStatus MapSalesStatus(int salesStatusId) => salesStatusId switch
     {
-        0 => OrderStatus.Pending,
-        1 => OrderStatus.Processing,
-        8 => OrderStatus.OnHold,
-        7 => OrderStatus.Completed,
-        4 => OrderStatus.Cancelled,
-        -1 => OrderStatus.Failed,
-        _ => OrderStatus.Unknown,
+        0 => SalesStatus.Pending,
+        1 => SalesStatus.Processing,
+        8 => SalesStatus.OnHold,
+        7 => SalesStatus.Completed,
+        4 => SalesStatus.Cancelled,
+        -1 => SalesStatus.Failed,
+        _ => SalesStatus.Unknown,
     };
 
     private static PaymentStatus MapPaymentStatus(int paymentStatusId) => paymentStatusId switch

@@ -149,19 +149,19 @@ public class TenantListQueryTests : TenantIsolatedTestBase
     }
 
     [Fact]
-    public async Task GetTenants_WithOrderBy_ShouldReturnOrderedResults()
+    public async Task GetTenants_WithSalesBy_ShouldReturnSalesedResults()
     {
         await SeedUserTenantsAsync();
         SimulateAuthenticatedRequest(AdminUserId);
 
-        var response = await Client.GetAsync("/api/v1/tenants?pageNumber=0&pageSize=10&orderBy=Name desc");
+        var response = await Client.GetAsync("/api/v1/tenants?pageNumber=0&pageSize=10&salesBy=Name desc");
 
         TestAssertions.AssertEqual(HttpStatusCode.OK, response.StatusCode);
         var result = await ReadResponseAsync<PaginatedResult<TenantListDto>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
         TestAssertions.AssertEqual(2, result.TotalCount);
-        // First result should be "Test Tenant 2" when ordered by Name descending
+        // First result should be "Test Tenant 2" when salesed by Name descending
         TestAssertions.AssertEqual("Test Tenant 2", result.Data[0].Name);
     }
 

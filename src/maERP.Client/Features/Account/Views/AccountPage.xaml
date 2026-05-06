@@ -1,4 +1,4 @@
-<Page x:Class="maERP.Client.Features.Account.Views.AccountPage"
+﻿<Page x:Class="maERP.Client.Features.Account.Views.AccountPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:local="using:maERP.Client.Features.Account.Views"
@@ -258,8 +258,8 @@
                 <Border Background="{ThemeResource ErrorContainerBrush}"
                         CornerRadius="8"
                         Padding="12"
-                        Visibility="{Binding HasPasswordError, Converter={StaticResource BoolToVisibilityConverter}}">
-                  <TextBlock Text="{Binding PasswordError}"
+                        Visibility="{Binding HasPasswsalesror, Converter={StaticResource BoolToVisibilityConverter}}">
+                  <TextBlock Text="{Binding Passwsalesror}"
                              Style="{StaticResource BodySmall}"
                              Foreground="{ThemeResource OnErrorContainerBrush}"
                              TextWrapping="Wrap" />

@@ -105,7 +105,7 @@ public class InvoiceDeleteCommandTests : IDisposable
                     InvoiceNumber = "INV-001",
                     InvoiceDate = DateTime.Now.AddDays(-10),
                     CustomerId = Customer1Id,
-                    OrderId = Guid.NewGuid(),
+                    SalesId = Guid.NewGuid(),
                     Subtotal = 100.00m,
                     ShippingCost = 10.00m,
                     TotalTax = 19.00m,

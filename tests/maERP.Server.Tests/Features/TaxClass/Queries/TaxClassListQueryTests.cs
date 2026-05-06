@@ -144,14 +144,14 @@ public class TaxClassListQueryTests : TenantIsolatedTestBase
     }
 
     [Fact]
-    public async Task GetTaxClassList_WithOrderBy_ShouldReturnOrderedResults()
+    public async Task GetTaxClassList_WithSalesBy_ShouldReturnSalesedResults()
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
-        var response = await Client.GetAsync("/api/v1/TaxClasses?orderBy=TaxRate");
+        var response = await Client.GetAsync("/api/v1/TaxClasses?salesBy=TaxRate");
 
         // Assert
         TestAssertions.AssertHttpSuccess(response);
@@ -159,7 +159,7 @@ public class TaxClassListQueryTests : TenantIsolatedTestBase
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
 
-        // Verify ordering
+        // Verify salesing
         if (result.Data.Count > 1)
         {
             for (int i = 0; i < result.Data.Count - 1; i++)
@@ -376,14 +376,14 @@ public class TaxClassListQueryTests : TenantIsolatedTestBase
     }
 
     [Fact]
-    public async Task GetTaxClassList_WithMultipleOrderByFields_ShouldHandleCorrectly()
+    public async Task GetTaxClassList_WithMultipleSalesByFields_ShouldHandleCorrectly()
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
-        var response = await Client.GetAsync("/api/v1/TaxClasses?orderBy=TaxRate,Id");
+        var response = await Client.GetAsync("/api/v1/TaxClasses?salesBy=TaxRate,Id");
 
         // Assert
         TestAssertions.AssertHttpSuccess(response);

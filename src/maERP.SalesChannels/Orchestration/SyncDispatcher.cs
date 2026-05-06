@@ -53,7 +53,7 @@ public sealed class SyncDispatcher
             var result = operation switch
             {
                 ChannelSyncOperation.ImportProducts => await connector.ImportProductsAsync(context),
-                ChannelSyncOperation.ImportOrders => await connector.ImportOrdersAsync(context),
+                ChannelSyncOperation.ImportSaless => await connector.ImportSalessAsync(context),
                 ChannelSyncOperation.ImportCustomers => await connector.ImportCustomersAsync(context),
                 _ => SyncResult.Failed($"Operation {operation} is not an import"),
             };
@@ -154,12 +154,12 @@ public sealed class SyncDispatcher
     private static bool ConnectorSupports(ISalesChannelConnector connector, ChannelSyncOperation operation) => operation switch
     {
         ChannelSyncOperation.ImportProducts => connector.Capabilities.HasFlag(SalesChannelCapabilities.ImportProducts),
-        ChannelSyncOperation.ImportOrders => connector.Capabilities.HasFlag(SalesChannelCapabilities.ImportOrders),
+        ChannelSyncOperation.ImportSaless => connector.Capabilities.HasFlag(SalesChannelCapabilities.ImportSaless),
         ChannelSyncOperation.ImportCustomers => connector.Capabilities.HasFlag(SalesChannelCapabilities.ImportCustomers),
         ChannelSyncOperation.ExportProduct => connector.Capabilities.HasFlag(SalesChannelCapabilities.ExportProducts),
         ChannelSyncOperation.UpdateStock => connector.Capabilities.HasFlag(SalesChannelCapabilities.UpdateStock),
         ChannelSyncOperation.UpdatePrice => connector.Capabilities.HasFlag(SalesChannelCapabilities.UpdatePrice),
-        ChannelSyncOperation.UpdateOrder => connector.Capabilities.HasFlag(SalesChannelCapabilities.UpdateOrders),
+        ChannelSyncOperation.UpdateSales => connector.Capabilities.HasFlag(SalesChannelCapabilities.UpdateSaless),
         ChannelSyncOperation.DelistProduct => connector.Capabilities.HasFlag(SalesChannelCapabilities.DelistProducts),
         _ => false,
     };
@@ -177,7 +177,7 @@ public sealed class SyncDispatcher
             ChannelSyncOperation.ExportProduct => await ExportProductAsync(connector, context, outbox, cancellationToken),
             ChannelSyncOperation.UpdateStock => await UpdateStockAsync(connector, context, outbox, cancellationToken),
             ChannelSyncOperation.UpdatePrice => await UpdatePriceAsync(connector, context, outbox, cancellationToken),
-            ChannelSyncOperation.UpdateOrder => await UpdateOrderAsync(connector, context, outbox, cancellationToken),
+            ChannelSyncOperation.UpdateSales => await UpdateSalesAsync(connector, context, outbox, cancellationToken),
             ChannelSyncOperation.DelistProduct => await DelistProductAsync(connector, context, outbox, cancellationToken),
             _ => ExportResult.Fail($"Unsupported export operation {outbox.Operation}"),
         };
@@ -253,19 +253,19 @@ public sealed class SyncDispatcher
             psc.ProductId, psc.Id, psc.Product.Sku, psc.Price, psc.Currency, psc.RemoteProductId, psc.ExternalListingId));
     }
 
-    private async Task<ExportResult> UpdateOrderAsync(ISalesChannelConnector connector, SalesChannelContext context, ChannelExportOutbox outbox, CancellationToken cancellationToken)
+    private async Task<ExportResult> UpdateSalesAsync(ISalesChannelConnector connector, SalesChannelContext context, ChannelExportOutbox outbox, CancellationToken cancellationToken)
     {
-        var order = await _context.Order
+        var sales = await _context.Sales
             .IgnoreQueryFilters()
             .FirstOrDefaultAsync(o => o.Id == outbox.AggregateId, cancellationToken);
 
-        if (order is null)
+        if (sales is null)
         {
-            return ExportResult.Fail("Order not found at dispatch time");
+            return ExportResult.Fail("Sales not found at dispatch time");
         }
 
-        return await connector.UpdateOrderAsync(context, new OrderUpdatePayload(
-            order.Id, order.RemoteOrderId, order.Status.ToString(), null, null));
+        return await connector.UpdateSalesAsync(context, new SalesUpdatePayload(
+            sales.Id, sales.RemoteSalesId, sales.Status.ToString(), null, null));
     }
 
     private async Task<ExportResult> DelistProductAsync(ISalesChannelConnector connector, SalesChannelContext context, ChannelExportOutbox outbox, CancellationToken cancellationToken)

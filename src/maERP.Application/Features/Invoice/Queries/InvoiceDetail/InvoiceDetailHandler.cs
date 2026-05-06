@@ -88,8 +88,8 @@ public class InvoiceDetailHandler : IRequestHandler<InvoiceDetailQuery, Result<I
                 LastModifiedDate = invoice.DateModified,
                 CustomerId = invoice.CustomerId,
                 CustomerName = customerName,
-                OrderId = invoice.OrderId,
-                OrderNumber = invoice.OrderId.HasValue ? invoice.OrderId.Value.ToString() : string.Empty,
+                SalesId = invoice.SalesId,
+                SalesNumber = invoice.SalesId.HasValue ? invoice.SalesId.Value.ToString() : string.Empty,
                 InvoiceItems = invoice.InvoiceItems?.Select(item => new InvoiceItemDto
                 {
                     Id = item.Id,

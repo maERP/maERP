@@ -1,4 +1,4 @@
-﻿using maERP.Application.Specifications.Base;
+using maERP.Application.Specifications.Base;
 using maERP.Domain.Entities;
 
 namespace maERP.Application.Specifications
@@ -10,7 +10,7 @@ namespace maERP.Application.Specifications
     {
         public CustomerFilterSpecification(string searchString)
         {
-            // Includes.Add(c => c.OrderItems);
+            // Includes.Add(c => c.SalesItems);
 
             if (!string.IsNullOrEmpty(searchString))
             {
@@ -28,7 +28,7 @@ namespace maERP.Application.Specifications
 
         public CustomerFilterSpecification(Guid id)
         {
-            // Includes.Add(o => o.OrderItems);
+            // Includes.Add(o => o.SalesItems);
             Criteria = o => o.Id == id;
         }
     }

@@ -27,7 +27,7 @@ public class InvoiceDetailQueryTests : IDisposable
     private static readonly Guid Invoice2Id = Guid.NewGuid();
     private static readonly Guid InvoiceItem1Id = Guid.NewGuid();
     private static readonly Guid InvoiceItem2Id = Guid.NewGuid();
-    private static readonly Guid Order1Id = Guid.NewGuid();
+    private static readonly Guid Sales1Id = Guid.NewGuid();
 
     public InvoiceDetailQueryTests()
     {
@@ -124,7 +124,7 @@ public class InvoiceDetailQueryTests : IDisposable
                     InvoiceNumber = "INV-001",
                     InvoiceDate = DateTime.Now.AddDays(-10),
                     CustomerId = Customer1Id,
-                    OrderId = Order1Id,
+                    SalesId = Sales1Id,
                     Subtotal = 200.00m,
                     ShippingCost = 10.00m,
                     TotalTax = 38.00m,
@@ -285,8 +285,8 @@ public class InvoiceDetailQueryTests : IDisposable
         TestAssertions.AssertTrue(invoice.InvoiceDate != default);
         TestAssertions.AssertEqual(Customer1Id, invoice.CustomerId);
         TestAssertions.AssertEqual("John Doe", invoice.CustomerName);
-        TestAssertions.AssertEqual<Guid?>(Order1Id, invoice.OrderId);
-        TestAssertions.AssertEqual(Order1Id.ToString(), invoice.OrderNumber);
+        TestAssertions.AssertEqual<Guid?>(Sales1Id, invoice.SalesId);
+        TestAssertions.AssertEqual(Sales1Id.ToString(), invoice.SalesNumber);
         TestAssertions.AssertEqual(200.00m, invoice.Subtotal);
         TestAssertions.AssertEqual(10.00m, invoice.ShippingCost);
         TestAssertions.AssertEqual(38.00m, invoice.TotalTax);

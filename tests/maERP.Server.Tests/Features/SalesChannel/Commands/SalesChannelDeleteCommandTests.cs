@@ -36,8 +36,8 @@ public class SalesChannelDeleteCommandTests : TenantIsolatedTestBase
             ExportProducts = false,
             ImportCustomers = false,
             ExportCustomers = false,
-            ImportOrders = false,
-            ExportOrders = false,
+            ImportSaless = false,
+            ExportSaless = false,
             TenantId = tenantId,
             DateCreated = DateTime.UtcNow,
             DateModified = DateTime.UtcNow

@@ -71,9 +71,9 @@ public sealed partial class AiModelListPage : Page
 
         // Build sort parameter
         var sortDirection = _sortAscending ? "Ascending" : "Descending";
-        var orderBy = $"{sortField} {sortDirection}";
+        var salesBy = $"{sortField} {sortDirection}";
 
-        await model.SetSortOrder(orderBy);
+        await model.SetSortSales(salesBy);
     }
 
     private void UpdateSortIcons()

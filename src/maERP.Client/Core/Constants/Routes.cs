@@ -21,11 +21,11 @@ public static class Routes
     public const string CustomerEdit = "CustomerEdit";
     public const string CustomerCreate = "CustomerCreate";
 
-    // Orders
-    public const string OrderList = "Orders";
-    public const string OrderDetail = "OrderDetail";
-    public const string OrderEdit = "OrderEdit";
-    public const string OrderCreate = "OrderCreate";
+    // Saless
+    public const string SalesList = "Saless";
+    public const string SalesDetail = "SalesDetail";
+    public const string SalesEdit = "SalesEdit";
+    public const string SalesCreate = "SalesCreate";
 
     // Products
     public const string ProductList = "Products";

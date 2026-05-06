@@ -42,12 +42,12 @@ public class SalesChannelEditModel : AsyncInitializableModel
     // Import Settings
     private bool _importProducts;
     private bool _importCustomers;
-    private bool _importOrders;
+    private bool _importSaless;
 
     // Export Settings
     private bool _exportProducts;
     private bool _exportCustomers;
-    private bool _exportOrders;
+    private bool _exportSaless;
 
     // Initial Status
     private bool _initialProductImportCompleted;
@@ -279,10 +279,10 @@ public class SalesChannelEditModel : AsyncInitializableModel
         set => SetProperty(ref _importCustomers, value);
     }
 
-    public bool ImportOrders
+    public bool ImportSaless
     {
-        get => _importOrders;
-        set => SetProperty(ref _importOrders, value);
+        get => _importSaless;
+        set => SetProperty(ref _importSaless, value);
     }
 
     #endregion
@@ -301,10 +301,10 @@ public class SalesChannelEditModel : AsyncInitializableModel
         set => SetProperty(ref _exportCustomers, value);
     }
 
-    public bool ExportOrders
+    public bool ExportSaless
     {
-        get => _exportOrders;
-        set => SetProperty(ref _exportOrders, value);
+        get => _exportSaless;
+        set => SetProperty(ref _exportSaless, value);
     }
 
     #endregion
@@ -423,12 +423,12 @@ public class SalesChannelEditModel : AsyncInitializableModel
             // Import Settings
             ImportProducts = salesChannel.ImportProducts;
             ImportCustomers = salesChannel.ImportCustomers;
-            ImportOrders = salesChannel.ImportOrders;
+            ImportSaless = salesChannel.ImportSaless;
 
             // Export Settings
             ExportProducts = salesChannel.ExportProducts;
             ExportCustomers = salesChannel.ExportCustomers;
-            ExportOrders = salesChannel.ExportOrders;
+            ExportSaless = salesChannel.ExportSaless;
 
             // Note: InitialProductImportCompleted and InitialProductExportCompleted
             // are not returned by the API in DetailDto, so we keep them as default (false).
@@ -561,10 +561,10 @@ public class SalesChannelEditModel : AsyncInitializableModel
                 Password = Password,
                 ImportProducts = ImportProducts,
                 ImportCustomers = ImportCustomers,
-                ImportOrders = ImportOrders,
+                ImportSaless = ImportSaless,
                 ExportProducts = ExportProducts,
                 ExportCustomers = ExportCustomers,
-                ExportOrders = ExportOrders,
+                ExportSaless = ExportSaless,
                 InitialProductImportCompleted = InitialProductImportCompleted,
                 InitialProductExportCompleted = InitialProductExportCompleted,
                 WarehouseIds = Warehouses.Where(w => w.IsSelected).Select(w => w.Id).ToList()

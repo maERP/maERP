@@ -11,10 +11,10 @@ public interface ISalesChannelInputModel
     string Password { get; }
     bool ImportProducts { get; }
     bool ImportCustomers { get; }
-    bool ImportOrders { get; }
+    bool ImportSaless { get; }
     bool ExportProducts { get; }
     bool ExportCustomers { get; }
-    bool ExportOrders { get; }
+    bool ExportSaless { get; }
     bool InitialProductImportCompleted { get; }
     bool InitialProductExportCompleted { get; }
     List<Guid> WarehouseIds { get; }

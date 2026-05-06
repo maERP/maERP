@@ -1,4 +1,4 @@
-using System.Linq.Dynamic.Core;
+﻿using System.Linq.Dynamic.Core;
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
 using maERP.Application.Extensions;
@@ -39,11 +39,11 @@ public class SuperadminListHandler : IRequestHandler<SuperadminListQuery, Pagina
                                    (t.Country != null && t.Country.Contains(request.SearchString)));
         }
 
-        // Apply ordering
-        if (request.OrderBy.Any())
+        // Apply salesing
+        if (request.SalesBy.Any())
         {
-            var ordering = string.Join(",", request.OrderBy);
-            query = query.OrderBy(ordering);
+            var salesing = string.Join(",", request.SalesBy);
+            query = query.OrderBy(salesing);
         }
         else
         {

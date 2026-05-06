@@ -1,4 +1,4 @@
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using Asp.Versioning;
 using maERP.Application.Features.SalesChannelOAuth.Commands.OAuthCallback;
 using maERP.Application.Features.SalesChannelOAuth.Commands.OAuthDisconnect;
@@ -131,7 +131,7 @@ public class SalesChannelOAuthController(IMediator mediator) : ControllerBase
   <style>
     body {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
            background: #f3f4f6; margin: 0; padding: 48px 24px; color: #111827; }}
-    .card {{ max-width: 520px; margin: 0 auto; background: #fff; border-radius: 12px;
+    .card {{ max-width: 520px; margin: 0 auto; background: #fff; Border-radius: 12px;
              box-shadow: 0 4px 12px rgba(0,0,0,0.06); padding: 32px; }}
     h1 {{ color: {color}; margin-top: 0; font-size: 22px; }}
     p {{ line-height: 1.5; }}

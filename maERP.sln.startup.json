@@ -10,7 +10,9 @@
         },
         "maERP.Client": {
           "SolutionConfiguration": "Debug",
-          "SolutionPlatform": "x64s"
+          "SolutionPlatform": "x64s",
+          "TargetFramework": "net10.0-desktop",
+          "LaunchProfileName": "maERP.Client (Desktop)"
         }
       }
     },
@@ -22,7 +24,9 @@
         },
         "maERP.Client": {
           "SolutionConfiguration": "Debug",
-          "SolutionPlatform": "x64s"
+          "SolutionPlatform": "x64s",
+          "TargetFramework": "net10.0-browserwasm",
+          "LaunchProfileName": "maERP.Client (WebAssembly)"
         }
       }
     }

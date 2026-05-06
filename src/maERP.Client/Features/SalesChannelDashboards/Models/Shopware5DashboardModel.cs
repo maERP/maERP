@@ -35,7 +35,7 @@ public partial record Shopware5DashboardModel
 
     // Tab 1: Dashboard KPIs
     public IFeed<RevenueKpiData> RevenueData => Feed.Async(LoadRevenueDataAsync);
-    public IFeed<OrdersKpiData> OrdersData => Feed.Async(LoadOrdersDataAsync);
+    public IFeed<SalessKpiData> SalessData => Feed.Async(LoadSalessDataAsync);
 
     private async ValueTask<RevenueKpiData> LoadRevenueDataAsync(CancellationToken ct)
     {
@@ -59,24 +59,24 @@ public partial record Shopware5DashboardModel
         }
     }
 
-    private async ValueTask<OrdersKpiData> LoadOrdersDataAsync(CancellationToken ct)
+    private async ValueTask<SalessKpiData> LoadSalessDataAsync(CancellationToken ct)
     {
         try
         {
-            var data = await _statisticsService.GetOrdersTodayAsync(_salesChannelId, ct);
-            if (data == null) return new OrdersKpiData();
+            var data = await _statisticsService.GetSalessTodayAsync(_salesChannelId, ct);
+            if (data == null) return new SalessKpiData();
 
-            return new OrdersKpiData
+            return new SalessKpiData
             {
-                OrdersToday = data.OrdersToday,
-                OrdersPending = data.OrdersPending,
-                OrdersThisWeek = data.OrdersThisWeek,
-                OrdersChange = data.OrdersChangePercent
+                SalessToday = data.SalessToday,
+                SalessPending = data.SalessPending,
+                SalessThisWeek = data.SalessThisWeek,
+                SalessChange = data.SalessChangePercent
             };
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error loading orders KPI data for SalesChannel {SalesChannelId}", _salesChannelId);
+            _logger.LogError(ex, "Error loading saless KPI data for SalesChannel {SalesChannelId}", _salesChannelId);
             throw;
         }
     }

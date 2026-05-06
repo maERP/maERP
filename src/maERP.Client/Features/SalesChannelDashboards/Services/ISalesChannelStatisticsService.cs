@@ -13,12 +13,12 @@ public interface ISalesChannelStatisticsService
     Task<SalesTodayDto?> GetSalesTodayAsync(Guid salesChannelId, CancellationToken ct = default);
 
     /// <summary>
-    /// Gets the orders statistics for today, filtered by SalesChannel.
+    /// Gets the saless statistics for today, filtered by SalesChannel.
     /// </summary>
-    Task<OrdersTodayDto?> GetOrdersTodayAsync(Guid salesChannelId, CancellationToken ct = default);
+    Task<SalessTodayDto?> GetSalessTodayAsync(Guid salesChannelId, CancellationToken ct = default);
 
     /// <summary>
-    /// Gets the latest orders, filtered by SalesChannel.
+    /// Gets the latest saless, filtered by SalesChannel.
     /// </summary>
-    Task<OrdersLatestDto?> GetOrdersLatestAsync(Guid salesChannelId, int count = 5, CancellationToken ct = default);
+    Task<SalessLatestDto?> GetSalessLatestAsync(Guid salesChannelId, int count = 5, CancellationToken ct = default);
 }

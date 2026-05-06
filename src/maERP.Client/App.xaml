@@ -1,4 +1,4 @@
-<Application x:Class="maERP.Client.App"
+﻿<Application x:Class="maERP.Client.App"
        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
        xmlns:utum="using:Uno.Toolkit.UI.Material"
@@ -51,9 +51,9 @@
       <converters:PaymentStatusToTextConverter x:Key="PaymentStatusToTextConverter" />
       <converters:PaymentStatusToBackgroundConverter x:Key="PaymentStatusToBackgroundConverter" />
       <converters:PaymentStatusToForegroundConverter x:Key="PaymentStatusToForegroundConverter" />
-      <converters:OrderStatusToTextConverter x:Key="OrderStatusToTextConverter" />
-      <converters:OrderStatusToBackgroundConverter x:Key="OrderStatusToBackgroundConverter" />
-      <converters:OrderStatusToForegroundConverter x:Key="OrderStatusToForegroundConverter" />
+      <converters:SalesStatusToTextConverter x:Key="SalesStatusToTextConverter" />
+      <converters:SalesStatusToBackgroundConverter x:Key="SalesStatusToBackgroundConverter" />
+      <converters:SalesStatusToForegroundConverter x:Key="SalesStatusToForegroundConverter" />
       <converters:SalesChannelTypeToTextConverter x:Key="SalesChannelTypeToTextConverter" />
 
     </ResourceDictionary>

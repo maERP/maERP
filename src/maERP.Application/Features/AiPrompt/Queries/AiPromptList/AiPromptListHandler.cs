@@ -28,7 +28,7 @@ public class AiPromptListHandler : IRequestHandler<AiPromptListQuery, PaginatedR
 
         _logger.LogInformation("Handle AiPromptListQuery: {0}", request);
 
-        if (request.OrderBy.Any() != true)
+        if (request.SalesBy.Any() != true)
         {
             return await _aiPromptRepository.Entities
                .Specify(aiPromptFilterSpec)
@@ -43,11 +43,11 @@ public class AiPromptListHandler : IRequestHandler<AiPromptListQuery, PaginatedR
                .ToPaginatedListAsync(request.PageNumber, request.PageSize);
         }
 
-        var ordering = string.Join(",", request.OrderBy);
+        var salesing = string.Join(",", request.SalesBy);
 
         return await _aiPromptRepository.Entities
             .Specify(aiPromptFilterSpec)
-            .OrderBy(ordering)
+            .OrderBy(salesing)
             .Select(a => new AiPromptListDto
             {
                 Id = a.Id,

@@ -26,5 +26,5 @@ public class InvoiceItem : BaseEntity, IBaseEntity
 
     public string Unit { get; set; } = "piece";
 
-    public Guid? OrderItemId { get; set; }
+    public Guid? SalesItemId { get; set; }
 }

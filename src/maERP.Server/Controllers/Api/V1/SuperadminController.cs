@@ -34,10 +34,10 @@ public class SuperadminController(IMediator mediator) : ControllerBase
     /// <param name="pageNumber">Page number (default: 0)</param>
     /// <param name="pageSize">Page size (default: 10)</param>
     /// <param name="searchString">Search string for filtering tenants</param>
-    /// <param name="orderBy">Order by clause</param>
+    /// <param name="salesBy">Sales by clause</param>
     /// <returns>Paginated list of tenants</returns>
     [HttpGet("tenants")]
-    public async Task<ActionResult<PaginatedResult<SuperadminTenantListDto>>> GetTenants(int pageNumber = 0, int pageSize = 10, string searchString = "", string orderBy = "")
+    public async Task<ActionResult<PaginatedResult<SuperadminTenantListDto>>> GetTenants(int pageNumber = 0, int pageSize = 10, string searchString = "", string salesBy = "")
     {
         var accessCheckResult = await EnsureSuperadminAccessAsync();
         if (accessCheckResult is not null)
@@ -45,12 +45,12 @@ public class SuperadminController(IMediator mediator) : ControllerBase
             return accessCheckResult;
         }
 
-        if (string.IsNullOrEmpty(orderBy))
+        if (string.IsNullOrEmpty(salesBy))
         {
-            orderBy = "Name Ascending";
+            salesBy = "Name Ascending";
         }
 
-        var response = await mediator.Send(new SuperadminListQuery(pageNumber, pageSize, searchString, orderBy));
+        var response = await mediator.Send(new SuperadminListQuery(pageNumber, pageSize, searchString, salesBy));
         return StatusCode((int)response.StatusCode, response);
     }
 
@@ -129,17 +129,17 @@ public class SuperadminController(IMediator mediator) : ControllerBase
     /// <param name="pageNumber">Page number (default: 0)</param>
     /// <param name="pageSize">Page size (default: 10)</param>
     /// <param name="searchString">Search string for filtering users</param>
-    /// <param name="orderBy">Order by clause</param>
+    /// <param name="salesBy">Sales by clause</param>
     /// <returns>Paginated list of users</returns>
     [HttpGet("users")]
-    public async Task<ActionResult<PaginatedResult<UserListDto>>> GetUsers(int pageNumber = 0, int pageSize = 10, string searchString = "", string orderBy = "")
+    public async Task<ActionResult<PaginatedResult<UserListDto>>> GetUsers(int pageNumber = 0, int pageSize = 10, string searchString = "", string salesBy = "")
     {
-        if (string.IsNullOrEmpty(orderBy))
+        if (string.IsNullOrEmpty(salesBy))
         {
-            orderBy = "DateCreated Descending";
+            salesBy = "DateCreated Descending";
         }
 
-        var response = await mediator.Send(new UserListQuery(pageNumber, pageSize, searchString, orderBy));
+        var response = await mediator.Send(new UserListQuery(pageNumber, pageSize, searchString, salesBy));
         return StatusCode((int)response.StatusCode, response);
     }
 

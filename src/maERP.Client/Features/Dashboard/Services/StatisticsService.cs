@@ -73,38 +73,38 @@ public class StatisticsService : IStatisticsService
         }
     }
 
-    public async Task<OrdersTodayDto?> GetOrdersTodayAsync(CancellationToken ct = default)
+    public async Task<SalessTodayDto?> GetSalessTodayAsync(CancellationToken ct = default)
     {
         var baseUrl = await GetBaseUrlAsync();
-        var url = $"{baseUrl}{ApiEndpoints.Statistics.OrdersToday}";
+        var url = $"{baseUrl}{ApiEndpoints.Statistics.SalessToday}";
 
-        _logger.LogInformation("Fetching orders today statistics from URL: {Url}", url);
+        _logger.LogInformation("Fetching saless today statistics from URL: {Url}", url);
 
         try
         {
             var apiResponse = await _httpClient.GetFromJsonAsync(
-                url, AppJsonSerializerContext.Default.ApiResponseOrdersTodayDto, ct);
+                url, AppJsonSerializerContext.Default.ApiResponseSalessTodayDto, ct);
 
             if (apiResponse?.Succeeded != true)
             {
-                _logger.LogWarning("API returned unsuccessful response for OrdersToday: {Messages}",
+                _logger.LogWarning("API returned unsuccessful response for SalessToday: {Messages}",
                     string.Join(", ", apiResponse?.Messages ?? new List<string>()));
                 return null;
             }
 
             if (apiResponse.Data == null)
             {
-                _logger.LogWarning("API returned success but OrdersToday Data is null");
-                return new OrdersTodayDto();
+                _logger.LogWarning("API returned success but SalessToday Data is null");
+                return new SalessTodayDto();
             }
 
-            _logger.LogInformation("Successfully fetched orders today statistics - OrdersToday: {OrdersToday}",
-                apiResponse.Data.OrdersToday);
+            _logger.LogInformation("Successfully fetched saless today statistics - SalessToday: {SalessToday}",
+                apiResponse.Data.SalessToday);
             return apiResponse.Data;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error fetching orders today statistics from {Url}", url);
+            _logger.LogError(ex, "Error fetching saless today statistics from {Url}", url);
             throw;
         }
     }
@@ -181,37 +181,37 @@ public class StatisticsService : IStatisticsService
         }
     }
 
-    public async Task<OrdersLatestDto?> GetOrdersLatestAsync(int count = 5, CancellationToken ct = default)
+    public async Task<SalessLatestDto?> GetSalessLatestAsync(int count = 5, CancellationToken ct = default)
     {
         var baseUrl = await GetBaseUrlAsync();
-        var url = $"{baseUrl}{ApiEndpoints.Statistics.OrdersLatest}?count={count}";
+        var url = $"{baseUrl}{ApiEndpoints.Statistics.SalessLatest}?count={count}";
 
-        _logger.LogInformation("Fetching latest orders from URL: {Url}", url);
+        _logger.LogInformation("Fetching latest saless from URL: {Url}", url);
 
         try
         {
             var apiResponse = await _httpClient.GetFromJsonAsync(
-                url, AppJsonSerializerContext.Default.ApiResponseOrdersLatestDto, ct);
+                url, AppJsonSerializerContext.Default.ApiResponseSalessLatestDto, ct);
 
             if (apiResponse?.Succeeded != true)
             {
-                _logger.LogWarning("API returned unsuccessful response for OrdersLatest: {Messages}",
+                _logger.LogWarning("API returned unsuccessful response for SalessLatest: {Messages}",
                     string.Join(", ", apiResponse?.Messages ?? new List<string>()));
                 return null;
             }
 
             if (apiResponse.Data == null)
             {
-                _logger.LogWarning("API returned success but OrdersLatest Data is null");
-                return new OrdersLatestDto();
+                _logger.LogWarning("API returned success but SalessLatest Data is null");
+                return new SalessLatestDto();
             }
 
-            _logger.LogInformation("Successfully fetched {Count} latest orders", apiResponse.Data.Orders.Count);
+            _logger.LogInformation("Successfully fetched {Count} latest saless", apiResponse.Data.Saless.Count);
             return apiResponse.Data;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error fetching latest orders from {Url}", url);
+            _logger.LogError(ex, "Error fetching latest saless from {Url}", url);
             throw;
         }
     }

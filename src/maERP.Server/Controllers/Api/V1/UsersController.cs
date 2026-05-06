@@ -23,14 +23,14 @@ public class UsersController(IMediator mediator) : ControllerBase
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<PaginatedResult<UserListDto>>> GetAll(int pageNumber = 0, int pageSize = 10, string searchString = "", string orderBy = "")
+    public async Task<ActionResult<PaginatedResult<UserListDto>>> GetAll(int pageNumber = 0, int pageSize = 10, string searchString = "", string salesBy = "")
     {
-        if (string.IsNullOrEmpty(orderBy))
+        if (string.IsNullOrEmpty(salesBy))
         {
-            orderBy = "Lastname Ascending";
+            salesBy = "Lastname Ascending";
         }
 
-        var response = await mediator.Send(new UserListQuery(pageNumber, pageSize, searchString, orderBy));
+        var response = await mediator.Send(new UserListQuery(pageNumber, pageSize, searchString, salesBy));
         return response.ToActionResult();
     }
 

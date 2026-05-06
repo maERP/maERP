@@ -63,7 +63,7 @@ curl -X POST https://localhost:5001/api/v1/auth/register \
   }'
 ```
 
-### 2. Passwort-Reset anfordern
+### 2. Passwort-Reset anfsalesn
 
 ```bash
 curl -X POST https://localhost:5001/api/v1/auth/forgot-password \

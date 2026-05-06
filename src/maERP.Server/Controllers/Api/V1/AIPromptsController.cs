@@ -21,14 +21,14 @@ public class AiPromptsController(IMediator mediator) : ControllerBase
 {
     // GET: api/v1/<AiPromptsController>
     [HttpGet]
-    public async Task<ActionResult<PaginatedResult<AiPromptListDto>>> GetAll(int pageNumber = 0, int pageSize = 10, string searchString = "", string orderBy = "")
+    public async Task<ActionResult<PaginatedResult<AiPromptListDto>>> GetAll(int pageNumber = 0, int pageSize = 10, string searchString = "", string salesBy = "")
     {
-        if (string.IsNullOrEmpty(orderBy))
+        if (string.IsNullOrEmpty(salesBy))
         {
-            orderBy = "DateCreated Descending";
+            salesBy = "DateCreated Descending";
         }
 
-        var response = await mediator.Send(new AiPromptListQuery(pageNumber, pageSize, searchString, orderBy));
+        var response = await mediator.Send(new AiPromptListQuery(pageNumber, pageSize, searchString, salesBy));
         return StatusCode((int)response.StatusCode, response);
     }
 

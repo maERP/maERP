@@ -10,13 +10,13 @@ namespace maERP.Application.Features.Statistic.Queries.StatisticSales;
 public class StatisticSalesHandler : IRequestHandler<StatisticSalesQuery, Result<StatisticSalesDto>>
 {
     private readonly IAppLogger<StatisticSalesHandler> _logger;
-    private readonly IOrderRepository _orderRepository;
+    private readonly ISalesRepository _salesRepository;
 
     public StatisticSalesHandler(IAppLogger<StatisticSalesHandler> logger,
-        IOrderRepository orderRepository)
+        ISalesRepository salesRepository)
     {
         _logger = logger;
-        _orderRepository = orderRepository;
+        _salesRepository = salesRepository;
     }
 
     public async Task<Result<StatisticSalesDto>> Handle(StatisticSalesQuery request, CancellationToken cancellationToken)
@@ -34,23 +34,23 @@ public class StatisticSalesHandler : IRequestHandler<StatisticSalesQuery, Result
             var days365Ago = now.AddDays(-365);
 
             // Berechnung des Umsatzes der letzten 24 Stunden
-            statisticDto.Sales24Hours = await _orderRepository.Entities
-                .Where(o => o.DateOrdered >= hours24Ago)
+            statisticDto.Sales24Hours = await _salesRepository.Entities
+                .Where(o => o.DateSalesed >= hours24Ago)
                 .SumAsync(o => o.Total, cancellationToken);
 
             // Berechnung des Umsatzes der letzten 7 Tage
-            statisticDto.Sales7Days = await _orderRepository.Entities
-                .Where(o => o.DateOrdered >= days7Ago)
+            statisticDto.Sales7Days = await _salesRepository.Entities
+                .Where(o => o.DateSalesed >= days7Ago)
                 .SumAsync(o => o.Total, cancellationToken);
 
             // Berechnung des Umsatzes der letzten 30 Tage
-            statisticDto.Sales30Days = await _orderRepository.Entities
-                .Where(o => o.DateOrdered >= days30Ago)
+            statisticDto.Sales30Days = await _salesRepository.Entities
+                .Where(o => o.DateSalesed >= days30Ago)
                 .SumAsync(o => o.Total, cancellationToken);
 
             // Berechnung des Umsatzes der letzten 365 Tage
-            statisticDto.Sales365Days = await _orderRepository.Entities
-                .Where(o => o.DateOrdered >= days365Ago)
+            statisticDto.Sales365Days = await _salesRepository.Entities
+                .Where(o => o.DateSalesed >= days365Ago)
                 .SumAsync(o => o.Total, cancellationToken);
 
             return Result<StatisticSalesDto>.Success(statisticDto);

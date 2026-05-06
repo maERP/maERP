@@ -1,4 +1,4 @@
-﻿using maERP.Domain.Dtos.Warehouse;
+using maERP.Domain.Dtos.Warehouse;
 using maERP.Domain.Enums;
 using maERP.Domain.Interfaces;
 
@@ -19,8 +19,8 @@ public class SalesChannelInputDto : ISalesChannelInputModel
     public bool ExportProducts { get; set; }
     public bool ImportCustomers { get; set; }
     public bool ExportCustomers { get; set; }
-    public bool ImportOrders { get; set; }
-    public bool ExportOrders { get; set; }
+    public bool ImportSaless { get; set; }
+    public bool ExportSaless { get; set; }
     public bool InitialProductImportCompleted { get; set; }
     public bool InitialProductExportCompleted { get; set; }
 

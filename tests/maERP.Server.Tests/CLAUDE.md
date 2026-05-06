@@ -93,7 +93,7 @@ Every tenant-scoped feature **must** include tests for:
 
 ## Conventions
 
-- Test classes named `{Feature}{Action}Tests` (e.g. `CustomerCreateTest`, `OrderListTests`).
+- Test classes named `{Feature}{Action}Tests` (e.g. `CustomerCreateTest`, `SalesListTests`).
 - One assertion concept per test — split scenarios rather than packing them.
 - Arrange / Act / Assert with blank lines between phases.
 - Use `TenantConstants.TestTenant1Id` etc., never hard-coded GUIDs.

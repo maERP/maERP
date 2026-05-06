@@ -1,4 +1,4 @@
-using maERP.Application.Contracts.Services;
+﻿using maERP.Application.Contracts.Services;
 using maERP.Domain.Dtos.Customer;
 using maERP.Domain.Enums;
 using maERP.Persistence.DatabaseContext;
@@ -57,7 +57,7 @@ public class CustomerDedupeService : ICustomerDedupeService
             var survivor = members[0];
             var siblings = members.Skip(1).ToList();
             var siblingIds = siblings.Select(s => s.Id).ToList();
-            // Order.CustomerId references Customer.CustomerId (sequential int), not Customer.Id (Guid).
+            // Sales.CustomerId references Customer.CustomerId (sequential int), not Customer.Id (Guid).
             var siblingCustomerNumbers = siblings.Select(s => s.CustomerId).ToList();
 
             var addressCount = await _context.CustomerAddress
@@ -68,7 +68,7 @@ public class CustomerDedupeService : ICustomerDedupeService
                 .IgnoreQueryFilters()
                 .CountAsync(s => siblingIds.Contains(s.CustomerId), cancellationToken);
 
-            var orderCount = await _context.Order
+            var salesCount = await _context.Sales
                 .IgnoreQueryFilters()
                 .CountAsync(o => siblingCustomerNumbers.Contains(o.CustomerId), cancellationToken);
 
@@ -78,14 +78,14 @@ public class CustomerDedupeService : ICustomerDedupeService
                 EmailKey = key.EmailLower,
                 SurvivorCustomerId = survivor.Id,
                 SiblingCustomerIds = siblingIds,
-                OrdersReassigned = orderCount,
+                SalessReassigned = salesCount,
                 AddressesReassigned = addressCount,
                 SalesChannelLinksReassigned = sccCount,
             };
 
             result.Groups.Add(groupDto);
             result.CustomersToMerge += siblings.Count;
-            result.OrdersReassigned += orderCount;
+            result.SalessReassigned += salesCount;
             result.AddressesReassigned += addressCount;
             result.SalesChannelLinksReassigned += sccCount;
             if (key.TenantId.HasValue)
@@ -116,13 +116,13 @@ public class CustomerDedupeService : ICustomerDedupeService
                 link.CustomerId = survivor.Id;
             }
 
-            var orders = await _context.Order
+            var saless = await _context.Sales
                 .IgnoreQueryFilters()
                 .Where(o => siblingCustomerNumbers.Contains(o.CustomerId))
                 .ToListAsync(cancellationToken);
-            foreach (var order in orders)
+            foreach (var sales in saless)
             {
-                order.CustomerId = survivor.CustomerId;
+                sales.CustomerId = survivor.CustomerId;
             }
 
             var mergedAt = DateTime.UtcNow;

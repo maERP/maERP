@@ -28,7 +28,7 @@ public class InvoiceListQuery : IRequest<PaginatedResult<InvoiceListDto>>
     /// <summary>
     /// Optional sorting parameters
     /// </summary>
-    public string[] OrderBy { get; set; }
+    public string[] SalesBy { get; set; }
 
     /// <summary>
     /// Creates a new instance of InvoiceListQuery with the specified pagination and filtering parameters
@@ -36,17 +36,17 @@ public class InvoiceListQuery : IRequest<PaginatedResult<InvoiceListDto>>
     /// <param name="pageNumber">Page number (default: 1)</param>
     /// <param name="pageSize">Number of items per page (default: 10)</param>
     /// <param name="searchString">Search string for filtering (default: empty)</param>
-    /// <param name="orderBy">Comma-separated list of sorting parameters (default: empty)</param>
-    public InvoiceListQuery(int pageNumber = 1, int pageSize = 10, string searchString = "", string orderBy = "")
+    /// <param name="salesBy">Comma-separated list of sorting parameters (default: empty)</param>
+    public InvoiceListQuery(int pageNumber = 1, int pageSize = 10, string searchString = "", string salesBy = "")
     {
         PageNumber = pageNumber;
         PageSize = pageSize;
         SearchString = searchString;
 
-        if (!string.IsNullOrWhiteSpace(orderBy))
+        if (!string.IsNullOrWhiteSpace(salesBy))
         {
-            OrderBy = orderBy.Split(',');
+            SalesBy = salesBy.Split(',');
         }
-        else OrderBy = new string[] { };
+        else SalesBy = new string[] { };
     }
 }

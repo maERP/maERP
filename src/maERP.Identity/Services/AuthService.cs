@@ -348,7 +348,7 @@ public class AuthService : maERP.Application.Contracts.Identity.IAuthService
             switch (err.Code)
             {
                 case "InvalidToken":
-                    stringBuilder.AppendLine("Der Reset-Token ist ungültig oder abgelaufen. Bitte fordern Sie einen neuen Token an.");
+                    stringBuilder.AppendLine("Der Reset-Token ist ungültig oder abgelaufen. Bitte fsalesn Sie einen neuen Token an.");
                     break;
                 case "PasswordTooShort":
                     stringBuilder.AppendLine("Das Passwort ist zu kurz. Bitte verwenden Sie mindestens 6 Zeichen.");

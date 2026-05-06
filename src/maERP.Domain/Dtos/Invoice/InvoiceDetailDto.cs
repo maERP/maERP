@@ -13,8 +13,8 @@ public class InvoiceDetailDto
     public int CustomerId { get; set; }
     public string CustomerName { get; set; } = string.Empty;
 
-    public Guid? OrderId { get; set; }
-    public string OrderNumber { get; set; } = string.Empty;
+    public Guid? SalesId { get; set; }
+    public string SalesNumber { get; set; } = string.Empty;
 
     public ICollection<InvoiceItemDto> InvoiceItems { get; set; } = new List<InvoiceItemDto>();
 

@@ -1,4 +1,4 @@
-<Page x:Class="maERP.Client.Features.Dashboard.Views.DashboardPage"
+﻿<Page x:Class="maERP.Client.Features.Dashboard.Views.DashboardPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:local="using:maERP.Client.Features.Dashboard.Views"
@@ -29,9 +29,9 @@
               <Setter Target="ActivityGrid.MaxWidth" Value="600" />
               <Setter Target="ActivityColumn1.Width" Value="*" />
               <Setter Target="ActivityColumn2.Width" Value="0" />
-              <Setter Target="RecentOrdersCard.(Grid.Column)" Value="0" />
-              <Setter Target="RecentOrdersCard.(Grid.Row)" Value="0" />
-              <Setter Target="RecentOrdersCard.Margin" Value="0,0,0,16" />
+              <Setter Target="RecentSalessCard.(Grid.Column)" Value="0" />
+              <Setter Target="RecentSalessCard.(Grid.Row)" Value="0" />
+              <Setter Target="RecentSalessCard.Margin" Value="0,0,0,16" />
               <Setter Target="TopProductsCard.(Grid.Column)" Value="0" />
               <Setter Target="TopProductsCard.(Grid.Row)" Value="1" />
               <Setter Target="TopProductsCard.Margin" Value="0" />
@@ -46,9 +46,9 @@
               <Setter Target="ActivityGrid.MaxWidth" Value="1200" />
               <Setter Target="ActivityColumn1.Width" Value="*" />
               <Setter Target="ActivityColumn2.Width" Value="*" />
-              <Setter Target="RecentOrdersCard.(Grid.Column)" Value="0" />
-              <Setter Target="RecentOrdersCard.(Grid.Row)" Value="0" />
-              <Setter Target="RecentOrdersCard.Margin" Value="0,0,8,0" />
+              <Setter Target="RecentSalessCard.(Grid.Column)" Value="0" />
+              <Setter Target="RecentSalessCard.(Grid.Row)" Value="0" />
+              <Setter Target="RecentSalessCard.Margin" Value="0,0,8,0" />
               <Setter Target="TopProductsCard.(Grid.Column)" Value="1" />
               <Setter Target="TopProductsCard.(Grid.Row)" Value="0" />
               <Setter Target="TopProductsCard.Margin" Value="8,0,0,0" />
@@ -63,9 +63,9 @@
               <Setter Target="ActivityGrid.MaxWidth" Value="10000" />
               <Setter Target="ActivityColumn1.Width" Value="*" />
               <Setter Target="ActivityColumn2.Width" Value="*" />
-              <Setter Target="RecentOrdersCard.(Grid.Column)" Value="0" />
-              <Setter Target="RecentOrdersCard.(Grid.Row)" Value="0" />
-              <Setter Target="RecentOrdersCard.Margin" Value="0,0,8,0" />
+              <Setter Target="RecentSalessCard.(Grid.Column)" Value="0" />
+              <Setter Target="RecentSalessCard.(Grid.Row)" Value="0" />
+              <Setter Target="RecentSalessCard.Margin" Value="0,0,8,0" />
               <Setter Target="TopProductsCard.(Grid.Column)" Value="1" />
               <Setter Target="TopProductsCard.(Grid.Row)" Value="0" />
               <Setter Target="TopProductsCard.Margin" Value="8,0,0,0" />
@@ -142,10 +142,10 @@
                   <Setter Target="RevenueCardContainer.(Grid.Row)" Value="0" />
                   <Setter Target="RevenueCardContainer.(Grid.Column)" Value="0" />
                   <Setter Target="RevenueCardContainer.Margin" Value="0,0,0,16" />
-                  <!-- Orders: Row 1, Col 0 -->
-                  <Setter Target="OrdersCardContainer.(Grid.Row)" Value="1" />
-                  <Setter Target="OrdersCardContainer.(Grid.Column)" Value="0" />
-                  <Setter Target="OrdersCardContainer.Margin" Value="0,0,0,16" />
+                  <!-- Saless: Row 1, Col 0 -->
+                  <Setter Target="SalessCardContainer.(Grid.Row)" Value="1" />
+                  <Setter Target="SalessCardContainer.(Grid.Column)" Value="0" />
+                  <Setter Target="SalessCardContainer.Margin" Value="0,0,0,16" />
                   <!-- Customers: Row 2, Col 0 -->
                   <Setter Target="CustomersCardContainer.(Grid.Row)" Value="2" />
                   <Setter Target="CustomersCardContainer.(Grid.Column)" Value="0" />
@@ -171,10 +171,10 @@
                   <Setter Target="RevenueCardContainer.(Grid.Row)" Value="0" />
                   <Setter Target="RevenueCardContainer.(Grid.Column)" Value="0" />
                   <Setter Target="RevenueCardContainer.Margin" Value="0,0,8,16" />
-                  <!-- Orders: Row 0, Col 1 -->
-                  <Setter Target="OrdersCardContainer.(Grid.Row)" Value="0" />
-                  <Setter Target="OrdersCardContainer.(Grid.Column)" Value="1" />
-                  <Setter Target="OrdersCardContainer.Margin" Value="8,0,0,16" />
+                  <!-- Saless: Row 0, Col 1 -->
+                  <Setter Target="SalessCardContainer.(Grid.Row)" Value="0" />
+                  <Setter Target="SalessCardContainer.(Grid.Column)" Value="1" />
+                  <Setter Target="SalessCardContainer.Margin" Value="8,0,0,16" />
                   <!-- Customers: Row 1, Col 0 -->
                   <Setter Target="CustomersCardContainer.(Grid.Row)" Value="1" />
                   <Setter Target="CustomersCardContainer.(Grid.Column)" Value="0" />
@@ -200,10 +200,10 @@
                   <Setter Target="RevenueCardContainer.(Grid.Row)" Value="0" />
                   <Setter Target="RevenueCardContainer.(Grid.Column)" Value="0" />
                   <Setter Target="RevenueCardContainer.Margin" Value="0,0,8,0" />
-                  <!-- Orders: Row 0, Col 1 -->
-                  <Setter Target="OrdersCardContainer.(Grid.Row)" Value="0" />
-                  <Setter Target="OrdersCardContainer.(Grid.Column)" Value="1" />
-                  <Setter Target="OrdersCardContainer.Margin" Value="8,0,8,0" />
+                  <!-- Saless: Row 0, Col 1 -->
+                  <Setter Target="SalessCardContainer.(Grid.Row)" Value="0" />
+                  <Setter Target="SalessCardContainer.(Grid.Column)" Value="1" />
+                  <Setter Target="SalessCardContainer.Margin" Value="8,0,8,0" />
                   <!-- Customers: Row 0, Col 2 -->
                   <Setter Target="CustomersCardContainer.(Grid.Row)" Value="0" />
                   <Setter Target="CustomersCardContainer.(Grid.Column)" Value="2" />
@@ -358,12 +358,12 @@
             </mvux:FeedView.ErrorTemplate>
           </mvux:FeedView>
 
-          <!-- Orders Card with FeedView -->
-          <mvux:FeedView x:Name="OrdersCardContainer"
+          <!-- Saless Card with FeedView -->
+          <mvux:FeedView x:Name="SalessCardContainer"
                          Grid.Row="0"
                          Grid.Column="1"
                          Margin="8,0,8,0"
-                         Source="{Binding OrdersData}">
+                         Source="{Binding SalessData}">
             <mvux:FeedView.ValueTemplate>
               <DataTemplate>
                 <Border Background="{ThemeResource SurfaceBrush}"
@@ -400,13 +400,13 @@
 
                     <TextBlock Grid.Row="0"
                                Grid.Column="0"
-                               x:Uid="DashboardPage.KPI.Orders"
+                               x:Uid="DashboardPage.KPI.Saless"
                                Style="{StaticResource LabelLarge}"
                                Foreground="{ThemeResource OnSurfaceVariantBrush}" />
                     <TextBlock Grid.Row="1"
                                Grid.Column="0"
                                Grid.ColumnSpan="2"
-                               Text="{Binding Data.OrdersToday}"
+                               Text="{Binding Data.SalessToday}"
                                Style="{StaticResource HeadlineLarge}"
                                Foreground="{ThemeResource OnSurfaceBrush}"
                                Margin="0,8,0,0" />
@@ -419,7 +419,7 @@
                                 FontSize="12"
                                 Foreground="{StaticResource PositiveChangeBrush}"
                                 Margin="0,0,4,0" />
-                      <TextBlock Text="{Binding Data.OrdersChangeFormatted}"
+                      <TextBlock Text="{Binding Data.SalessChangeFormatted}"
                                  Style="{StaticResource LabelMedium}"
                                  Foreground="{StaticResource PositiveChangeBrush}" />
                       <TextBlock x:Uid="DashboardPage.KPI.VsLastWeek"
@@ -433,7 +433,7 @@
                                Style="{StaticResource BodySmall}"
                                Foreground="{ThemeResource OnSurfaceVariantBrush}"
                                Margin="0,4,0,0">
-                      <Run Text="{Binding Data.OrdersPending}" />
+                      <Run Text="{Binding Data.SalessPending}" />
                       <Run x:Uid="DashboardPage.KPI.Pending" />
                     </TextBlock>
                   </Grid>
@@ -469,7 +469,7 @@
                     <ThemeShadow />
                   </Border.Shadow>
                   <StackPanel VerticalAlignment="Center">
-                    <TextBlock Text="Error loading orders"
+                    <TextBlock Text="Error loading saless"
                                Style="{StaticResource BodySmall}"
                                Foreground="{ThemeResource OnErrorContainerBrush}"
                                HorizontalAlignment="Center" />
@@ -759,8 +759,8 @@
             <RowDefinition Height="Auto" />
           </Grid.RowDefinitions>
 
-          <!-- Recent Orders Card -->
-          <Border x:Name="RecentOrdersCard"
+          <!-- Recent Saless Card -->
+          <Border x:Name="RecentSalessCard"
                   Grid.Column="0"
                   Grid.Row="0"
                   Margin="0,0,8,0"
@@ -792,28 +792,28 @@
                             Foreground="{ThemeResource PrimaryBrush}"
                             VerticalAlignment="Center"
                             Margin="0,0,12,0" />
-                  <TextBlock x:Uid="DashboardPage.Card.RecentOrders"
+                  <TextBlock x:Uid="DashboardPage.Card.RecentSaless"
                              Style="{StaticResource TitleMedium}"
                              Foreground="{ThemeResource OnSurfaceBrush}"
                              VerticalAlignment="Center" />
                 </StackPanel>
                 <Button Grid.Column="1"
                         x:Uid="DashboardPage.Button.ViewAll"
-                        Click="ViewAllOrders_Click"
+                        Click="ViewAllSaless_Click"
                         Style="{StaticResource TextButtonStyle}"
                         VerticalAlignment="Center" />
               </Grid>
 
-              <!-- Orders List -->
+              <!-- Saless List -->
               <mvux:FeedView Grid.Row="1"
-                             Source="{Binding RecentOrders}"
+                             Source="{Binding RecentSaless}"
                              Padding="0,0,0,8">
                 <mvux:FeedView.ValueTemplate>
                   <DataTemplate>
                     <ItemsRepeater ItemsSource="{Binding Data}">
                       <ItemsRepeater.ItemTemplate>
                         <DataTemplate>
-                          <Button Click="OrderRow_Click"
+                          <Button Click="SalesRow_Click"
                                   HorizontalAlignment="Stretch"
                                   HorizontalContentAlignment="Stretch"
                                   Background="Transparent"
@@ -842,7 +842,7 @@
 
                               <TextBlock Grid.Row="0"
                                          Grid.Column="1"
-                                         Text="{Binding OrderNumber}"
+                                         Text="{Binding SalesNumber}"
                                          Style="{StaticResource BodyMedium}"
                                          Foreground="{ThemeResource OnSurfaceBrush}" />
                               <TextBlock Grid.Row="1"

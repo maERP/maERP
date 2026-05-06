@@ -69,10 +69,10 @@ public class SalesChannelUpdateHandler : IRequestHandler<SalesChannelUpdateComma
             existingSalesChannel.Password = request.Password;
             existingSalesChannel.ImportProducts = request.ImportProducts;
             existingSalesChannel.ImportCustomers = request.ImportCustomers;
-            existingSalesChannel.ImportOrders = request.ImportOrders;
+            existingSalesChannel.ImportSaless = request.ImportSaless;
             existingSalesChannel.ExportProducts = request.ExportProducts;
             existingSalesChannel.ExportCustomers = request.ExportCustomers;
-            existingSalesChannel.ExportOrders = request.ExportOrders;
+            existingSalesChannel.ExportSaless = request.ExportSaless;
 
             // Update warehouse relationships
             var warehouses = new List<Domain.Entities.Warehouse>();

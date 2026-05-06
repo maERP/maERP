@@ -28,7 +28,7 @@ public class TaxClassListHandler : IRequestHandler<TaxClassListQuery, PaginatedR
 
         _logger.LogInformation("Handle TaxClassListQuery: {0}", request);
 
-        if (request.OrderBy.Any() != true)
+        if (request.SalesBy.Any() != true)
         {
             return await _taxClassRepository.Entities
                .Specify(taxClassFilterSpec)
@@ -40,11 +40,11 @@ public class TaxClassListHandler : IRequestHandler<TaxClassListQuery, PaginatedR
                .ToPaginatedListAsync(request.PageNumber, request.PageSize);
         }
 
-        var ordering = string.Join(",", request.OrderBy);
+        var salesing = string.Join(",", request.SalesBy);
 
         return await _taxClassRepository.Entities
             .Specify(taxClassFilterSpec)
-            .OrderBy(ordering)
+            .OrderBy(salesing)
             .Select(t => new TaxClassListDto
             {
                 Id = t.Id,

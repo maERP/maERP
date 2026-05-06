@@ -16,7 +16,7 @@ public class ChannelExportOutbox : BaseEntity, IBaseEntity
     public ChannelSyncOperation Operation { get; set; }
     public ChannelOutboxAggregateType AggregateType { get; set; }
 
-    /// <summary>Id of the aggregate being exported (Product.Id, Order.Id, ProductSalesChannel.Id, ...).</summary>
+    /// <summary>Id of the aggregate being exported (Product.Id, Sales.Id, ProductSalesChannel.Id, ...).</summary>
     public Guid AggregateId { get; set; }
 
     /// <summary>Serialized payload — channel-agnostic; the connector translates it to its API DTO.</summary>

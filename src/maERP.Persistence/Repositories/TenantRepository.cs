@@ -1,4 +1,4 @@
-using maERP.Application.Contracts.Persistence;
+﻿using maERP.Application.Contracts.Persistence;
 using maERP.Domain.Entities;
 using maERP.Persistence.DatabaseContext;
 using Microsoft.EntityFrameworkCore;
@@ -116,23 +116,23 @@ public class TenantRepository : ITenantRepository
 
         try
         {
-            // Delete all tenant-related data in order (respecting foreign key constraints)
+            // Delete all tenant-related data in sales (respecting foreign key constraints)
             // Using ExecuteDeleteAsync for efficient bulk deletion
 
-            // 1. OrderItemSerialNumber
-            await _context.OrderItemSerialNumber
+            // 1. SalesItemSerialNumber
+            await _context.SalesItemSerialNumber
                 .IgnoreQueryFilters()
                 .Where(x => x.TenantId == tenantId)
                 .ExecuteDeleteAsync(cancellationToken);
 
-            // 2. OrderItem
-            await _context.OrderItem
+            // 2. SalesItem
+            await _context.SalesItem
                 .IgnoreQueryFilters()
                 .Where(x => x.TenantId == tenantId)
                 .ExecuteDeleteAsync(cancellationToken);
 
-            // 3. OrderHistory
-            await _context.OrderHistory
+            // 3. SalesHistory
+            await _context.SalesHistory
                 .IgnoreQueryFilters()
                 .Where(x => x.TenantId == tenantId)
                 .ExecuteDeleteAsync(cancellationToken);
@@ -155,8 +155,8 @@ public class TenantRepository : ITenantRepository
                 .Where(x => x.TenantId == tenantId)
                 .ExecuteDeleteAsync(cancellationToken);
 
-            // 7. Order
-            await _context.Order
+            // 7. Sales
+            await _context.Sales
                 .IgnoreQueryFilters()
                 .Where(x => x.TenantId == tenantId)
                 .ExecuteDeleteAsync(cancellationToken);

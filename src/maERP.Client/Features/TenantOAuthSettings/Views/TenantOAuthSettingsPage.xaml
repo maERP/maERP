@@ -1,4 +1,4 @@
-<Page x:Class="maERP.Client.Features.TenantOAuthSettings.Views.TenantOAuthSettingsPage"
+﻿<Page x:Class="maERP.Client.Features.TenantOAuthSettings.Views.TenantOAuthSettingsPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:utu="using:Uno.Toolkit.UI"

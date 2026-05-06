@@ -1,4 +1,4 @@
-<Page x:Class="maERP.Client.Features.SalesChannels.Views.SalesChannelEditPage"
+﻿<Page x:Class="maERP.Client.Features.SalesChannels.Views.SalesChannelEditPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:local="using:maERP.Client.Features.SalesChannels.Views"
@@ -446,13 +446,13 @@
                       <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
                     <TextBlock Grid.Column="0"
-                               x:Uid="SalesChannelEditPage.Field.ImportOrders"
+                               x:Uid="SalesChannelEditPage.Field.ImportSaless"
                                Style="{StaticResource BodyMedium}"
                                Foreground="{ThemeResource OnSurfaceBrush}"
                                TextWrapping="Wrap"
                                VerticalAlignment="Center" />
                     <ToggleSwitch Grid.Column="1"
-                                  IsOn="{Binding ImportOrders, Mode=TwoWay}"
+                                  IsOn="{Binding ImportSaless, Mode=TwoWay}"
                                   IsEnabled="{Binding IsNotLoading}"
                                   MinWidth="0"
                                   OnContent=""
@@ -534,13 +534,13 @@
                       <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
                     <TextBlock Grid.Column="0"
-                               x:Uid="SalesChannelEditPage.Field.ExportOrders"
+                               x:Uid="SalesChannelEditPage.Field.ExportSaless"
                                Style="{StaticResource BodyMedium}"
                                Foreground="{ThemeResource OnSurfaceBrush}"
                                TextWrapping="Wrap"
                                VerticalAlignment="Center" />
                     <ToggleSwitch Grid.Column="1"
-                                  IsOn="{Binding ExportOrders, Mode=TwoWay}"
+                                  IsOn="{Binding ExportSaless, Mode=TwoWay}"
                                   IsEnabled="{Binding IsNotLoading}"
                                   MinWidth="0"
                                   OnContent=""

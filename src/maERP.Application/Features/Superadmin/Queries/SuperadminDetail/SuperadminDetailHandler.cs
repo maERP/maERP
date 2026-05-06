@@ -1,4 +1,4 @@
-using maERP.Application.Contracts.Logging;
+﻿using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
 using maERP.Domain.Dtos.Superadmin;
 using maERP.Domain.Wrapper;

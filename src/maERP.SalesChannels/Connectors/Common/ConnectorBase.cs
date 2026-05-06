@@ -19,7 +19,7 @@ public abstract class ConnectorBase : ISalesChannelConnector
     public virtual Task<SyncResult> ImportProductsAsync(SalesChannelContext context)
         => Task.FromResult(SyncResult.Empty);
 
-    public virtual Task<SyncResult> ImportOrdersAsync(SalesChannelContext context)
+    public virtual Task<SyncResult> ImportSalessAsync(SalesChannelContext context)
         => Task.FromResult(SyncResult.Empty);
 
     public virtual Task<SyncResult> ImportCustomersAsync(SalesChannelContext context)
@@ -34,8 +34,8 @@ public abstract class ConnectorBase : ISalesChannelConnector
     public virtual Task<ExportResult> UpdatePriceAsync(SalesChannelContext context, PriceUpdatePayload payload)
         => Task.FromResult(ExportResult.Fail($"{Type} does not support UpdatePrice"));
 
-    public virtual Task<ExportResult> UpdateOrderAsync(SalesChannelContext context, OrderUpdatePayload payload)
-        => Task.FromResult(ExportResult.Fail($"{Type} does not support UpdateOrder"));
+    public virtual Task<ExportResult> UpdateSalesAsync(SalesChannelContext context, SalesUpdatePayload payload)
+        => Task.FromResult(ExportResult.Fail($"{Type} does not support UpdateSales"));
 
     public virtual Task<ExportResult> DelistProductAsync(SalesChannelContext context, DelistPayload payload)
         => Task.FromResult(ExportResult.Fail($"{Type} does not support DelistProduct"));

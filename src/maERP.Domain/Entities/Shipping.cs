@@ -1,10 +1,10 @@
-﻿using maERP.Domain.Entities.Common;
+using maERP.Domain.Entities.Common;
 
 namespace maERP.Domain.Entities;
 
 public class Shipping : BaseEntity, IBaseEntity
 {
-    public Guid OrderId { get; set; }
+    public Guid SalesId { get; set; }
     public Guid ShippingProviderId { get; set; }
     public string TrackingNumber { get; set; } = string.Empty;
     public string ShippingCost { get; set; } = string.Empty;

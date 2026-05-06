@@ -22,10 +22,10 @@ public record QueryParameters
     public string? SearchString { get; init; }
 
     /// <summary>
-    /// Sort order (e.g., "Name Ascending", "DateCreated Descending").
+    /// Sort sales (e.g., "Name Ascending", "DateCreated Descending").
     /// Multiple sort fields can be separated by commas.
     /// </summary>
-    public string? OrderBy { get; init; }
+    public string? SalesBy { get; init; }
 
     /// <summary>
     /// Builds the query string for API requests.
@@ -43,9 +43,9 @@ public record QueryParameters
             parameters.Add($"searchString={Uri.EscapeDataString(SearchString)}");
         }
 
-        if (!string.IsNullOrWhiteSpace(OrderBy))
+        if (!string.IsNullOrWhiteSpace(SalesBy))
         {
-            parameters.Add($"orderBy={Uri.EscapeDataString(OrderBy)}");
+            parameters.Add($"salesBy={Uri.EscapeDataString(SalesBy)}");
         }
 
         return string.Join("&", parameters);
@@ -72,7 +72,7 @@ public record QueryParameters
     public QueryParameters WithSearch(string? search) => this with { SearchString = search, PageNumber = 0 };
 
     /// <summary>
-    /// Creates a new QueryParameters with a sort order.
+    /// Creates a new QueryParameters with a sort sales.
     /// </summary>
-    public QueryParameters WithOrderBy(string? orderBy) => this with { OrderBy = orderBy, PageNumber = 0 };
+    public QueryParameters WithSalesBy(string? salesBy) => this with { SalesBy = salesBy, PageNumber = 0 };
 }

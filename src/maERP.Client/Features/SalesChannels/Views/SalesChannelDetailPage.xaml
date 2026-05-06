@@ -1,4 +1,4 @@
-<Page x:Class="maERP.Client.Features.SalesChannels.Views.SalesChannelDetailPage"
+﻿<Page x:Class="maERP.Client.Features.SalesChannels.Views.SalesChannelDetailPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:local="using:maERP.Client.Features.SalesChannels.Views"
@@ -318,13 +318,13 @@
                           </Border>
                         </Grid>
 
-                        <!-- Import Orders -->
+                        <!-- Import Saless -->
                         <Grid>
                           <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
                           </Grid.ColumnDefinitions>
-                          <TextBlock x:Uid="SalesChannelDetailPage.Field.Orders"
+                          <TextBlock x:Uid="SalesChannelDetailPage.Field.Saless"
                                      Grid.Column="0"
                                      Style="{StaticResource BodyMedium}"
                                      Foreground="{ThemeResource OnSurfaceBrush}"
@@ -332,10 +332,10 @@
                           <Border Grid.Column="1"
                                   CornerRadius="12"
                                   Padding="10,4"
-                                  Background="{Binding Data.ImportOrders, Converter={StaticResource BoolToSyncStatusBackgroundConverter}}">
-                            <TextBlock Text="{Binding Data.ImportOrders, Converter={StaticResource BoolToSyncStatusTextConverter}}"
+                                  Background="{Binding Data.ImportSaless, Converter={StaticResource BoolToSyncStatusBackgroundConverter}}">
+                            <TextBlock Text="{Binding Data.ImportSaless, Converter={StaticResource BoolToSyncStatusTextConverter}}"
                                        Style="{StaticResource LabelSmall}"
-                                       Foreground="{Binding Data.ImportOrders, Converter={StaticResource BoolToSyncStatusForegroundConverter}}" />
+                                       Foreground="{Binding Data.ImportSaless, Converter={StaticResource BoolToSyncStatusForegroundConverter}}" />
                           </Border>
                         </Grid>
                       </StackPanel>
@@ -412,13 +412,13 @@
                           </Border>
                         </Grid>
 
-                        <!-- Export Orders -->
+                        <!-- Export Saless -->
                         <Grid>
                           <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
                           </Grid.ColumnDefinitions>
-                          <TextBlock x:Uid="SalesChannelDetailPage.Field.Orders"
+                          <TextBlock x:Uid="SalesChannelDetailPage.Field.Saless"
                                      Grid.Column="0"
                                      Style="{StaticResource BodyMedium}"
                                      Foreground="{ThemeResource OnSurfaceBrush}"
@@ -426,10 +426,10 @@
                           <Border Grid.Column="1"
                                   CornerRadius="12"
                                   Padding="10,4"
-                                  Background="{Binding Data.ExportOrders, Converter={StaticResource BoolToSyncStatusBackgroundConverter}}">
-                            <TextBlock Text="{Binding Data.ExportOrders, Converter={StaticResource BoolToSyncStatusTextConverter}}"
+                                  Background="{Binding Data.ExportSaless, Converter={StaticResource BoolToSyncStatusBackgroundConverter}}">
+                            <TextBlock Text="{Binding Data.ExportSaless, Converter={StaticResource BoolToSyncStatusTextConverter}}"
                                        Style="{StaticResource LabelSmall}"
-                                       Foreground="{Binding Data.ExportOrders, Converter={StaticResource BoolToSyncStatusForegroundConverter}}" />
+                                       Foreground="{Binding Data.ExportSaless, Converter={StaticResource BoolToSyncStatusForegroundConverter}}" />
                           </Border>
                         </Grid>
                       </StackPanel>
@@ -591,8 +591,8 @@
                               Command="{Binding TestConnection}" />
                       <Button Content="Sync products"
                               Command="{Binding TriggerSyncProducts}" />
-                      <Button Content="Sync orders"
-                              Command="{Binding TriggerSyncOrders}" />
+                      <Button Content="Sync saless"
+                              Command="{Binding TriggerSyncSaless}" />
                       <Button Content="Sync customers"
                               Command="{Binding TriggerSyncCustomers}" />
                     </StackPanel>

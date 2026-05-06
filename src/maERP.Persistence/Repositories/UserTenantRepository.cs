@@ -1,4 +1,4 @@
-using maERP.Application.Contracts.Persistence;
+﻿using maERP.Application.Contracts.Persistence;
 using maERP.Domain.Dtos.Tenant;
 using maERP.Domain.Entities;
 using maERP.Persistence.DatabaseContext;

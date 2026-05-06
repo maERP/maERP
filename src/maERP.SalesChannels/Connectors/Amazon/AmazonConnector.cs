@@ -21,7 +21,7 @@ namespace maERP.SalesChannels.Connectors.Amazon;
 /// Auth: LWA refresh-token via <see cref="AmazonAuthHelper"/>. AWS SigV4 is no longer required
 /// since 2023 — bearer access token alone authenticates regular calls.
 ///
-/// PR 13 ships <see cref="ImportOrdersAsync"/> and the export plumbing (Listings PATCH for stock
+/// PR 13 ships <see cref="ImportSalessAsync"/> and the export plumbing (Listings PATCH for stock
 /// and price); deeper coverage (full ExportProduct / FBA inventory / shipment confirmation feeds)
 /// follows the same pattern and lands incrementally.
 /// </summary>
@@ -30,18 +30,18 @@ public sealed class AmazonConnector : ConnectorBase
     private static readonly TimeSpan ImportWindow = TimeSpan.FromDays(30);
 
     private readonly AmazonAuthHelper _auth;
-    private readonly IOrderImportRepository _orderImportRepository;
+    private readonly ISalesImportRepository _salesImportRepository;
     private readonly ICustomerImportRepository _customerImportRepository;
     private readonly ILogger<AmazonConnector> _logger;
 
     public AmazonConnector(
         AmazonAuthHelper auth,
-        IOrderImportRepository orderImportRepository,
+        ISalesImportRepository salesImportRepository,
         ICustomerImportRepository customerImportRepository,
         ILogger<AmazonConnector> logger)
     {
         _auth = auth;
-        _orderImportRepository = orderImportRepository;
+        _salesImportRepository = salesImportRepository;
         _customerImportRepository = customerImportRepository;
         _logger = logger;
     }
@@ -49,7 +49,7 @@ public sealed class AmazonConnector : ConnectorBase
     public override SalesChannelType Type => SalesChannelType.Amazon;
 
     public override SalesChannelCapabilities Capabilities =>
-        SalesChannelCapabilities.ImportOrders |
+        SalesChannelCapabilities.ImportSaless |
         SalesChannelCapabilities.ImportCustomers |
         SalesChannelCapabilities.UpdateStock |
         SalesChannelCapabilities.UpdatePrice |
@@ -77,7 +77,7 @@ public sealed class AmazonConnector : ConnectorBase
         }
     }
 
-    public override async Task<SyncResult> ImportOrdersAsync(SalesChannelContext context)
+    public override async Task<SyncResult> ImportSalessAsync(SalesChannelContext context)
     {
         var salesChannel = context.SalesChannel;
         if (string.IsNullOrEmpty(salesChannel.MarketplaceId))
@@ -99,7 +99,7 @@ public sealed class AmazonConnector : ConnectorBase
 
             do
             {
-                var url = $"{baseUrl}/orders/v0/orders" +
+                var url = $"{baseUrl}/saless/v0/saless" +
                           $"?MarketplaceIds={HttpUtility.UrlEncode(salesChannel.MarketplaceId)}" +
                           $"&CreatedAfter={createdAfter:O}";
                 if (!string.IsNullOrEmpty(nextToken))
@@ -111,28 +111,28 @@ public sealed class AmazonConnector : ConnectorBase
                 if (!response.IsSuccessStatusCode)
                 {
                     var body = await response.Content.ReadAsStringAsync(context.CancellationToken);
-                    _logger.LogError("Amazon orders HTTP {Status}: {Body}", (int)response.StatusCode, Truncate(body, 500));
+                    _logger.LogError("Amazon saless HTTP {Status}: {Body}", (int)response.StatusCode, Truncate(body, 500));
                     failed++;
                     break;
                 }
 
                 var raw = await response.Content.ReadAsStringAsync(context.CancellationToken);
-                var ordersResponse = JsonSerializer.Deserialize<AmazonOrdersResponse>(raw);
-                var payload = ordersResponse?.Payload;
-                if (payload?.Orders is null || payload.Orders.Count == 0) break;
+                var salessResponse = JsonSerializer.Deserialize<AmazonSalessResponse>(raw);
+                var payload = salessResponse?.Payload;
+                if (payload?.Saless is null || payload.Saless.Count == 0) break;
 
-                foreach (var order in payload.Orders)
+                foreach (var sales in payload.Saless)
                 {
                     try
                     {
-                        var importOrder = MapOrder(order);
-                        await _orderImportRepository.ImportOrUpdateFromSalesChannel(salesChannel, importOrder);
+                        var importSales = MapSales(sales);
+                        await _salesImportRepository.ImportOrUpdateFromSalesChannel(salesChannel, importSales);
                         processed++;
                     }
                     catch (Exception ex)
                     {
                         failed++;
-                        _logger.LogError(ex, "Amazon order import failed for {Id}", order.AmazonOrderId);
+                        _logger.LogError(ex, "Amazon sales import failed for {Id}", sales.AmazonSalesId);
                     }
                 }
 
@@ -150,8 +150,8 @@ public sealed class AmazonConnector : ConnectorBase
 
     public override async Task<SyncResult> ImportCustomersAsync(SalesChannelContext context)
     {
-        // Amazon does not expose a customer-list endpoint — customers are derived from orders.
-        // We piggyback on the order endpoint and persist buyers via the customer-import path.
+        // Amazon does not expose a customer-list endpoint — customers are derived from saless.
+        // We piggyback on the sales endpoint and persist buyers via the customer-import path.
         var salesChannel = context.SalesChannel;
         if (string.IsNullOrEmpty(salesChannel.MarketplaceId))
         {
@@ -167,31 +167,31 @@ public sealed class AmazonConnector : ConnectorBase
             ConfigureBearer(context, accessToken, config);
 
             var createdAfter = DateTime.UtcNow - ImportWindow;
-            var url = $"{config.GetEndpointBaseUrl()}/orders/v0/orders" +
+            var url = $"{config.GetEndpointBaseUrl()}/saless/v0/saless" +
                       $"?MarketplaceIds={HttpUtility.UrlEncode(salesChannel.MarketplaceId)}" +
                       $"&CreatedAfter={createdAfter:O}";
 
             var response = await context.HttpClient.GetAsync(url, context.CancellationToken);
-            if (!response.IsSuccessStatusCode) return SyncResult.Failed($"Amazon orders HTTP {(int)response.StatusCode}");
+            if (!response.IsSuccessStatusCode) return SyncResult.Failed($"Amazon saless HTTP {(int)response.StatusCode}");
 
             var raw = await response.Content.ReadAsStringAsync(context.CancellationToken);
-            var ordersResponse = JsonSerializer.Deserialize<AmazonOrdersResponse>(raw);
-            var orders = ordersResponse?.Payload?.Orders ?? new List<AmazonOrder>();
+            var salessResponse = JsonSerializer.Deserialize<AmazonSalessResponse>(raw);
+            var saless = salessResponse?.Payload?.Saless ?? new List<AmazonSales>();
 
-            foreach (var order in orders)
+            foreach (var sales in saless)
             {
-                if (order.BuyerInfo is null && order.ShippingAddress is null) continue;
+                if (sales.BuyerInfo is null && sales.ShippingAddress is null) continue;
 
                 try
                 {
-                    var importCustomer = MapCustomer(order);
+                    var importCustomer = MapCustomer(sales);
                     await _customerImportRepository.ImportOrUpdateFromSalesChannel(salesChannel, importCustomer);
                     processed++;
                 }
                 catch (Exception ex)
                 {
                     failed++;
-                    _logger.LogError(ex, "Amazon customer import failed for order {Id}", order.AmazonOrderId);
+                    _logger.LogError(ex, "Amazon customer import failed for sales {Id}", sales.AmazonSalesId);
                 }
             }
         }
@@ -321,25 +321,25 @@ public sealed class AmazonConnector : ConnectorBase
         context.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
     }
 
-    private static SalesChannelImportOrder MapOrder(AmazonOrder order)
+    private static SalesChannelImportSales MapSales(AmazonSales sales)
     {
-        var total = decimal.TryParse(order.OrderTotal?.Amount, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var t) ? t : 0m;
+        var total = decimal.TryParse(sales.SalesTotal?.Amount, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var t) ? t : 0m;
 
-        var billingAddress = order.ShippingAddress is null
+        var billingAddress = sales.ShippingAddress is null
             ? new SalesChannelImportCustomerAddress()
             : new SalesChannelImportCustomerAddress
             {
-                Street = order.ShippingAddress.AddressLine1 ?? string.Empty,
-                City = order.ShippingAddress.City ?? string.Empty,
-                Zip = order.ShippingAddress.PostalCode ?? string.Empty,
-                Country = order.ShippingAddress.CountryCode ?? string.Empty,
+                Street = sales.ShippingAddress.AddressLine1 ?? string.Empty,
+                City = sales.ShippingAddress.City ?? string.Empty,
+                Zip = sales.ShippingAddress.PostalCode ?? string.Empty,
+                Country = sales.ShippingAddress.CountryCode ?? string.Empty,
             };
 
-        var importOrder = new SalesChannelImportOrder
+        var importSales = new SalesChannelImportSales
         {
-            RemoteOrderId = order.AmazonOrderId,
-            DateOrdered = order.PurchaseDate,
-            Status = MapOrderStatus(order.OrderStatus),
+            RemoteSalesId = sales.AmazonSalesId,
+            DateSalesed = sales.PurchaseDate,
+            Status = MapSalesStatus(sales.SalesStatus),
             PaymentStatus = PaymentStatus.CompletelyPaid,
             PaymentMethod = "Amazon",
             PaymentProvider = "Amazon",
@@ -348,13 +348,13 @@ public sealed class AmazonConnector : ConnectorBase
             ShippingCost = 0m,
             TotalTax = 0m,
             CustomerNote = string.Empty,
-            OrderItems = new List<SalesChannelImportOrderItem>(),
+            SalesItems = new List<SalesChannelImportSalesItem>(),
             Customer = new SalesChannelImportCustomer
             {
-                Email = order.BuyerInfo?.BuyerEmail ?? string.Empty,
-                Firstname = order.BuyerInfo?.BuyerName ?? string.Empty,
+                Email = sales.BuyerInfo?.BuyerEmail ?? string.Empty,
+                Firstname = sales.BuyerInfo?.BuyerName ?? string.Empty,
                 Lastname = string.Empty,
-                Phone = order.ShippingAddress?.Phone ?? string.Empty,
+                Phone = sales.ShippingAddress?.Phone ?? string.Empty,
                 CustomerStatus = CustomerStatus.Active,
                 DateEnrollment = DateTime.UtcNow,
                 BillingAddress = billingAddress,
@@ -364,28 +364,28 @@ public sealed class AmazonConnector : ConnectorBase
             ShippingAddress = billingAddress,
         };
 
-        return importOrder;
+        return importSales;
     }
 
-    private static SalesChannelImportCustomer MapCustomer(AmazonOrder order)
+    private static SalesChannelImportCustomer MapCustomer(AmazonSales sales)
     {
-        var addr = order.ShippingAddress is null
+        var addr = sales.ShippingAddress is null
             ? new SalesChannelImportCustomerAddress()
             : new SalesChannelImportCustomerAddress
             {
-                Street = order.ShippingAddress.AddressLine1 ?? string.Empty,
-                City = order.ShippingAddress.City ?? string.Empty,
-                Zip = order.ShippingAddress.PostalCode ?? string.Empty,
-                Country = order.ShippingAddress.CountryCode ?? string.Empty,
+                Street = sales.ShippingAddress.AddressLine1 ?? string.Empty,
+                City = sales.ShippingAddress.City ?? string.Empty,
+                Zip = sales.ShippingAddress.PostalCode ?? string.Empty,
+                Country = sales.ShippingAddress.CountryCode ?? string.Empty,
             };
 
         return new SalesChannelImportCustomer
         {
-            RemoteCustomerId = order.BuyerInfo?.BuyerEmail ?? order.AmazonOrderId,
-            Email = order.BuyerInfo?.BuyerEmail ?? string.Empty,
-            Firstname = order.BuyerInfo?.BuyerName ?? string.Empty,
+            RemoteCustomerId = sales.BuyerInfo?.BuyerEmail ?? sales.AmazonSalesId,
+            Email = sales.BuyerInfo?.BuyerEmail ?? string.Empty,
+            Firstname = sales.BuyerInfo?.BuyerName ?? string.Empty,
             Lastname = string.Empty,
-            Phone = order.ShippingAddress?.Phone ?? string.Empty,
+            Phone = sales.ShippingAddress?.Phone ?? string.Empty,
             CustomerStatus = CustomerStatus.Active,
             DateEnrollment = DateTime.UtcNow,
             BillingAddress = addr,
@@ -393,14 +393,14 @@ public sealed class AmazonConnector : ConnectorBase
         };
     }
 
-    private static OrderStatus MapOrderStatus(string status) => status?.ToLowerInvariant() switch
+    private static SalesStatus MapSalesStatus(string status) => status?.ToLowerInvariant() switch
     {
-        "pending" => OrderStatus.Pending,
-        "unshipped" => OrderStatus.Processing,
-        "partiallyshipped" => OrderStatus.Processing,
-        "shipped" => OrderStatus.Completed,
-        "canceled" or "cancelled" => OrderStatus.Cancelled,
-        _ => OrderStatus.Unknown,
+        "pending" => SalesStatus.Pending,
+        "unshipped" => SalesStatus.Processing,
+        "partiallyshipped" => SalesStatus.Processing,
+        "shipped" => SalesStatus.Completed,
+        "canceled" or "cancelled" => SalesStatus.Cancelled,
+        _ => SalesStatus.Unknown,
     };
 
     private static string Truncate(string value, int max)

@@ -7,7 +7,7 @@ using maERP.Client.Features.AiPrompts.Services;
 using maERP.Client.Features.Countries.Services;
 using maERP.Client.Features.Customers.Services;
 using maERP.Client.Features.Manufacturers.Services;
-using maERP.Client.Features.Orders.Services;
+using maERP.Client.Features.Saless.Services;
 using maERP.Client.Features.Products.Services;
 using maERP.Client.Features.SalesChannels.Services;
 using maERP.Client.Features.TaxClasses.Services;
@@ -16,7 +16,7 @@ using maERP.Domain.Dtos.AiPrompt;
 using maERP.Domain.Dtos.Customer;
 using maERP.Domain.Dtos.CustomerAddress;
 using maERP.Domain.Dtos.Manufacturer;
-using maERP.Domain.Dtos.Order;
+using maERP.Domain.Dtos.Sales;
 using maERP.Domain.Dtos.Product;
 using maERP.Domain.Entities;
 using maERP.Domain.Enums;
@@ -26,7 +26,7 @@ namespace maERP.Client.Features.Tenants.Models;
 
 /// <summary>
 /// Model for the demo data generator page.
-/// Allows generating demo products, customers, orders, and AI-generated data.
+/// Allows generating demo products, customers, saless, and AI-generated data.
 /// </summary>
 public class DemoDataGeneratorModel : AsyncInitializableModel
 {
@@ -35,7 +35,7 @@ public class DemoDataGeneratorModel : AsyncInitializableModel
     private readonly INameGeneratorFactory _nameGeneratorFactory;
     private readonly IProductService _productService;
     private readonly ICustomerService _customerService;
-    private readonly IOrderService _orderService;
+    private readonly ISalesService _salesService;
     private readonly IManufacturerService _manufacturerService;
     private readonly IAiModelService _aiModelService;
     private readonly IAiPromptService _aiPromptService;
@@ -48,13 +48,13 @@ public class DemoDataGeneratorModel : AsyncInitializableModel
     // Counts
     private double _productsCount = 50;
     private double _customersCount = 25;
-    private double _ordersCount = 50;
+    private double _salessCount = 50;
     private double _aiDataCount = 10;
 
     // Generation states
     private bool _isGeneratingProducts;
     private bool _isGeneratingCustomers;
-    private bool _isGeneratingOrders;
+    private bool _isGeneratingSaless;
     private bool _isGeneratingAiData;
 
     // Progress tracking - Products
@@ -69,11 +69,11 @@ public class DemoDataGeneratorModel : AsyncInitializableModel
     private CancellationTokenSource? _customersCts;
     private string? _customersErrorMessage;
 
-    // Progress tracking - Orders
-    private int _ordersProgress;
-    private int _ordersTotalCount;
-    private CancellationTokenSource? _ordersCts;
-    private string? _ordersErrorMessage;
+    // Progress tracking - Saless
+    private int _salessProgress;
+    private int _salessTotalCount;
+    private CancellationTokenSource? _salessCts;
+    private string? _salessErrorMessage;
 
     // Progress tracking - AI Data
     private int _aiDataProgress;
@@ -87,7 +87,7 @@ public class DemoDataGeneratorModel : AsyncInitializableModel
         INameGeneratorFactory nameGeneratorFactory,
         IProductService productService,
         ICustomerService customerService,
-        IOrderService orderService,
+        ISalesService salesService,
         IManufacturerService manufacturerService,
         IAiModelService aiModelService,
         IAiPromptService aiPromptService,
@@ -103,7 +103,7 @@ public class DemoDataGeneratorModel : AsyncInitializableModel
         _nameGeneratorFactory = nameGeneratorFactory;
         _productService = productService;
         _customerService = customerService;
-        _orderService = orderService;
+        _salesService = salesService;
         _manufacturerService = manufacturerService;
         _aiModelService = aiModelService;
         _aiPromptService = aiPromptService;
@@ -152,12 +152,12 @@ public class DemoDataGeneratorModel : AsyncInitializableModel
     }
 
     /// <summary>
-    /// Number of orders to generate.
+    /// Number of saless to generate.
     /// </summary>
-    public double OrdersCount
+    public double SalessCount
     {
-        get => _ordersCount;
-        set => SetProperty(ref _ordersCount, value);
+        get => _salessCount;
+        set => SetProperty(ref _salessCount, value);
     }
 
     /// <summary>
@@ -214,24 +214,24 @@ public class DemoDataGeneratorModel : AsyncInitializableModel
     public bool IsNotGeneratingCustomers => !IsGeneratingCustomers;
 
     /// <summary>
-    /// Indicates whether orders are currently being generated.
+    /// Indicates whether saless are currently being generated.
     /// </summary>
-    public bool IsGeneratingOrders
+    public bool IsGeneratingSaless
     {
-        get => _isGeneratingOrders;
+        get => _isGeneratingSaless;
         private set
         {
-            if (SetProperty(ref _isGeneratingOrders, value))
+            if (SetProperty(ref _isGeneratingSaless, value))
             {
-                OnPropertyChanged(nameof(IsNotGeneratingOrders));
+                OnPropertyChanged(nameof(IsNotGeneratingSaless));
             }
         }
     }
 
     /// <summary>
-    /// Inverse of IsGeneratingOrders for binding convenience.
+    /// Inverse of IsGeneratingSaless for binding convenience.
     /// </summary>
-    public bool IsNotGeneratingOrders => !IsGeneratingOrders;
+    public bool IsNotGeneratingSaless => !IsGeneratingSaless;
 
     /// <summary>
     /// Indicates whether AI data is currently being generated.
@@ -343,46 +343,46 @@ public class DemoDataGeneratorModel : AsyncInitializableModel
 
     #endregion
 
-    #region Progress Tracking Properties - Orders
+    #region Progress Tracking Properties - Saless
 
     /// <summary>
-    /// Current progress of order generation.
+    /// Current progress of sales generation.
     /// </summary>
-    public int OrdersProgress
+    public int SalessProgress
     {
-        get => _ordersProgress;
+        get => _salessProgress;
         private set
         {
-            if (SetProperty(ref _ordersProgress, value))
+            if (SetProperty(ref _salessProgress, value))
             {
-                OnPropertyChanged(nameof(OrdersProgressPercent));
+                OnPropertyChanged(nameof(SalessProgressPercent));
             }
         }
     }
 
     /// <summary>
-    /// Total count of orders to generate.
+    /// Total count of saless to generate.
     /// </summary>
-    public int OrdersTotalCount
+    public int SalessTotalCount
     {
-        get => _ordersTotalCount;
-        private set => SetProperty(ref _ordersTotalCount, value);
+        get => _salessTotalCount;
+        private set => SetProperty(ref _salessTotalCount, value);
     }
 
     /// <summary>
-    /// Progress percentage for orders generation.
+    /// Progress percentage for saless generation.
     /// </summary>
-    public double OrdersProgressPercent => OrdersTotalCount > 0
-        ? (double)OrdersProgress / OrdersTotalCount * 100
+    public double SalessProgressPercent => SalessTotalCount > 0
+        ? (double)SalessProgress / SalessTotalCount * 100
         : 0;
 
     /// <summary>
-    /// Error message for orders generation.
+    /// Error message for saless generation.
     /// </summary>
-    public string? OrdersErrorMessage
+    public string? SalessErrorMessage
     {
-        get => _ordersErrorMessage;
-        private set => SetProperty(ref _ordersErrorMessage, value);
+        get => _salessErrorMessage;
+        private set => SetProperty(ref _salessErrorMessage, value);
     }
 
     #endregion
@@ -456,9 +456,9 @@ public class DemoDataGeneratorModel : AsyncInitializableModel
     public void CancelCustomersGeneration() => _customersCts?.Cancel();
 
     /// <summary>
-    /// Cancel orders generation.
+    /// Cancel saless generation.
     /// </summary>
-    public void CancelOrdersGeneration() => _ordersCts?.Cancel();
+    public void CancelSalessGeneration() => _salessCts?.Cancel();
 
     /// <summary>
     /// Cancel AI data generation.
@@ -658,19 +658,19 @@ public class DemoDataGeneratorModel : AsyncInitializableModel
     }
 
     /// <summary>
-    /// Generate demo orders.
+    /// Generate demo saless.
     /// </summary>
-    public async Task GenerateOrdersAsync(CancellationToken ct = default)
+    public async Task GenerateSalessAsync(CancellationToken ct = default)
     {
-        if (IsGeneratingOrders) return;
+        if (IsGeneratingSaless) return;
 
-        IsGeneratingOrders = true;
-        OrdersErrorMessage = null;
-        OrdersProgress = 0;
-        OrdersTotalCount = (int)OrdersCount;
+        IsGeneratingSaless = true;
+        SalessErrorMessage = null;
+        SalessProgress = 0;
+        SalessTotalCount = (int)SalessCount;
 
-        _ordersCts = CancellationTokenSource.CreateLinkedTokenSource(ct);
-        var token = _ordersCts.Token;
+        _salessCts = CancellationTokenSource.CreateLinkedTokenSource(ct);
+        var token = _salessCts.Token;
 
         try
         {
@@ -708,10 +708,10 @@ public class DemoDataGeneratorModel : AsyncInitializableModel
             var random = new Random();
             var batchId = DateTime.Now.ToString("yyyyMMddHHmmss");
             var paymentMethods = new[] { "PayPal", "Credit Card", "Invoice", "Direct Debit", "Prepayment" };
-            var orderStatuses = new[] { OrderStatus.Pending, OrderStatus.Processing, OrderStatus.Completed, OrderStatus.ReadyForDelivery };
+            var salesStatuses = new[] { SalesStatus.Pending, SalesStatus.Processing, SalesStatus.Completed, SalesStatus.ReadyForDelivery };
             var paymentStatuses = new[] { PaymentStatus.Invoiced, PaymentStatus.CompletelyPaid, PaymentStatus.PartiallyPaid };
 
-            for (int i = 0; i < OrdersTotalCount; i++)
+            for (int i = 0; i < SalessTotalCount; i++)
             {
                 token.ThrowIfCancellationRequested();
 
@@ -721,9 +721,9 @@ public class DemoDataGeneratorModel : AsyncInitializableModel
                 // Get customer details for addresses
                 var customerDetail = await _customerService.GetCustomerAsync(customer.Id, token);
 
-                // Generate 1-5 order items
+                // Generate 1-5 sales items
                 var itemCount = random.Next(1, 6);
-                var orderItems = new List<OrderItem>();
+                var salesItems = new List<SalesItem>();
                 decimal subtotal = 0;
                 decimal totalTax = 0;
                 const double defaultTaxRate = 19.0;
@@ -734,7 +734,7 @@ public class DemoDataGeneratorModel : AsyncInitializableModel
                     var quantity = random.Next(1, 4);
                     var price = product.Price;
 
-                    orderItems.Add(new OrderItem
+                    salesItems.Add(new SalesItem
                     {
                         ProductId = product.Id,
                         Name = product.Name,
@@ -753,13 +753,13 @@ public class DemoDataGeneratorModel : AsyncInitializableModel
                 // Get address from customer or use defaults
                 var address = customerDetail?.CustomerAddresses?.FirstOrDefault();
 
-                var input = new OrderInputDto
+                var input = new SalesInputDto
                 {
                     SalesChannelId = salesChannelId,
-                    RemoteOrderId = $"DEMO-{batchId}-{i + 1:D4}",
+                    RemoteSalesId = $"DEMO-{batchId}-{i + 1:D4}",
                     CustomerId = customer.CustomerId,
-                    Status = orderStatuses[random.Next(orderStatuses.Length)],
-                    OrderItems = orderItems,
+                    Status = salesStatuses[random.Next(salesStatuses.Length)],
+                    SalesItems = salesItems,
                     PaymentMethod = paymentMethods[random.Next(paymentMethods.Length)],
                     PaymentStatus = paymentStatuses[random.Next(paymentStatuses.Length)],
                     Subtotal = subtotal,
@@ -778,11 +778,11 @@ public class DemoDataGeneratorModel : AsyncInitializableModel
                     InvoiceAddressCity = address?.City ?? "Demo City",
                     InvoiceAddressZip = address?.Zip ?? "12345",
                     InvoiceAddressCountry = "DE",
-                    DateOrdered = DateTime.UtcNow.AddDays(-random.Next(1, 90))
+                    DateSalesed = DateTime.UtcNow.AddDays(-random.Next(1, 90))
                 };
 
-                await _orderService.CreateOrderAsync(input, token);
-                OrdersProgress = i + 1;
+                await _salesService.CreateSalesAsync(input, token);
+                SalessProgress = i + 1;
             }
         }
         catch (OperationCanceledException)
@@ -791,17 +791,17 @@ public class DemoDataGeneratorModel : AsyncInitializableModel
         }
         catch (ApiException ex)
         {
-            OrdersErrorMessage = ex.CombinedMessage;
+            SalessErrorMessage = ex.CombinedMessage;
         }
         catch (Exception ex)
         {
-            OrdersErrorMessage = ex.Message;
+            SalessErrorMessage = ex.Message;
         }
         finally
         {
-            IsGeneratingOrders = false;
-            _ordersCts?.Dispose();
-            _ordersCts = null;
+            IsGeneratingSaless = false;
+            _salessCts?.Dispose();
+            _salessCts = null;
         }
     }
 

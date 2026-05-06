@@ -9,5 +9,5 @@ public class GoodsReceiptListQuery : IRequest<PaginatedResult<GoodsReceiptListDt
     public int PageNumber { get; set; } = 0;
     public int PageSize { get; set; } = 50;
     public string SearchTerm { get; set; } = string.Empty;
-    public string OrderBy { get; set; } = "ReceiptDate Descending";
+    public string SalesBy { get; set; } = "ReceiptDate Descending";
 }

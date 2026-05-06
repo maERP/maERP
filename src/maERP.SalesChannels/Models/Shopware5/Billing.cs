@@ -1,9 +1,9 @@
-﻿namespace maERP.SalesChannels.Models.Shopware5;
+namespace maERP.SalesChannels.Models.Shopware5;
 
 public class Billing
 {
     public int id { get; set; }
-    public int orderId { get; set; }
+    public int salesId { get; set; }
     public int customerId { get; set; }
     public int countryId { get; set; }
     public string company { get; set; } = string.Empty;

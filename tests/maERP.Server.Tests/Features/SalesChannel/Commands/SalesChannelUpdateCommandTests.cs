@@ -94,8 +94,8 @@ public class SalesChannelUpdateCommandTests : TenantIsolatedTestBase
                     ExportProducts = false,
                     ImportCustomers = true,
                     ExportCustomers = false,
-                    ImportOrders = true,
-                    ExportOrders = false,
+                    ImportSaless = true,
+                    ExportSaless = false,
                     TenantId = TenantConstants.TestTenant1Id,
                     Warehouses = new List<maERP.Domain.Entities.Warehouse> { warehouse1 }
                 };
@@ -112,8 +112,8 @@ public class SalesChannelUpdateCommandTests : TenantIsolatedTestBase
                     ExportProducts = true,
                     ImportCustomers = false,
                     ExportCustomers = true,
-                    ImportOrders = false,
-                    ExportOrders = true,
+                    ImportSaless = false,
+                    ExportSaless = true,
                     TenantId = TenantConstants.TestTenant1Id
                 };
 
@@ -129,8 +129,8 @@ public class SalesChannelUpdateCommandTests : TenantIsolatedTestBase
                     ExportProducts = true,
                     ImportCustomers = true,
                     ExportCustomers = true,
-                    ImportOrders = true,
-                    ExportOrders = true,
+                    ImportSaless = true,
+                    ExportSaless = true,
                     TenantId = TenantConstants.TestTenant2Id,
                     Warehouses = new List<maERP.Domain.Entities.Warehouse> { warehouse3 }
                 };
@@ -159,8 +159,8 @@ public class SalesChannelUpdateCommandTests : TenantIsolatedTestBase
             ExportProducts = true,
             ImportCustomers = false,
             ExportCustomers = true,
-            ImportOrders = false,
-            ExportOrders = true,
+            ImportSaless = false,
+            ExportSaless = true,
             WarehouseIds = new List<Guid> { TestWarehouse1Id, TestWarehouse2Id }
         };
     }
@@ -475,8 +475,8 @@ public class SalesChannelUpdateCommandTests : TenantIsolatedTestBase
         updateDto.ExportProducts = false;
         updateDto.ImportCustomers = true;
         updateDto.ExportCustomers = false;
-        updateDto.ImportOrders = true;
-        updateDto.ExportOrders = false;
+        updateDto.ImportSaless = true;
+        updateDto.ExportSaless = false;
 
         var response = await PutAsJsonAsync($"/api/v1/SalesChannels/{TestSalesChannel1Id}", updateDto);
 
@@ -494,8 +494,8 @@ public class SalesChannelUpdateCommandTests : TenantIsolatedTestBase
         TestAssertions.AssertFalse(salesChannelDetail.Data.ExportProducts);
         TestAssertions.AssertTrue(salesChannelDetail.Data.ImportCustomers);
         TestAssertions.AssertFalse(salesChannelDetail.Data.ExportCustomers);
-        TestAssertions.AssertTrue(salesChannelDetail.Data.ImportOrders);
-        TestAssertions.AssertFalse(salesChannelDetail.Data.ExportOrders);
+        TestAssertions.AssertTrue(salesChannelDetail.Data.ImportSaless);
+        TestAssertions.AssertFalse(salesChannelDetail.Data.ExportSaless);
     }
 
     [Fact]

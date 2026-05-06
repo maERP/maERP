@@ -46,10 +46,10 @@ public static class ApiEndpoints
         public static string ById(Guid id) => $"{Base}/{id}";
     }
 
-    // Orders
-    public static class Orders
+    // Saless
+    public static class Saless
     {
-        public const string Base = $"{ApiBase}/orders";
+        public const string Base = $"{ApiBase}/saless";
         public static string ById(Guid id) => $"{Base}/{id}";
     }
 
@@ -132,10 +132,10 @@ public static class ApiEndpoints
     {
         public const string Base = $"{ApiBase}/statistics";
         public const string SalesToday = $"{Base}/SalesToday";
-        public const string OrdersToday = $"{Base}/OrdersToday";
+        public const string SalessToday = $"{Base}/SalessToday";
         public const string CustomersToday = $"{Base}/CustomersToday";
         public const string ProductsToday = $"{Base}/ProductsToday";
-        public const string OrdersLatest = $"{Base}/OrdersLatest";
+        public const string SalessLatest = $"{Base}/SalessLatest";
         public const string ProductsBestSelling = $"{Base}/ProductsBestSelling";
     }
 

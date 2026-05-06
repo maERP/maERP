@@ -88,12 +88,12 @@ namespace maERP.Persistence.Repositories
                 new Setting { Key = "Invoice.DefaultPaymentTerms", Value = "14" },
                 new Setting { Key = "Invoice.DefaultFooterText", Value = "Vielen Dank für Ihren Einkauf!" },
                 
-                // Order Settings
-                new Setting { Key = "Order.NumberFormat", Value = "ORD-{YEAR}-{NUMBER}" },
-                new Setting { Key = "Order.DefaultStatus", Value = "New" },
+                // Sales Settings
+                new Setting { Key = "Sales.NumberFormat", Value = "ORD-{YEAR}-{NUMBER}" },
+                new Setting { Key = "Sales.DefaultStatus", Value = "New" },
                 
                 // Notification Settings
-                new Setting { Key = "Notification.OrderEmail", Value = "True" },
+                new Setting { Key = "Notification.SalesEmail", Value = "True" },
                 new Setting { Key = "Notification.InvoiceEmail", Value = "True" },
                 new Setting { Key = "Notification.LowStockAlert", Value = "True" },
                 new Setting { Key = "Notification.LowStockThreshold", Value = "5" },

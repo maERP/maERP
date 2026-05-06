@@ -111,14 +111,14 @@ public class WarehouseListQueryTests : TenantIsolatedTestBase
     }
 
     [Fact]
-    public async Task GetWarehouseList_WithOrderBy_ShouldReturnOrderedResults()
+    public async Task GetWarehouseList_WithSalesBy_ShouldReturnSalesedResults()
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
-        var response = await Client.GetAsync("/api/v1/Warehouses?orderBy=Name");
+        var response = await Client.GetAsync("/api/v1/Warehouses?salesBy=Name");
 
         // Assert
         TestAssertions.AssertHttpSuccess(response);
@@ -126,7 +126,7 @@ public class WarehouseListQueryTests : TenantIsolatedTestBase
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
 
-        // Verify ordering
+        // Verify salesing
         if (result.Data.Count > 1)
         {
             for (int i = 0; i < result.Data.Count - 1; i++)
@@ -318,14 +318,14 @@ public class WarehouseListQueryTests : TenantIsolatedTestBase
     }
 
     [Fact]
-    public async Task GetWarehouseList_WithMultipleOrderByFields_ShouldHandleCorrectly()
+    public async Task GetWarehouseList_WithMultipleSalesByFields_ShouldHandleCorrectly()
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
-        var response = await Client.GetAsync("/api/v1/Warehouses?orderBy=Name,Id");
+        var response = await Client.GetAsync("/api/v1/Warehouses?salesBy=Name,Id");
 
         // Assert
         TestAssertions.AssertHttpSuccess(response);

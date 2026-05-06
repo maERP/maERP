@@ -13,22 +13,22 @@ namespace maERP.SalesChannels.Connectors.WooCommerce;
 
 /// <summary>
 /// WooCommerce REST API connector via the <c>WooCommerceNET</c> SDK. Migrated from
-/// <c>WooCommerceProductImportTask</c> + <c>WooCommerceOrderImportTask</c>; same SDK, same
+/// <c>WooCommerceProductImportTask</c> + <c>WooCommerceSalesImportTask</c>; same SDK, same
 /// mappings, but routed through the connector contract so the orchestrator owns scheduling.
 /// </summary>
 public sealed class WooCommerceConnector : ConnectorBase
 {
     private readonly IProductImportRepository _productImportRepository;
-    private readonly IOrderImportRepository _orderImportRepository;
+    private readonly ISalesImportRepository _salesImportRepository;
     private readonly ILogger<WooCommerceConnector> _logger;
 
     public WooCommerceConnector(
         IProductImportRepository productImportRepository,
-        IOrderImportRepository orderImportRepository,
+        ISalesImportRepository salesImportRepository,
         ILogger<WooCommerceConnector> logger)
     {
         _productImportRepository = productImportRepository;
-        _orderImportRepository = orderImportRepository;
+        _salesImportRepository = salesImportRepository;
         _logger = logger;
     }
 
@@ -36,7 +36,7 @@ public sealed class WooCommerceConnector : ConnectorBase
 
     public override SalesChannelCapabilities Capabilities =>
         SalesChannelCapabilities.ImportProducts |
-        SalesChannelCapabilities.ImportOrders |
+        SalesChannelCapabilities.ImportSaless |
         SalesChannelCapabilities.UpdateStock |
         SalesChannelCapabilities.UpdatePrice;
 
@@ -108,7 +108,7 @@ public sealed class WooCommerceConnector : ConnectorBase
         return new SyncResult(processed, failed);
     }
 
-    public override async Task<SyncResult> ImportOrdersAsync(SalesChannelContext context)
+    public override async Task<SyncResult> ImportSalessAsync(SalesChannelContext context)
     {
         try
         {
@@ -125,57 +125,57 @@ public sealed class WooCommerceConnector : ConnectorBase
         try
         {
             var wc = BuildClient(context);
-            var remoteOrders = await wc.Order.GetAll();
+            var remoteSaless = await wc.Order.GetAll();
 
-            foreach (var remoteOrder in remoteOrders)
+            foreach (var remoteSales in remoteSaless)
             {
                 try
                 {
-                    decimal subtotal = (remoteOrder.total ?? 0) - (remoteOrder.total_tax ?? 0) - (remoteOrder.shipping_total ?? 0);
+                    decimal subtotal = (remoteSales.total ?? 0) - (remoteSales.total_tax ?? 0) - (remoteSales.shipping_total ?? 0);
 
-                    var importOrder = new SalesChannelImportOrder
+                    var importSales = new SalesChannelImportSales
                     {
-                        RemoteOrderId = remoteOrder.id.ToString(),
-                        DateOrdered = remoteOrder.date_created ?? DateTime.UtcNow,
-                        Status = MapOrderStatus(remoteOrder.status),
+                        RemoteSalesId = remoteSales.id.ToString(),
+                        DateSalesed = remoteSales.date_created ?? DateTime.UtcNow,
+                        Status = MapSalesStatus(remoteSales.status),
                         PaymentStatus = PaymentStatus.Unknown,
-                        PaymentMethod = remoteOrder.payment_method,
-                        PaymentProvider = remoteOrder.payment_method_title,
-                        PaymentTransactionId = remoteOrder.transaction_id,
+                        PaymentMethod = remoteSales.payment_method,
+                        PaymentProvider = remoteSales.payment_method_title,
+                        PaymentTransactionId = remoteSales.transaction_id,
                         Subtotal = subtotal,
-                        ShippingCost = remoteOrder.shipping_total ?? 0,
-                        TotalTax = remoteOrder.total_tax ?? 0,
-                        Total = remoteOrder.total ?? 0,
+                        ShippingCost = remoteSales.shipping_total ?? 0,
+                        TotalTax = remoteSales.total_tax ?? 0,
+                        Total = remoteSales.total ?? 0,
                         Customer = new SalesChannelImportCustomer
                         {
-                            Firstname = remoteOrder.billing.first_name,
-                            Lastname = remoteOrder.billing.last_name,
-                            CompanyName = remoteOrder.billing.company,
-                            Email = remoteOrder.billing.email,
-                            Phone = remoteOrder.billing.phone,
-                            DateEnrollment = remoteOrder.date_created_gmt ?? DateTime.UtcNow,
+                            Firstname = remoteSales.billing.first_name,
+                            Lastname = remoteSales.billing.last_name,
+                            CompanyName = remoteSales.billing.company,
+                            Email = remoteSales.billing.email,
+                            Phone = remoteSales.billing.phone,
+                            DateEnrollment = remoteSales.date_created_gmt ?? DateTime.UtcNow,
                         },
                         BillingAddress = new SalesChannelImportCustomerAddress
                         {
-                            Firstname = remoteOrder.billing.first_name,
-                            Lastname = remoteOrder.billing.last_name,
-                            CompanyName = remoteOrder.billing.company,
-                            Street = remoteOrder.billing.address_1,
-                            City = remoteOrder.billing.city,
-                            Zip = remoteOrder.billing.postcode,
-                            Country = remoteOrder.billing.country,
+                            Firstname = remoteSales.billing.first_name,
+                            Lastname = remoteSales.billing.last_name,
+                            CompanyName = remoteSales.billing.company,
+                            Street = remoteSales.billing.address_1,
+                            City = remoteSales.billing.city,
+                            Zip = remoteSales.billing.postcode,
+                            Country = remoteSales.billing.country,
                         },
                         ShippingAddress = new SalesChannelImportCustomerAddress
                         {
-                            Firstname = remoteOrder.shipping.first_name,
-                            Lastname = remoteOrder.shipping.last_name,
-                            CompanyName = remoteOrder.shipping.company,
-                            Street = remoteOrder.shipping.address_1,
-                            City = remoteOrder.shipping.city,
-                            Zip = remoteOrder.shipping.postcode,
-                            Country = remoteOrder.shipping.country,
+                            Firstname = remoteSales.shipping.first_name,
+                            Lastname = remoteSales.shipping.last_name,
+                            CompanyName = remoteSales.shipping.company,
+                            Street = remoteSales.shipping.address_1,
+                            City = remoteSales.shipping.city,
+                            Zip = remoteSales.shipping.postcode,
+                            Country = remoteSales.shipping.country,
                         },
-                        OrderItems = remoteOrder.line_items.Select(item => new SalesChannelImportOrderItem
+                        SalesItems = remoteSales.line_items.Select(item => new SalesChannelImportSalesItem
                         {
                             Name = item.name,
                             Sku = item.sku,
@@ -185,13 +185,13 @@ public sealed class WooCommerceConnector : ConnectorBase
                         }).ToList(),
                     };
 
-                    await _orderImportRepository.ImportOrUpdateFromSalesChannel(context.SalesChannel, importOrder);
+                    await _salesImportRepository.ImportOrUpdateFromSalesChannel(context.SalesChannel, importSales);
                     processed++;
                 }
                 catch (Exception ex)
                 {
                     failed++;
-                    _logger.LogError(ex, "WooCommerce order import failed for {Id}", remoteOrder.id);
+                    _logger.LogError(ex, "WooCommerce sales import failed for {Id}", remoteSales.id);
                 }
             }
         }
@@ -256,15 +256,15 @@ public sealed class WooCommerceConnector : ConnectorBase
         return new WCObject(rest);
     }
 
-    private static OrderStatus MapOrderStatus(string orderStatus) => orderStatus switch
+    private static SalesStatus MapSalesStatus(string salesStatus) => salesStatus switch
     {
-        "pending" => OrderStatus.Pending,
-        "processing" => OrderStatus.Processing,
-        "on-hold" => OrderStatus.OnHold,
-        "completed" => OrderStatus.Completed,
-        "cancelled" => OrderStatus.Cancelled,
-        "refunded" => OrderStatus.Refunded,
-        "failed" => OrderStatus.Failed,
-        _ => OrderStatus.Unknown,
+        "pending" => SalesStatus.Pending,
+        "processing" => SalesStatus.Processing,
+        "on-hold" => SalesStatus.OnHold,
+        "completed" => SalesStatus.Completed,
+        "cancelled" => SalesStatus.Cancelled,
+        "refunded" => SalesStatus.Refunded,
+        "failed" => SalesStatus.Failed,
+        _ => SalesStatus.Unknown,
     };
 }

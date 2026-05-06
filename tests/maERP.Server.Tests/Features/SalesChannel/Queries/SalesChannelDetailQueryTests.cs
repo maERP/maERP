@@ -54,8 +54,8 @@ public class SalesChannelDetailQueryTests : TenantIsolatedTestBase
                     ExportProducts = true,
                     ImportCustomers = false,
                     ExportCustomers = false,
-                    ImportOrders = true,
-                    ExportOrders = false,
+                    ImportSaless = true,
+                    ExportSaless = false,
                     TenantId = TenantConstants.TestTenant1Id,
                     Warehouses = new List<maERP.Domain.Entities.Warehouse> { warehouse1, warehouse2 }
                 };
@@ -72,8 +72,8 @@ public class SalesChannelDetailQueryTests : TenantIsolatedTestBase
                     ExportProducts = true,
                     ImportCustomers = true,
                     ExportCustomers = true,
-                    ImportOrders = false,
-                    ExportOrders = true,
+                    ImportSaless = false,
+                    ExportSaless = true,
                     TenantId = TenantConstants.TestTenant1Id
                 };
 
@@ -90,8 +90,8 @@ public class SalesChannelDetailQueryTests : TenantIsolatedTestBase
                     ExportProducts = false,
                     ImportCustomers = true,
                     ExportCustomers = false,
-                    ImportOrders = true,
-                    ExportOrders = true,
+                    ImportSaless = true,
+                    ExportSaless = true,
                     TenantId = TenantConstants.TestTenant2Id,
                     Warehouses = new List<maERP.Domain.Entities.Warehouse> { warehouse3 }
                 };
@@ -277,8 +277,8 @@ public class SalesChannelDetailQueryTests : TenantIsolatedTestBase
         TestAssertions.AssertTrue(channel.ExportProducts);
         TestAssertions.AssertFalse(channel.ImportCustomers);
         TestAssertions.AssertFalse(channel.ExportCustomers);
-        TestAssertions.AssertTrue(channel.ImportOrders);
-        TestAssertions.AssertFalse(channel.ExportOrders);
+        TestAssertions.AssertTrue(channel.ImportSaless);
+        TestAssertions.AssertFalse(channel.ExportSaless);
         TestAssertions.AssertNotNull(channel.Warehouses);
     }
 
@@ -387,8 +387,8 @@ public class SalesChannelDetailQueryTests : TenantIsolatedTestBase
         TestAssertions.AssertTrue(channel.ExportProducts);
         TestAssertions.AssertFalse(channel.ImportCustomers);
         TestAssertions.AssertFalse(channel.ExportCustomers);
-        TestAssertions.AssertTrue(channel.ImportOrders);
-        TestAssertions.AssertFalse(channel.ExportOrders);
+        TestAssertions.AssertTrue(channel.ImportSaless);
+        TestAssertions.AssertFalse(channel.ExportSaless);
 
         // Test second sales channel with different flag configuration
         var response2 = await Client.GetAsync($"/api/v1/SalesChannels/{TestSalesChannel2Id}");
@@ -400,8 +400,8 @@ public class SalesChannelDetailQueryTests : TenantIsolatedTestBase
         TestAssertions.AssertTrue(channel2.ExportProducts);
         TestAssertions.AssertTrue(channel2.ImportCustomers);
         TestAssertions.AssertTrue(channel2.ExportCustomers);
-        TestAssertions.AssertFalse(channel2.ImportOrders);
-        TestAssertions.AssertTrue(channel2.ExportOrders);
+        TestAssertions.AssertFalse(channel2.ImportSaless);
+        TestAssertions.AssertTrue(channel2.ExportSaless);
     }
 
     [Fact]

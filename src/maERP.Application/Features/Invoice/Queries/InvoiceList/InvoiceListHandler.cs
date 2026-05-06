@@ -1,4 +1,4 @@
-using System.Linq.Dynamic.Core;
+﻿using System.Linq.Dynamic.Core;
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
 using maERP.Application.Extensions;
@@ -52,7 +52,7 @@ public class InvoiceListHandler : IRequestHandler<InvoiceListQuery, PaginatedRes
         var customers = await _customerRepository.GetAllAsync();
 
         // If no sorting parameters provided
-        if (request.OrderBy.Any() != true)
+        if (request.SalesBy.Any() != true)
         {
             return await _invoiceRepository.Entities
                .Specify(invoiceFilterSpec)
@@ -62,8 +62,8 @@ public class InvoiceListHandler : IRequestHandler<InvoiceListQuery, PaginatedRes
                    InvoiceNumber = i.InvoiceNumber,
                    InvoiceDate = i.InvoiceDate,
                    CustomerId = i.CustomerId,
-                   OrderId = i.OrderId,
-                   OrderNumber = i.OrderId.HasValue ? i.OrderId.Value.ToString() : string.Empty,
+                   SalesId = i.SalesId,
+                   SalesNumber = i.SalesId.HasValue ? i.SalesId.Value.ToString() : string.Empty,
                    Total = i.Total,
                    PaymentStatus = i.PaymentStatus,
                    InvoiceStatus = i.InvoiceStatus,
@@ -73,19 +73,19 @@ public class InvoiceListHandler : IRequestHandler<InvoiceListQuery, PaginatedRes
         }
 
         // If sorting parameters are provided
-        var ordering = string.Join(",", request.OrderBy);
+        var salesing = string.Join(",", request.SalesBy);
 
         return await _invoiceRepository.Entities
             .Specify(invoiceFilterSpec)
-            .OrderBy(ordering)
+            .OrderBy(salesing)
             .Select(i => new InvoiceListDto
             {
                 Id = i.Id,
                 InvoiceNumber = i.InvoiceNumber,
                 InvoiceDate = i.InvoiceDate,
                 CustomerId = i.CustomerId,
-                OrderId = i.OrderId,
-                OrderNumber = i.OrderId.HasValue ? i.OrderId.Value.ToString() : string.Empty,
+                SalesId = i.SalesId,
+                SalesNumber = i.SalesId.HasValue ? i.SalesId.Value.ToString() : string.Empty,
                 Total = i.Total,
                 PaymentStatus = i.PaymentStatus,
                 InvoiceStatus = i.InvoiceStatus,

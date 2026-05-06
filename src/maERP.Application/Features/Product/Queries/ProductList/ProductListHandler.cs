@@ -26,16 +26,16 @@ public class ProductListHandler : IRequestHandler<ProductListQuery, PaginatedRes
 
     public async Task<PaginatedResult<ProductListDto>> Handle(ProductListQuery request, CancellationToken cancellationToken)
     {
-        var orderFilterSpec = new ProductFilterSpecification(request.SearchString);
+        var salesFilterSpec = new ProductFilterSpecification(request.SearchString);
 
         _logger.LogInformation("Handle ProductListQuery: {0}", request);
 
-        if (request.OrderBy.Any() != true)
+        if (request.SalesBy.Any() != true)
         {
             var products = await _productRepository.Entities
                .Include(p => p.Manufacturer)
                .Include(p => p.TaxClass)
-               .Specify(orderFilterSpec)
+               .Specify(salesFilterSpec)
                .Select(p => MapToProductListDto(p))
                .AsNoTracking() // Ensure no EF caching
                .ToPaginatedListAsync(request.PageNumber, request.PageSize);
@@ -43,18 +43,18 @@ public class ProductListHandler : IRequestHandler<ProductListQuery, PaginatedRes
             return products;
         }
 
-        var ordering = string.Join(",", request.OrderBy);
+        var salesing = string.Join(",", request.SalesBy);
 
-        var orderedProducts = await _productRepository.Entities
+        var salesedProducts = await _productRepository.Entities
             .Include(p => p.Manufacturer)
             .Include(p => p.TaxClass)
-            .Specify(orderFilterSpec)
-            .OrderBy(ordering)
+            .Specify(salesFilterSpec)
+            .OrderBy(salesing)
             .Select(p => MapToProductListDto(p))
             .AsNoTracking() // Ensure no EF caching
             .ToPaginatedListAsync(request.PageNumber, request.PageSize);
 
-        return orderedProducts;
+        return salesedProducts;
     }
 
     private static ProductListDto MapToProductListDto(Domain.Entities.Product product)

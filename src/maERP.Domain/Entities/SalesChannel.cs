@@ -33,10 +33,10 @@ public class SalesChannel : BaseEntity, IBaseEntity
 
     public bool ImportProducts { get; set; }
     public bool ImportCustomers { get; set; }
-    public bool ImportOrders { get; set; }
+    public bool ImportSaless { get; set; }
     public bool ExportProducts { get; set; }
     public bool ExportCustomers { get; set; }
-    public bool ExportOrders { get; set; }
+    public bool ExportSaless { get; set; }
     public bool InitialProductImportCompleted { get; set; }
     public bool InitialProductExportCompleted { get; set; }
 

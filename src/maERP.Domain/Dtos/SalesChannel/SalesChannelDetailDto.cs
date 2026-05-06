@@ -1,4 +1,4 @@
-﻿using maERP.Domain.Dtos.Warehouse;
+using maERP.Domain.Dtos.Warehouse;
 using maERP.Domain.Enums;
 
 namespace maERP.Domain.Dtos.SalesChannel;
@@ -18,8 +18,8 @@ public class SalesChannelDetailDto
     public bool ExportProducts { get; set; }
     public bool ImportCustomers { get; set; }
     public bool ExportCustomers { get; set; }
-    public bool ImportOrders { get; set; }
-    public bool ExportOrders { get; set; }
+    public bool ImportSaless { get; set; }
+    public bool ExportSaless { get; set; }
 
     /// <summary>
     /// True if the channel has a stored refresh token (OAuth flow has been completed).

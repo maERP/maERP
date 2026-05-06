@@ -20,14 +20,14 @@ public class ManufacturersController(IMediator mediator) : ControllerBase
 {
     // GET: api/v1/<ManufacturersController>
     [HttpGet]
-    public async Task<ActionResult<PaginatedResult<ManufacturerListDto>>> GetAll(int pageNumber = 0, int pageSize = 10, string searchString = "", string orderBy = "")
+    public async Task<ActionResult<PaginatedResult<ManufacturerListDto>>> GetAll(int pageNumber = 0, int pageSize = 10, string searchString = "", string salesBy = "")
     {
-        if (string.IsNullOrEmpty(orderBy))
+        if (string.IsNullOrEmpty(salesBy))
         {
-            orderBy = "DateCreated Descending";
+            salesBy = "DateCreated Descending";
         }
 
-        var response = await mediator.Send(new ManufacturerListQuery(pageNumber, pageSize, searchString, orderBy));
+        var response = await mediator.Send(new ManufacturerListQuery(pageNumber, pageSize, searchString, salesBy));
         return StatusCode((int)response.StatusCode, response);
     }
 

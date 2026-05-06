@@ -1,4 +1,4 @@
-using System.Linq;
+﻿using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Linq.Dynamic.Core.Exceptions;
 using maERP.Application.Contracts.Logging;
@@ -44,7 +44,7 @@ public class UserListHandler : IRequestHandler<UserListQuery, PaginatedResult<Us
     /// <summary>
     /// Handles the user list query request
     /// </summary>
-    /// <param name="request">The query containing pagination, search, and ordering parameters</param>
+    /// <param name="request">The query containing pagination, search, and salesing parameters</param>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>PaginatedResult containing a list of users based on the query parameters</returns>
     public async Task<PaginatedResult<UserListDto>> Handle(UserListQuery request, CancellationToken cancellationToken)
@@ -67,16 +67,16 @@ public class UserListHandler : IRequestHandler<UserListQuery, PaginatedResult<Us
                 DateCreated = u.DateCreated
             });
 
-        if (request.OrderBy.Any())
+        if (request.SalesBy.Any())
         {
-            var ordering = string.Join(",", request.OrderBy);
+            var salesing = string.Join(",", request.SalesBy);
             try
             {
-                query = query.OrderBy(ordering);
+                query = query.OrderBy(salesing);
             }
             catch (ParseException ex)
             {
-                _logger.LogWarning("Invalid orderBy value '{0}' supplied. {1}", ordering, ex.Message);
+                _logger.LogWarning("Invalid salesBy value '{0}' supplied. {1}", salesing, ex.Message);
             }
         }
 

@@ -9,18 +9,18 @@ public class SuperadminListQuery : IRequest<PaginatedResult<SuperadminTenantList
     public int PageNumber { get; set; }
     public int PageSize { get; set; }
     public string SearchString { get; set; }
-    public string[] OrderBy { get; set; }
+    public string[] SalesBy { get; set; }
 
-    public SuperadminListQuery(int pageNumber = 1, int pageSize = 10, string searchString = "", string orderBy = "")
+    public SuperadminListQuery(int pageNumber = 1, int pageSize = 10, string searchString = "", string salesBy = "")
     {
         PageNumber = pageNumber;
         PageSize = pageSize;
         SearchString = searchString;
 
-        if (!string.IsNullOrWhiteSpace(orderBy))
+        if (!string.IsNullOrWhiteSpace(salesBy))
         {
-            OrderBy = orderBy.Split(',');
+            SalesBy = salesBy.Split(',');
         }
-        else OrderBy = new string[] { };
+        else SalesBy = new string[] { };
     }
 }

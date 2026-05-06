@@ -29,7 +29,7 @@ public class WarehouseListHandler : IRequestHandler<WarehouseListQuery, Paginate
 
         _logger.LogInformation("Handle WarehouseListQuery: {0}", request);
 
-        if (request.OrderBy.Any() != true)
+        if (request.SalesBy.Any() != true)
         {
             return await _warehouseRepository.Entities
                .AsNoTracking()
@@ -42,12 +42,12 @@ public class WarehouseListHandler : IRequestHandler<WarehouseListQuery, Paginate
                .ToPaginatedListAsync(request.PageNumber, request.PageSize);
         }
 
-        var ordering = string.Join(",", request.OrderBy);
+        var salesing = string.Join(",", request.SalesBy);
 
         return await _warehouseRepository.Entities
             .AsNoTracking()
             .Specify(warehouseFilterSpec)
-            .OrderBy(ordering)
+            .OrderBy(salesing)
             .Select(w => new WarehouseListDto
             {
                 Id = w.Id,

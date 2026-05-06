@@ -16,8 +16,8 @@ public class Invoice : BaseEntity, IBaseEntity
     public int CustomerId { get; set; }
     public Customer Customer { get; set; } = null!;
 
-    public Guid? OrderId { get; set; }
-    public Order? Order { get; set; }
+    public Guid? SalesId { get; set; }
+    public Sales? Sales { get; set; }
 
     public ICollection<InvoiceItem> InvoiceItems { get; set; } = new List<InvoiceItem>();
 

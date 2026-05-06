@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using maERP.Domain.Entities.Common;
 using maERP.Domain.Enums;
 
@@ -21,6 +21,6 @@ public class Customer : BaseEntity, IBaseEntity
 
     public ICollection<CustomerAddress>? CustomerAddresses { get; set; }
     public ICollection<CustomerSalesChannel>? CustomerSalesChannels { get; set; }
-    public ICollection<Order>? Orders { get; set; }
+    public ICollection<Sales>? Saless { get; set; }
     public DateTimeOffset DateEnrollment { get; set; }
 }

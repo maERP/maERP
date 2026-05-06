@@ -1,4 +1,4 @@
-using maERP.Client.Features.Dashboard.Models;
+﻿using maERP.Client.Features.Dashboard.Models;
 using maERP.Client.Features.SalesChannelDashboards.Models;
 using maERP.Domain.Dtos.Customer;
 using maERP.Domain.Dtos.Product;
@@ -123,14 +123,14 @@ public sealed partial class PosDashboardPage : Page
         }
     }
 
-    private async void OrderRow_Click(object sender, RoutedEventArgs e)
+    private async void SalesRow_Click(object sender, RoutedEventArgs e)
     {
-        if (sender is Button button && button.DataContext is RecentOrderItem order)
+        if (sender is Button button && button.DataContext is RecentSalesItem sales)
         {
             var model = this.DataContext as PosDashboardModel;
             if (model != null)
             {
-                await model.ViewOrder(order);
+                await model.ViewSales(sales);
             }
         }
     }

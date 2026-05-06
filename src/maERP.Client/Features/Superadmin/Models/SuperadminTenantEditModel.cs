@@ -1,4 +1,4 @@
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Runtime.CompilerServices;
 using maERP.Client.Core.Abstractions;
 using maERP.Client.Core.Exceptions;

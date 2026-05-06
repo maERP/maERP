@@ -117,10 +117,10 @@ public class SalesChannelCreateHandler : IRequestHandler<SalesChannelCreateComma
             Password = command.Password,
             ImportProducts = command.ImportProducts,
             ImportCustomers = command.ImportCustomers,
-            ImportOrders = command.ImportOrders,
+            ImportSaless = command.ImportSaless,
             ExportProducts = command.ExportProducts,
             ExportCustomers = command.ExportCustomers,
-            ExportOrders = command.ExportOrders,
+            ExportSaless = command.ExportSaless,
         };
     }
 }

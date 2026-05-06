@@ -105,9 +105,9 @@ public sealed class SalesChannelOrchestrator : BackgroundService
                 {
                     await dispatcher.RunImportAsync(channel, ChannelSyncOperation.ImportProducts, ChannelSyncTriggerSource.Scheduler, cancellationToken);
                 }
-                if (channel.ImportOrders)
+                if (channel.ImportSaless)
                 {
-                    await dispatcher.RunImportAsync(channel, ChannelSyncOperation.ImportOrders, ChannelSyncTriggerSource.Scheduler, cancellationToken);
+                    await dispatcher.RunImportAsync(channel, ChannelSyncOperation.ImportSaless, ChannelSyncTriggerSource.Scheduler, cancellationToken);
                 }
                 if (channel.ImportCustomers)
                 {

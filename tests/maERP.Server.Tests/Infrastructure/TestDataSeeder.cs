@@ -194,8 +194,8 @@ public static class TestDataSeeder
             ExportProducts = true,
             ImportCustomers = true,
             ExportCustomers = false,
-            ImportOrders = true,
-            ExportOrders = false,
+            ImportSaless = true,
+            ExportSaless = false,
             TenantId = TenantConstants.TestTenant1Id,
             DateCreated = DateTime.UtcNow,
             DateModified = DateTime.UtcNow
@@ -213,8 +213,8 @@ public static class TestDataSeeder
             ExportProducts = true,
             ImportCustomers = false,
             ExportCustomers = true,
-            ImportOrders = false,
-            ExportOrders = true,
+            ImportSaless = false,
+            ExportSaless = true,
             TenantId = TenantConstants.TestTenant1Id,
             DateCreated = DateTime.UtcNow,
             DateModified = DateTime.UtcNow
@@ -232,8 +232,8 @@ public static class TestDataSeeder
             ExportProducts = false,
             ImportCustomers = true,
             ExportCustomers = true,
-            ImportOrders = true,
-            ExportOrders = true,
+            ImportSaless = true,
+            ExportSaless = true,
             TenantId = TenantConstants.TestTenant2Id,
             DateCreated = DateTime.UtcNow,
             DateModified = DateTime.UtcNow
@@ -251,8 +251,8 @@ public static class TestDataSeeder
             ExportProducts = false,
             ImportCustomers = false,
             ExportCustomers = false,
-            ImportOrders = true,
-            ExportOrders = false,
+            ImportSaless = true,
+            ExportSaless = false,
             TenantId = TenantConstants.TestTenant2Id,
             DateCreated = DateTime.UtcNow,
             DateModified = DateTime.UtcNow

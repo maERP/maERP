@@ -1,9 +1,9 @@
-﻿namespace maERP.SalesChannels.Models.Shopware5;
+namespace maERP.SalesChannels.Models.Shopware5;
 
 public class Detail
 {
     public int id { get; set; }
-    public int orderId { get; set; }
+    public int salesId { get; set; }
     public int articleId { get; set; }
     public int taxId { get; set; }
     public int taxRate { get; set; }

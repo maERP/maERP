@@ -77,7 +77,7 @@ public class AiPromptEditModel : AsyncInitializableModel
         {
             PageNumber = 0,
             PageSize = 1000,
-            OrderBy = "Name Ascending"
+            SalesBy = "Name Ascending"
         };
 
         var response = await _aiModelService.GetAiModelsAsync(parameters, ct);

@@ -1,13 +1,13 @@
-using maERP.Client.Core.Models;
+﻿using maERP.Client.Core.Models;
 using maERP.Client.Features.Customers.Services;
 using maERP.Client.Features.Dashboard.Models;
-using maERP.Client.Features.Orders;
-using maERP.Client.Features.Orders.Models;
-using maERP.Client.Features.Orders.Services;
+using maERP.Client.Features.Saless;
+using maERP.Client.Features.Saless.Models;
+using maERP.Client.Features.Saless.Services;
 using maERP.Client.Features.Products.Services;
 using maERP.Client.Features.SalesChannelDashboards.Services;
 using maERP.Domain.Dtos.Customer;
-using maERP.Domain.Dtos.Order;
+using maERP.Domain.Dtos.Sales;
 using maERP.Domain.Dtos.Product;
 using maERP.Domain.Entities;
 using maERP.Domain.Enums;
@@ -22,7 +22,7 @@ namespace maERP.Client.Features.SalesChannelDashboards.Models;
 public partial record PosDashboardModel
 {
     private readonly ISalesChannelStatisticsService _statisticsService;
-    private readonly IOrderService _orderService;
+    private readonly ISalesService _salesService;
     private readonly ICustomerService _customerService;
     private readonly IProductService _productService;
     private readonly INavigator _navigator;
@@ -34,7 +34,7 @@ public partial record PosDashboardModel
 
     public PosDashboardModel(
         ISalesChannelStatisticsService statisticsService,
-        IOrderService orderService,
+        ISalesService salesService,
         ICustomerService customerService,
         IProductService productService,
         INavigator navigator,
@@ -43,7 +43,7 @@ public partial record PosDashboardModel
         SalesChannelDashboardData? data = null)
     {
         _statisticsService = statisticsService;
-        _orderService = orderService;
+        _salesService = salesService;
         _customerService = customerService;
         _productService = productService;
         _navigator = navigator;
@@ -55,7 +55,7 @@ public partial record PosDashboardModel
 
     // Tab 1: Dashboard KPIs
     public IFeed<RevenueKpiData> RevenueData => Feed.Async(LoadRevenueDataAsync);
-    public IFeed<OrdersKpiData> OrdersData => Feed.Async(LoadOrdersDataAsync);
+    public IFeed<SalessKpiData> SalessData => Feed.Async(LoadSalessDataAsync);
 
     // Tab 2: Quick Sale - Search
     public IState<string> CustomerSearchQuery => State<string>.Value(this, () => string.Empty);
@@ -85,12 +85,12 @@ public partial record PosDashboardModel
         .AsListFeed();
 
     // Tab 3: Recent Sales
-    public IListFeed<RecentOrderItem> RecentOrders => ListFeed.Async(LoadRecentOrdersAsync);
+    public IListFeed<RecentSalesItem> RecentSaless => ListFeed.Async(LoadRecentSalessAsync);
 
     // Navigation
-    public async ValueTask ViewOrder(RecentOrderItem order)
+    public async ValueTask ViewSales(RecentSalesItem sales)
     {
-        await _navigator.NavigateDataAsync(this, new OrderDetailData(order.Id));
+        await _navigator.NavigateDataAsync(this, new SalesDetailData(sales.Id));
     }
 
     // Tab 2: Quick Sale - Actions
@@ -169,18 +169,18 @@ public partial record PosDashboardModel
             var totalTax = cartItems.Sum(i => i.LineTax);
             var total = subtotal + totalTax;
 
-            var orderInput = new OrderInputDto
+            var salesInput = new SalesInputDto
             {
                 SalesChannelId = _salesChannelId,
                 CustomerId = customer?.CustomerId ?? 0,
-                Status = OrderStatus.Completed,
+                Status = SalesStatus.Completed,
                 PaymentStatus = PaymentStatus.CompletelyPaid,
                 PaymentMethod = "POS",
-                DateOrdered = DateTime.UtcNow,
+                DateSalesed = DateTime.UtcNow,
                 Subtotal = subtotal,
                 TotalTax = totalTax,
                 Total = total,
-                OrderItems = cartItems.Select(i => new OrderItem
+                SalesItems = cartItems.Select(i => new SalesItem
                 {
                     ProductId = i.ProductId,
                     Name = i.ProductName,
@@ -195,7 +195,7 @@ public partial record PosDashboardModel
                 DeliveryAddressLastName = customer != null ? string.Join(" ", customer.DisplayName.Split(' ').Skip(1)) : "Customer"
             };
 
-            await _orderService.CreateOrderAsync(orderInput);
+            await _salesService.CreateSalesAsync(salesInput);
 
             // Success: clear cart and show message
             await CartItems.UpdateAsync(_ => ImmutableList<PosCartItem>.Empty);
@@ -260,49 +260,49 @@ public partial record PosDashboardModel
         }
     }
 
-    private async ValueTask<OrdersKpiData> LoadOrdersDataAsync(CancellationToken ct)
+    private async ValueTask<SalessKpiData> LoadSalessDataAsync(CancellationToken ct)
     {
         try
         {
-            var data = await _statisticsService.GetOrdersTodayAsync(_salesChannelId, ct);
-            if (data == null) return new OrdersKpiData();
+            var data = await _statisticsService.GetSalessTodayAsync(_salesChannelId, ct);
+            if (data == null) return new SalessKpiData();
 
-            return new OrdersKpiData
+            return new SalessKpiData
             {
-                OrdersToday = data.OrdersToday,
-                OrdersPending = data.OrdersPending,
-                OrdersThisWeek = data.OrdersThisWeek,
-                OrdersChange = data.OrdersChangePercent
+                SalessToday = data.SalessToday,
+                SalessPending = data.SalessPending,
+                SalessThisWeek = data.SalessThisWeek,
+                SalessChange = data.SalessChangePercent
             };
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error loading orders KPI data for SalesChannel {SalesChannelId}", _salesChannelId);
+            _logger.LogError(ex, "Error loading saless KPI data for SalesChannel {SalesChannelId}", _salesChannelId);
             throw;
         }
     }
 
-    private async ValueTask<IImmutableList<RecentOrderItem>> LoadRecentOrdersAsync(CancellationToken ct)
+    private async ValueTask<IImmutableList<RecentSalesItem>> LoadRecentSalessAsync(CancellationToken ct)
     {
         try
         {
-            var data = await _statisticsService.GetOrdersLatestAsync(_salesChannelId, 10, ct);
-            if (data == null || data.Orders.Count == 0)
-                return ImmutableList<RecentOrderItem>.Empty;
+            var data = await _statisticsService.GetSalessLatestAsync(_salesChannelId, 10, ct);
+            if (data == null || data.Saless.Count == 0)
+                return ImmutableList<RecentSalesItem>.Empty;
 
-            return data.Orders.Select(o => new RecentOrderItem
+            return data.Saless.Select(o => new RecentSalesItem
             {
                 Id = o.Id,
-                OrderNumber = o.OrderNumber,
+                SalesNumber = o.SalesNumber,
                 CustomerName = o.CustomerName,
                 Amount = o.Amount,
                 Status = o.Status,
-                OrderDate = o.OrderDate
+                SalesDate = o.SalesDate
             }).ToImmutableList();
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error loading recent orders for SalesChannel {SalesChannelId}", _salesChannelId);
+            _logger.LogError(ex, "Error loading recent saless for SalesChannel {SalesChannelId}", _salesChannelId);
             throw;
         }
     }

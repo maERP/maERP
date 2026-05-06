@@ -30,7 +30,7 @@ public class AccountModel : AsyncInitializableModel
 
     private string _profileError = string.Empty;
     private string _profileSuccess = string.Empty;
-    private string _passwordError = string.Empty;
+    private string _passwsalesror = string.Empty;
     private string _passwordSuccess = string.Empty;
 
     public AccountModel(
@@ -146,10 +146,10 @@ public class AccountModel : AsyncInitializableModel
         set => SetProperty(ref _profileSuccess, value);
     }
 
-    public string PasswordError
+    public string Passwsalesror
     {
-        get => _passwordError;
-        set => SetProperty(ref _passwordError, value);
+        get => _passwsalesror;
+        set => SetProperty(ref _passwsalesror, value);
     }
 
     public string PasswordSuccess
@@ -160,7 +160,7 @@ public class AccountModel : AsyncInitializableModel
 
     public bool HasProfileError => !string.IsNullOrEmpty(ProfileError);
     public bool HasProfileSuccess => !string.IsNullOrEmpty(ProfileSuccess);
-    public bool HasPasswordError => !string.IsNullOrEmpty(PasswordError);
+    public bool HasPasswsalesror => !string.IsNullOrEmpty(Passwsalesror);
     public bool HasPasswordSuccess => !string.IsNullOrEmpty(PasswordSuccess);
 
     public bool CanSaveProfile =>
@@ -210,12 +210,12 @@ public class AccountModel : AsyncInitializableModel
         if (!CanChangePassword) return;
 
         IsChangingPassword = true;
-        PasswordError = string.Empty;
+        Passwsalesror = string.Empty;
         PasswordSuccess = string.Empty;
 
         if (NewPassword != NewPasswordConfirm)
         {
-            PasswordError = _localizer["Account.Password.MismatchError"];
+            Passwsalesror = _localizer["Account.Password.MismatchError"];
             IsChangingPassword = false;
             return;
         }
@@ -230,12 +230,12 @@ public class AccountModel : AsyncInitializableModel
         }
         catch (ApiException ex)
         {
-            PasswordError = ex.CombinedMessage;
+            Passwsalesror = ex.CombinedMessage;
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Unexpected error while changing password");
-            PasswordError = string.Format(_localizer["Account.Password.ChangeFailed"], ex.Message);
+            Passwsalesror = string.Format(_localizer["Account.Password.ChangeFailed"], ex.Message);
         }
         finally
         {
@@ -265,8 +265,8 @@ public class AccountModel : AsyncInitializableModel
             case nameof(ProfileSuccess):
                 base.OnPropertyChanged(nameof(HasProfileSuccess));
                 break;
-            case nameof(PasswordError):
-                base.OnPropertyChanged(nameof(HasPasswordError));
+            case nameof(Passwsalesror):
+                base.OnPropertyChanged(nameof(HasPasswsalesror));
                 break;
             case nameof(PasswordSuccess):
                 base.OnPropertyChanged(nameof(HasPasswordSuccess));

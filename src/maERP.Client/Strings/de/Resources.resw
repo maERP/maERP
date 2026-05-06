@@ -146,8 +146,8 @@
   <data name="DashboardPage.KPI.Revenue.Text" xml:space="preserve">
     <value>Umsatz heute</value>
   </data>
-  <data name="DashboardPage.KPI.Orders.Text" xml:space="preserve">
-    <value>Bestellungen heute</value>
+  <data name="DashboardPage.KPI.Saless.Text" xml:space="preserve">
+    <value>Verkäufe heute</value>
   </data>
   <data name="DashboardPage.KPI.Customers.Text" xml:space="preserve">
     <value>Kunden gesamt</value>
@@ -180,8 +180,8 @@
   </data>
 
   <!-- Dashboard Cards -->
-  <data name="DashboardPage.Card.RecentOrders.Text" xml:space="preserve">
-    <value>Aktuelle Bestellungen</value>
+  <data name="DashboardPage.Card.RecentSaless.Text" xml:space="preserve">
+    <value>Aktuelle Verkäufe</value>
   </data>
   <data name="DashboardPage.Card.TopProducts.Text" xml:space="preserve">
     <value>Meistverkaufte Produkte</value>
@@ -243,7 +243,7 @@
   <data name="Shell.NavItem.Customers.Content" xml:space="preserve">
     <value>Kunden</value>
   </data>
-  <data name="Shell.NavItem.Orders.Content" xml:space="preserve">
+  <data name="Shell.NavItem.Saless.Content" xml:space="preserve">
     <value>Verkäufe</value>
   </data>
   <data name="Shell.NavItem.Products.Content" xml:space="preserve">
@@ -285,7 +285,7 @@
   <data name="Shell.NavItem.Customers.Text" xml:space="preserve">
     <value>Kunden</value>
   </data>
-  <data name="Shell.NavItem.Orders.Text" xml:space="preserve">
+  <data name="Shell.NavItem.Saless.Text" xml:space="preserve">
     <value>Verkäufe</value>
   </data>
   <data name="Shell.NavItem.Products.Text" xml:space="preserve">
@@ -429,11 +429,11 @@
   <data name="Pagination.CustomersPlural" xml:space="preserve">
     <value>{0} Kunden</value>
   </data>
-  <data name="Pagination.OrdersSingular" xml:space="preserve">
-    <value>1 Bestellung</value>
+  <data name="Pagination.SalessSingular" xml:space="preserve">
+    <value>1 Verkauf</value>
   </data>
-  <data name="Pagination.OrdersPlural" xml:space="preserve">
-    <value>{0} Bestellungen</value>
+  <data name="Pagination.SalessPlural" xml:space="preserve">
+    <value>{0} Verkäufe</value>
   </data>
   <data name="Pagination.ProductsSingular" xml:space="preserve">
     <value>1 Produkt</value>
@@ -484,53 +484,53 @@
     <value>{0} Vertriebskanäle</value>
   </data>
 
-  <!-- Order List Page -->
-  <data name="OrderListPage.NavigationBar.Content" xml:space="preserve">
-    <value>Bestellungen</value>
+  <!-- Sales List Page -->
+  <data name="SalesListPage.NavigationBar.Content" xml:space="preserve">
+    <value>Verkäufe</value>
   </data>
-  <data name="OrderListPage.AppBarButton.Refresh.Label" xml:space="preserve">
+  <data name="SalesListPage.AppBarButton.Refresh.Label" xml:space="preserve">
     <value>Aktualisieren</value>
   </data>
-  <data name="OrderListPage.AppBarButton.Refresh.ToolTip" xml:space="preserve">
+  <data name="SalesListPage.AppBarButton.Refresh.ToolTip" xml:space="preserve">
     <value>Bestellliste aktualisieren</value>
   </data>
-  <data name="OrderListPage.AppBarButton.New.Label" xml:space="preserve">
+  <data name="SalesListPage.AppBarButton.New.Label" xml:space="preserve">
     <value>Neu</value>
   </data>
-  <data name="OrderListPage.AppBarButton.New.ToolTip" xml:space="preserve">
-    <value>Neue Bestellung anlegen</value>
+  <data name="SalesListPage.AppBarButton.New.ToolTip" xml:space="preserve">
+    <value>Neuen Verkauf anlegen</value>
   </data>
-  <data name="OrderListPage.SearchBox.PlaceholderText" xml:space="preserve">
-    <value>Bestellungen suchen...</value>
+  <data name="SalesListPage.SearchBox.PlaceholderText" xml:space="preserve">
+    <value>Verkäufe suchen...</value>
   </data>
-  <data name="OrderListPage.Header.OrderId.Text" xml:space="preserve">
+  <data name="SalesListPage.Header.SalesId.Text" xml:space="preserve">
     <value>Bestell-Nr.</value>
   </data>
-  <data name="OrderListPage.Header.Customer.Text" xml:space="preserve">
+  <data name="SalesListPage.Header.Customer.Text" xml:space="preserve">
     <value>Kunde</value>
   </data>
-  <data name="OrderListPage.Header.Total.Text" xml:space="preserve">
+  <data name="SalesListPage.Header.Total.Text" xml:space="preserve">
     <value>Summe</value>
   </data>
-  <data name="OrderListPage.Header.Status.Text" xml:space="preserve">
+  <data name="SalesListPage.Header.Status.Text" xml:space="preserve">
     <value>Status</value>
   </data>
-  <data name="OrderListPage.Header.DateOrdered.Text" xml:space="preserve">
+  <data name="SalesListPage.Header.DateSalesed.Text" xml:space="preserve">
     <value>Bestelldatum</value>
   </data>
-  <data name="OrderListPage.NoOrders.Text" xml:space="preserve">
-    <value>Keine Bestellungen gefunden</value>
+  <data name="SalesListPage.NoSaless.Text" xml:space="preserve">
+    <value>Keine Verkäufe gefunden</value>
   </data>
-  <data name="OrderListPage.LoadError.Text" xml:space="preserve">
-    <value>Bestellungen konnten nicht geladen werden</value>
+  <data name="SalesListPage.LoadError.Text" xml:space="preserve">
+    <value>Verkäufe konnten nicht geladen werden</value>
   </data>
-  <data name="OrderListPage.PreviousPage.ToolTip" xml:space="preserve">
+  <data name="SalesListPage.PreviousPage.ToolTip" xml:space="preserve">
     <value>Vorherige Seite</value>
   </data>
-  <data name="OrderListPage.NextPage.ToolTip" xml:space="preserve">
+  <data name="SalesListPage.NextPage.ToolTip" xml:space="preserve">
     <value>Nächste Seite</value>
   </data>
-  <data name="OrderListPage.ItemsPerPage.Text" xml:space="preserve">
+  <data name="SalesListPage.ItemsPerPage.Text" xml:space="preserve">
     <value>Einträge pro Seite:</value>
   </data>
 
@@ -1557,7 +1557,7 @@
     <value>Schnellauswahl gängiger Steuersätze</value>
   </data>
   <data name="TaxClassEditPage.Info.UsageHint.Text" xml:space="preserve">
-    <value>Steuerklassen werden Produkten zugewiesen, um den korrekten Steuerbetrag beim Verkauf automatisch zu berechnen. Verschiedene Produkte können unterschiedliche Steuersätze erfordern, abhängig von der Art der Waren oder Dienstleistungen.</value>
+    <value>Steuerklassen werden Produkten zugewiesen, um den korrekten Steuerbetrag beim Verkauf automatisch zu berechnen. Verschiedene Produkte können unterschiedliche Steuersätze erfsalesn, abhängig von der Art der Waren oder Dienstleistungen.</value>
   </data>
   <data name="TaxClassEditPage.Button.Cancel.Content" xml:space="preserve">
     <value>Abbrechen</value>
@@ -1656,8 +1656,8 @@
   <data name="SalesChannelDetailPage.Field.Customers.Text" xml:space="preserve">
     <value>Kunden</value>
   </data>
-  <data name="SalesChannelDetailPage.Field.Orders.Text" xml:space="preserve">
-    <value>Bestellungen</value>
+  <data name="SalesChannelDetailPage.Field.Saless.Text" xml:space="preserve">
+    <value>Verkäufe</value>
   </data>
   <data name="SalesChannelDetailPage.NotAvailable.Text" xml:space="preserve">
     <value>Nicht verfügbar</value>
@@ -1669,7 +1669,7 @@
     <value>Lagername</value>
   </data>
   <data name="SalesChannelDetailPage.UsageHint.Text" xml:space="preserve">
-    <value>Dieser Vertriebskanal verbindet Ihr maERP-System mit externen Plattformen. Konfigurieren Sie Import- und Exporteinstellungen, um Produkte, Kunden und Bestellungen automatisch zu synchronisieren.</value>
+    <value>Dieser Vertriebskanal verbindet Ihr maERP-System mit externen Plattformen. Konfigurieren Sie Import- und Exporteinstellungen, um Produkte, Kunden und Verkäufe automatisch zu synchronisieren.</value>
   </data>
   <data name="SalesChannelDetailPage.LoadError.Text" xml:space="preserve">
     <value>Vertriebskanal konnte nicht geladen werden</value>
@@ -1813,8 +1813,8 @@
   <data name="SalesChannelEditPage.Field.ImportCustomers.Text" xml:space="preserve">
     <value>Kunden importieren</value>
   </data>
-  <data name="SalesChannelEditPage.Field.ImportOrders.Text" xml:space="preserve">
-    <value>Bestellungen importieren</value>
+  <data name="SalesChannelEditPage.Field.ImportSaless.Text" xml:space="preserve">
+    <value>Verkäufe importieren</value>
   </data>
   <data name="SalesChannelEditPage.Field.ExportProducts.Text" xml:space="preserve">
     <value>Produkte exportieren</value>
@@ -1822,8 +1822,8 @@
   <data name="SalesChannelEditPage.Field.ExportCustomers.Text" xml:space="preserve">
     <value>Kunden exportieren</value>
   </data>
-  <data name="SalesChannelEditPage.Field.ExportOrders.Text" xml:space="preserve">
-    <value>Bestellungen exportieren</value>
+  <data name="SalesChannelEditPage.Field.ExportSaless.Text" xml:space="preserve">
+    <value>Verkäufe exportieren</value>
   </data>
   <data name="SalesChannelEditPage.Field.InitialProductImportCompleted.Text" xml:space="preserve">
     <value>Initialer Produktimport abgeschlossen</value>
@@ -1945,7 +1945,7 @@
     <value>* Pflichtfelder</value>
   </data>
   <data name="WarehouseEditPage.Info.UsageHint.Text" xml:space="preserve">
-    <value>Lager dienen zur Verwaltung von Produktbeständen und können Vertriebskanälen zugeordnet werden, um Bestellungen aus verschiedenen Standorten zu erfüllen.</value>
+    <value>Lager dienen zur Verwaltung von Produktbeständen und können Vertriebskanälen zugeordnet werden, um Verkäufe aus verschiedenen Standorten zu erfüllen.</value>
   </data>
   <data name="WarehouseEditPage.Button.Cancel.Content" xml:space="preserve">
     <value>Abbrechen</value>
@@ -2232,8 +2232,8 @@
   <data name="InvoiceDetailPage.Label.InvoiceDate.Text" xml:space="preserve">
     <value>Rechnungsdatum: </value>
   </data>
-  <data name="InvoiceDetailPage.Label.OrderReference.Text" xml:space="preserve">
-    <value>Bestellung: </value>
+  <data name="InvoiceDetailPage.Label.SalesReference.Text" xml:space="preserve">
+    <value>Verkauf: </value>
   </data>
 
   <!-- Invoice Detail Page - Sections -->
@@ -2336,150 +2336,150 @@
     <value>Archiviert</value>
   </data>
 
-  <!-- Order Detail Page -->
-  <data name="OrderDetailPage.NavigationBar.Content" xml:space="preserve">
+  <!-- Sales Detail Page -->
+  <data name="SalesDetailPage.NavigationBar.Content" xml:space="preserve">
     <value>Bestelldetails</value>
   </data>
-  <data name="OrderDetailPage.AppBarButton.Back.Label" xml:space="preserve">
+  <data name="SalesDetailPage.AppBarButton.Back.Label" xml:space="preserve">
     <value>Zurück</value>
   </data>
-  <data name="OrderDetailPage.AppBarButton.Edit.Label" xml:space="preserve">
+  <data name="SalesDetailPage.AppBarButton.Edit.Label" xml:space="preserve">
     <value>Bearbeiten</value>
   </data>
-  <data name="OrderDetailPage.LoadError.Text" xml:space="preserve">
-    <value>Bestellung konnte nicht geladen werden</value>
+  <data name="SalesDetailPage.LoadError.Text" xml:space="preserve">
+    <value>Verkauf konnte nicht geladen werden</value>
   </data>
-  <data name="OrderDetailPage.NotAvailable.Text" xml:space="preserve">
+  <data name="SalesDetailPage.NotAvailable.Text" xml:space="preserve">
     <value>Nicht verfügbar</value>
   </data>
-  <data name="OrderDetailPage.Label.OrderNumber.Text" xml:space="preserve">
+  <data name="SalesDetailPage.Label.SalesNumber.Text" xml:space="preserve">
     <value>Bestellnummer</value>
   </data>
-  <data name="OrderDetailPage.Label.RemoteOrderId.Text" xml:space="preserve">
-    <value>Externe Bestellung: </value>
+  <data name="SalesDetailPage.Label.RemoteSalesId.Text" xml:space="preserve">
+    <value>Externer Verkauf: </value>
   </data>
-  <data name="OrderDetailPage.Label.OrderDate.Text" xml:space="preserve">
+  <data name="SalesDetailPage.Label.SalesDate.Text" xml:space="preserve">
     <value>Bestelldatum: </value>
   </data>
-  <data name="OrderDetailPage.Label.CustomerId.Text" xml:space="preserve">
+  <data name="SalesDetailPage.Label.CustomerId.Text" xml:space="preserve">
     <value>Kunden-Nr.</value>
   </data>
 
-  <!-- Order Detail Page - Sections -->
-  <data name="OrderDetailPage.Section.FinancialInformation.Text" xml:space="preserve">
+  <!-- Sales Detail Page - Sections -->
+  <data name="SalesDetailPage.Section.FinancialInformation.Text" xml:space="preserve">
     <value>Finanzinformationen</value>
   </data>
-  <data name="OrderDetailPage.Section.PaymentInformation.Text" xml:space="preserve">
+  <data name="SalesDetailPage.Section.PaymentInformation.Text" xml:space="preserve">
     <value>Zahlungsinformationen</value>
   </data>
-  <data name="OrderDetailPage.Section.ShippingInformation.Text" xml:space="preserve">
+  <data name="SalesDetailPage.Section.ShippingInformation.Text" xml:space="preserve">
     <value>Versandinformationen</value>
   </data>
-  <data name="OrderDetailPage.Section.InvoiceAddress.Text" xml:space="preserve">
+  <data name="SalesDetailPage.Section.InvoiceAddress.Text" xml:space="preserve">
     <value>Rechnungsadresse</value>
   </data>
-  <data name="OrderDetailPage.Section.DeliveryAddress.Text" xml:space="preserve">
+  <data name="SalesDetailPage.Section.DeliveryAddress.Text" xml:space="preserve">
     <value>Lieferadresse</value>
   </data>
-  <data name="OrderDetailPage.Section.OrderItems.Text" xml:space="preserve">
+  <data name="SalesDetailPage.Section.SalesItems.Text" xml:space="preserve">
     <value>Bestellpositionen</value>
   </data>
-  <data name="OrderDetailPage.Section.OrderHistory.Text" xml:space="preserve">
+  <data name="SalesDetailPage.Section.SalesHistory.Text" xml:space="preserve">
     <value>Bestellverlauf</value>
   </data>
-  <data name="OrderDetailPage.Section.Notes.Text" xml:space="preserve">
+  <data name="SalesDetailPage.Section.Notes.Text" xml:space="preserve">
     <value>Notizen</value>
   </data>
 
-  <!-- Order Detail Page - Field Labels -->
-  <data name="OrderDetailPage.Field.Subtotal.Text" xml:space="preserve">
+  <!-- Sales Detail Page - Field Labels -->
+  <data name="SalesDetailPage.Field.Subtotal.Text" xml:space="preserve">
     <value>Zwischensumme</value>
   </data>
-  <data name="OrderDetailPage.Field.ShippingCost.Text" xml:space="preserve">
+  <data name="SalesDetailPage.Field.ShippingCost.Text" xml:space="preserve">
     <value>Versandkosten</value>
   </data>
-  <data name="OrderDetailPage.Field.Tax.Text" xml:space="preserve">
+  <data name="SalesDetailPage.Field.Tax.Text" xml:space="preserve">
     <value>Steuern</value>
   </data>
-  <data name="OrderDetailPage.Field.Total.Text" xml:space="preserve">
+  <data name="SalesDetailPage.Field.Total.Text" xml:space="preserve">
     <value>Gesamtbetrag</value>
   </data>
-  <data name="OrderDetailPage.Field.PaymentMethod.Text" xml:space="preserve">
+  <data name="SalesDetailPage.Field.PaymentMethod.Text" xml:space="preserve">
     <value>Zahlungsart</value>
   </data>
-  <data name="OrderDetailPage.Field.PaymentProvider.Text" xml:space="preserve">
+  <data name="SalesDetailPage.Field.PaymentProvider.Text" xml:space="preserve">
     <value>Zahlungsanbieter</value>
   </data>
-  <data name="OrderDetailPage.Field.TransactionId.Text" xml:space="preserve">
+  <data name="SalesDetailPage.Field.TransactionId.Text" xml:space="preserve">
     <value>Transaktions-ID</value>
   </data>
-  <data name="OrderDetailPage.Field.ShippingMethod.Text" xml:space="preserve">
+  <data name="SalesDetailPage.Field.ShippingMethod.Text" xml:space="preserve">
     <value>Versandart</value>
   </data>
-  <data name="OrderDetailPage.Field.ShippingProvider.Text" xml:space="preserve">
+  <data name="SalesDetailPage.Field.ShippingProvider.Text" xml:space="preserve">
     <value>Versanddienstleister</value>
   </data>
-  <data name="OrderDetailPage.Field.TrackingId.Text" xml:space="preserve">
+  <data name="SalesDetailPage.Field.TrackingId.Text" xml:space="preserve">
     <value>Sendungsnummer</value>
   </data>
-  <data name="OrderDetailPage.Field.ShippingStatus.Text" xml:space="preserve">
+  <data name="SalesDetailPage.Field.ShippingStatus.Text" xml:space="preserve">
     <value>Versandstatus</value>
   </data>
 
-  <!-- Order Detail Page - Table Headers -->
-  <data name="OrderDetailPage.Header.Product.Text" xml:space="preserve">
+  <!-- Sales Detail Page - Table Headers -->
+  <data name="SalesDetailPage.Header.Product.Text" xml:space="preserve">
     <value>Produkt</value>
   </data>
-  <data name="OrderDetailPage.Header.Quantity.Text" xml:space="preserve">
+  <data name="SalesDetailPage.Header.Quantity.Text" xml:space="preserve">
     <value>Menge</value>
   </data>
-  <data name="OrderDetailPage.Header.UnitPrice.Text" xml:space="preserve">
+  <data name="SalesDetailPage.Header.UnitPrice.Text" xml:space="preserve">
     <value>Einzelpreis</value>
   </data>
-  <data name="OrderDetailPage.Header.ItemTotal.Text" xml:space="preserve">
+  <data name="SalesDetailPage.Header.ItemTotal.Text" xml:space="preserve">
     <value>Gesamt</value>
   </data>
 
-  <!-- Order Detail Page - Empty States -->
-  <data name="OrderDetailPage.NoItems.Text" xml:space="preserve">
-    <value>Keine Positionen in dieser Bestellung</value>
+  <!-- Sales Detail Page - Empty States -->
+  <data name="SalesDetailPage.NoItems.Text" xml:space="preserve">
+    <value>Keine Positionen in diesem Verkauf</value>
   </data>
-  <data name="OrderDetailPage.NoNotes.Text" xml:space="preserve">
+  <data name="SalesDetailPage.NoNotes.Text" xml:space="preserve">
     <value>Keine Notizen vorhanden</value>
   </data>
 
-  <!-- Order Status -->
-  <data name="OrderStatus.Unknown" xml:space="preserve">
+  <!-- Sales Status -->
+  <data name="SalesStatus.Unknown" xml:space="preserve">
     <value>Unbekannt</value>
   </data>
-  <data name="OrderStatus.Pending" xml:space="preserve">
+  <data name="SalesStatus.Pending" xml:space="preserve">
     <value>Ausstehend</value>
   </data>
-  <data name="OrderStatus.Processing" xml:space="preserve">
+  <data name="SalesStatus.Processing" xml:space="preserve">
     <value>In Bearbeitung</value>
   </data>
-  <data name="OrderStatus.ReadyForDelivery" xml:space="preserve">
+  <data name="SalesStatus.ReadyForDelivery" xml:space="preserve">
     <value>Versandbereit</value>
   </data>
-  <data name="OrderStatus.PartiallyDelivered" xml:space="preserve">
+  <data name="SalesStatus.PartiallyDelivered" xml:space="preserve">
     <value>Teilweise geliefert</value>
   </data>
-  <data name="OrderStatus.Completed" xml:space="preserve">
+  <data name="SalesStatus.Completed" xml:space="preserve">
     <value>Abgeschlossen</value>
   </data>
-  <data name="OrderStatus.Cancelled" xml:space="preserve">
+  <data name="SalesStatus.Cancelled" xml:space="preserve">
     <value>Storniert</value>
   </data>
-  <data name="OrderStatus.Returned" xml:space="preserve">
+  <data name="SalesStatus.Returned" xml:space="preserve">
     <value>Retourniert</value>
   </data>
-  <data name="OrderStatus.Refunded" xml:space="preserve">
+  <data name="SalesStatus.Refunded" xml:space="preserve">
     <value>Erstattet</value>
   </data>
-  <data name="OrderStatus.OnHold" xml:space="preserve">
+  <data name="SalesStatus.OnHold" xml:space="preserve">
     <value>Pausiert</value>
   </data>
-  <data name="OrderStatus.Failed" xml:space="preserve">
+  <data name="SalesStatus.Failed" xml:space="preserve">
     <value>Fehlgeschlagen</value>
   </data>
 
@@ -2518,7 +2518,7 @@
     <value>Rückgutschrift</value>
   </data>
   <data name="PaymentStatus.ReviewNecessary" xml:space="preserve">
-    <value>Prüfung erforderlich</value>
+    <value>Prüfung erfsaleslich</value>
   </data>
   <data name="PaymentStatus.NoCreditApproved" xml:space="preserve">
     <value>Kredit abgelehnt</value>
@@ -2527,272 +2527,272 @@
     <value>Kredit ausstehend</value>
   </data>
 
-  <!-- Order Edit Page -->
-  <data name="OrderEditPage.TitleNew" xml:space="preserve">
-    <value>Neue Bestellung</value>
+  <!-- Sales Edit Page -->
+  <data name="SalesEditPage.TitleNew" xml:space="preserve">
+    <value>Neuer Verkauf</value>
   </data>
-  <data name="OrderEditPage.TitleEdit" xml:space="preserve">
-    <value>Bestellung bearbeiten</value>
+  <data name="SalesEditPage.TitleEdit" xml:space="preserve">
+    <value>Verkauf bearbeiten</value>
   </data>
-  <data name="OrderEditPage.AppBarButton.Back.Label" xml:space="preserve">
+  <data name="SalesEditPage.AppBarButton.Back.Label" xml:space="preserve">
     <value>Zurück</value>
   </data>
-  <data name="OrderEditPage.AppBarButton.Cancel.Label" xml:space="preserve">
+  <data name="SalesEditPage.AppBarButton.Cancel.Label" xml:space="preserve">
     <value>Abbrechen</value>
   </data>
-  <data name="OrderEditPage.AppBarButton.Save.Label" xml:space="preserve">
+  <data name="SalesEditPage.AppBarButton.Save.Label" xml:space="preserve">
     <value>Speichern</value>
   </data>
 
-  <!-- Order Edit Page - Sections -->
-  <data name="OrderEditPage.Section.OrderInformation.Text" xml:space="preserve">
+  <!-- Sales Edit Page - Sections -->
+  <data name="SalesEditPage.Section.SalesInformation.Text" xml:space="preserve">
     <value>Bestellinformationen</value>
   </data>
-  <data name="OrderEditPage.Section.StatusInformation.Text" xml:space="preserve">
+  <data name="SalesEditPage.Section.StatusInformation.Text" xml:space="preserve">
     <value>Status</value>
   </data>
-  <data name="OrderEditPage.Section.FinancialInformation.Text" xml:space="preserve">
+  <data name="SalesEditPage.Section.FinancialInformation.Text" xml:space="preserve">
     <value>Finanzinformationen</value>
   </data>
-  <data name="OrderEditPage.Section.PaymentInformation.Text" xml:space="preserve">
+  <data name="SalesEditPage.Section.PaymentInformation.Text" xml:space="preserve">
     <value>Zahlungsinformationen</value>
   </data>
-  <data name="OrderEditPage.Section.DeliveryAddress.Text" xml:space="preserve">
+  <data name="SalesEditPage.Section.DeliveryAddress.Text" xml:space="preserve">
     <value>Lieferadresse</value>
   </data>
-  <data name="OrderEditPage.Section.InvoiceAddress.Text" xml:space="preserve">
+  <data name="SalesEditPage.Section.InvoiceAddress.Text" xml:space="preserve">
     <value>Rechnungsadresse</value>
   </data>
-  <data name="OrderEditPage.Section.Notes.Text" xml:space="preserve">
+  <data name="SalesEditPage.Section.Notes.Text" xml:space="preserve">
     <value>Notizen</value>
   </data>
 
-  <!-- Order Edit Page - Order Information Fields -->
-  <data name="OrderEditPage.Field.OrderId.Header" xml:space="preserve">
+  <!-- Sales Edit Page - Sales Information Fields -->
+  <data name="SalesEditPage.Field.SalesId.Header" xml:space="preserve">
     <value>Bestellnummer</value>
   </data>
-  <data name="OrderEditPage.Field.OrderId.PlaceholderText" xml:space="preserve">
+  <data name="SalesEditPage.Field.SalesId.PlaceholderText" xml:space="preserve">
     <value>Bestellnummer eingeben</value>
   </data>
-  <data name="OrderEditPage.Field.RemoteOrderId.Header" xml:space="preserve">
+  <data name="SalesEditPage.Field.RemoteSalesId.Header" xml:space="preserve">
     <value>Externe Bestellnummer</value>
   </data>
-  <data name="OrderEditPage.Field.RemoteOrderId.PlaceholderText" xml:space="preserve">
+  <data name="SalesEditPage.Field.RemoteSalesId.PlaceholderText" xml:space="preserve">
     <value>Externe Bestellnummer eingeben</value>
   </data>
-  <data name="OrderEditPage.Field.SalesChannel.Label.Text" xml:space="preserve">
+  <data name="SalesEditPage.Field.SalesChannel.Label.Text" xml:space="preserve">
     <value>Verkaufskanal</value>
   </data>
-  <data name="OrderEditPage.Field.CustomerId.Header" xml:space="preserve">
+  <data name="SalesEditPage.Field.CustomerId.Header" xml:space="preserve">
     <value>Kundennummer</value>
   </data>
-  <data name="OrderEditPage.Field.CustomerId.PlaceholderText" xml:space="preserve">
+  <data name="SalesEditPage.Field.CustomerId.PlaceholderText" xml:space="preserve">
     <value>Kundennummer eingeben</value>
   </data>
-  <data name="OrderEditPage.Field.DateOrdered.Label.Text" xml:space="preserve">
+  <data name="SalesEditPage.Field.DateSalesed.Label.Text" xml:space="preserve">
     <value>Bestelldatum</value>
   </data>
 
-  <!-- Order Edit Page - Status Fields -->
-  <data name="OrderEditPage.Field.OrderStatus.Label.Text" xml:space="preserve">
+  <!-- Sales Edit Page - Status Fields -->
+  <data name="SalesEditPage.Field.SalesStatus.Label.Text" xml:space="preserve">
     <value>Bestellstatus</value>
   </data>
-  <data name="OrderEditPage.Field.PaymentStatus.Label.Text" xml:space="preserve">
+  <data name="SalesEditPage.Field.PaymentStatus.Label.Text" xml:space="preserve">
     <value>Zahlungsstatus</value>
   </data>
-  <data name="OrderEditPage.Field.Notifications.Label.Text" xml:space="preserve">
+  <data name="SalesEditPage.Field.Notifications.Label.Text" xml:space="preserve">
     <value>Benachrichtigungen</value>
   </data>
-  <data name="OrderEditPage.Field.OrderConfirmationSent.Content" xml:space="preserve">
+  <data name="SalesEditPage.Field.SalesConfirmationSent.Content" xml:space="preserve">
     <value>Bestellbestätigung gesendet</value>
   </data>
-  <data name="OrderEditPage.Field.InvoiceSent.Content" xml:space="preserve">
+  <data name="SalesEditPage.Field.InvoiceSent.Content" xml:space="preserve">
     <value>Rechnung gesendet</value>
   </data>
-  <data name="OrderEditPage.Field.ShippingInformationSent.Content" xml:space="preserve">
+  <data name="SalesEditPage.Field.ShippingInformationSent.Content" xml:space="preserve">
     <value>Versandinformationen gesendet</value>
   </data>
 
-  <!-- Order Edit Page - Financial Fields -->
-  <data name="OrderEditPage.Field.Subtotal.Header" xml:space="preserve">
+  <!-- Sales Edit Page - Financial Fields -->
+  <data name="SalesEditPage.Field.Subtotal.Header" xml:space="preserve">
     <value>Zwischensumme</value>
   </data>
-  <data name="OrderEditPage.Field.Subtotal.PlaceholderText" xml:space="preserve">
+  <data name="SalesEditPage.Field.Subtotal.PlaceholderText" xml:space="preserve">
     <value>0,00</value>
   </data>
-  <data name="OrderEditPage.Field.ShippingCost.Header" xml:space="preserve">
+  <data name="SalesEditPage.Field.ShippingCost.Header" xml:space="preserve">
     <value>Versandkosten</value>
   </data>
-  <data name="OrderEditPage.Field.ShippingCost.PlaceholderText" xml:space="preserve">
+  <data name="SalesEditPage.Field.ShippingCost.PlaceholderText" xml:space="preserve">
     <value>0,00</value>
   </data>
-  <data name="OrderEditPage.Field.TotalTax.Header" xml:space="preserve">
+  <data name="SalesEditPage.Field.TotalTax.Header" xml:space="preserve">
     <value>MwSt.</value>
   </data>
-  <data name="OrderEditPage.Field.TotalTax.PlaceholderText" xml:space="preserve">
+  <data name="SalesEditPage.Field.TotalTax.PlaceholderText" xml:space="preserve">
     <value>0,00</value>
   </data>
-  <data name="OrderEditPage.Field.Total.Header" xml:space="preserve">
+  <data name="SalesEditPage.Field.Total.Header" xml:space="preserve">
     <value>Gesamtsumme</value>
   </data>
-  <data name="OrderEditPage.Field.Total.PlaceholderText" xml:space="preserve">
+  <data name="SalesEditPage.Field.Total.PlaceholderText" xml:space="preserve">
     <value>0,00</value>
   </data>
 
-  <!-- Order Edit Page - Payment Fields -->
-  <data name="OrderEditPage.Field.PaymentMethod.Header" xml:space="preserve">
+  <!-- Sales Edit Page - Payment Fields -->
+  <data name="SalesEditPage.Field.PaymentMethod.Header" xml:space="preserve">
     <value>Zahlungsmethode</value>
   </data>
-  <data name="OrderEditPage.Field.PaymentMethod.PlaceholderText" xml:space="preserve">
+  <data name="SalesEditPage.Field.PaymentMethod.PlaceholderText" xml:space="preserve">
     <value>z.B. Kreditkarte, PayPal</value>
   </data>
-  <data name="OrderEditPage.Field.PaymentProvider.Header" xml:space="preserve">
+  <data name="SalesEditPage.Field.PaymentProvider.Header" xml:space="preserve">
     <value>Zahlungsanbieter</value>
   </data>
-  <data name="OrderEditPage.Field.PaymentProvider.PlaceholderText" xml:space="preserve">
+  <data name="SalesEditPage.Field.PaymentProvider.PlaceholderText" xml:space="preserve">
     <value>z.B. Stripe, PayPal</value>
   </data>
-  <data name="OrderEditPage.Field.PaymentTransactionId.Header" xml:space="preserve">
+  <data name="SalesEditPage.Field.PaymentTransactionId.Header" xml:space="preserve">
     <value>Transaktions-ID</value>
   </data>
-  <data name="OrderEditPage.Field.PaymentTransactionId.PlaceholderText" xml:space="preserve">
+  <data name="SalesEditPage.Field.PaymentTransactionId.PlaceholderText" xml:space="preserve">
     <value>Transaktions-ID eingeben</value>
   </data>
 
-  <!-- Order Edit Page - Delivery Address Fields -->
-  <data name="OrderEditPage.Field.DeliveryFirstName.Header" xml:space="preserve">
+  <!-- Sales Edit Page - Delivery Address Fields -->
+  <data name="SalesEditPage.Field.DeliveryFirstName.Header" xml:space="preserve">
     <value>Vorname</value>
   </data>
-  <data name="OrderEditPage.Field.DeliveryFirstName.PlaceholderText" xml:space="preserve">
+  <data name="SalesEditPage.Field.DeliveryFirstName.PlaceholderText" xml:space="preserve">
     <value>Vorname eingeben</value>
   </data>
-  <data name="OrderEditPage.Field.DeliveryLastName.Header" xml:space="preserve">
+  <data name="SalesEditPage.Field.DeliveryLastName.Header" xml:space="preserve">
     <value>Nachname</value>
   </data>
-  <data name="OrderEditPage.Field.DeliveryLastName.PlaceholderText" xml:space="preserve">
+  <data name="SalesEditPage.Field.DeliveryLastName.PlaceholderText" xml:space="preserve">
     <value>Nachname eingeben</value>
   </data>
-  <data name="OrderEditPage.Field.DeliveryCompanyName.Header" xml:space="preserve">
+  <data name="SalesEditPage.Field.DeliveryCompanyName.Header" xml:space="preserve">
     <value>Firma</value>
   </data>
-  <data name="OrderEditPage.Field.DeliveryCompanyName.PlaceholderText" xml:space="preserve">
+  <data name="SalesEditPage.Field.DeliveryCompanyName.PlaceholderText" xml:space="preserve">
     <value>Firmenname eingeben (optional)</value>
   </data>
-  <data name="OrderEditPage.Field.DeliveryPhone.Header" xml:space="preserve">
+  <data name="SalesEditPage.Field.DeliveryPhone.Header" xml:space="preserve">
     <value>Telefon</value>
   </data>
-  <data name="OrderEditPage.Field.DeliveryPhone.PlaceholderText" xml:space="preserve">
+  <data name="SalesEditPage.Field.DeliveryPhone.PlaceholderText" xml:space="preserve">
     <value>Telefonnummer eingeben</value>
   </data>
-  <data name="OrderEditPage.Field.DeliveryStreet.Header" xml:space="preserve">
+  <data name="SalesEditPage.Field.DeliveryStreet.Header" xml:space="preserve">
     <value>Straße</value>
   </data>
-  <data name="OrderEditPage.Field.DeliveryStreet.PlaceholderText" xml:space="preserve">
+  <data name="SalesEditPage.Field.DeliveryStreet.PlaceholderText" xml:space="preserve">
     <value>Straße und Hausnummer eingeben</value>
   </data>
-  <data name="OrderEditPage.Field.DeliveryZip.Header" xml:space="preserve">
+  <data name="SalesEditPage.Field.DeliveryZip.Header" xml:space="preserve">
     <value>PLZ</value>
   </data>
-  <data name="OrderEditPage.Field.DeliveryZip.PlaceholderText" xml:space="preserve">
+  <data name="SalesEditPage.Field.DeliveryZip.PlaceholderText" xml:space="preserve">
     <value>PLZ</value>
   </data>
-  <data name="OrderEditPage.Field.DeliveryCity.Header" xml:space="preserve">
+  <data name="SalesEditPage.Field.DeliveryCity.Header" xml:space="preserve">
     <value>Stadt</value>
   </data>
-  <data name="OrderEditPage.Field.DeliveryCity.PlaceholderText" xml:space="preserve">
+  <data name="SalesEditPage.Field.DeliveryCity.PlaceholderText" xml:space="preserve">
     <value>Stadt eingeben</value>
   </data>
-  <data name="OrderEditPage.Field.DeliveryCountry.Header" xml:space="preserve">
+  <data name="SalesEditPage.Field.DeliveryCountry.Header" xml:space="preserve">
     <value>Land</value>
   </data>
-  <data name="OrderEditPage.Field.DeliveryCountry.PlaceholderText" xml:space="preserve">
+  <data name="SalesEditPage.Field.DeliveryCountry.PlaceholderText" xml:space="preserve">
     <value>Land eingeben</value>
   </data>
 
-  <!-- Order Edit Page - Invoice Address Fields -->
-  <data name="OrderEditPage.Field.InvoiceFirstName.Header" xml:space="preserve">
+  <!-- Sales Edit Page - Invoice Address Fields -->
+  <data name="SalesEditPage.Field.InvoiceFirstName.Header" xml:space="preserve">
     <value>Vorname</value>
   </data>
-  <data name="OrderEditPage.Field.InvoiceFirstName.PlaceholderText" xml:space="preserve">
+  <data name="SalesEditPage.Field.InvoiceFirstName.PlaceholderText" xml:space="preserve">
     <value>Vorname eingeben</value>
   </data>
-  <data name="OrderEditPage.Field.InvoiceLastName.Header" xml:space="preserve">
+  <data name="SalesEditPage.Field.InvoiceLastName.Header" xml:space="preserve">
     <value>Nachname</value>
   </data>
-  <data name="OrderEditPage.Field.InvoiceLastName.PlaceholderText" xml:space="preserve">
+  <data name="SalesEditPage.Field.InvoiceLastName.PlaceholderText" xml:space="preserve">
     <value>Nachname eingeben</value>
   </data>
-  <data name="OrderEditPage.Field.InvoiceCompanyName.Header" xml:space="preserve">
+  <data name="SalesEditPage.Field.InvoiceCompanyName.Header" xml:space="preserve">
     <value>Firma</value>
   </data>
-  <data name="OrderEditPage.Field.InvoiceCompanyName.PlaceholderText" xml:space="preserve">
+  <data name="SalesEditPage.Field.InvoiceCompanyName.PlaceholderText" xml:space="preserve">
     <value>Firmenname eingeben (optional)</value>
   </data>
-  <data name="OrderEditPage.Field.InvoicePhone.Header" xml:space="preserve">
+  <data name="SalesEditPage.Field.InvoicePhone.Header" xml:space="preserve">
     <value>Telefon</value>
   </data>
-  <data name="OrderEditPage.Field.InvoicePhone.PlaceholderText" xml:space="preserve">
+  <data name="SalesEditPage.Field.InvoicePhone.PlaceholderText" xml:space="preserve">
     <value>Telefonnummer eingeben</value>
   </data>
-  <data name="OrderEditPage.Field.InvoiceStreet.Header" xml:space="preserve">
+  <data name="SalesEditPage.Field.InvoiceStreet.Header" xml:space="preserve">
     <value>Straße</value>
   </data>
-  <data name="OrderEditPage.Field.InvoiceStreet.PlaceholderText" xml:space="preserve">
+  <data name="SalesEditPage.Field.InvoiceStreet.PlaceholderText" xml:space="preserve">
     <value>Straße und Hausnummer eingeben</value>
   </data>
-  <data name="OrderEditPage.Field.InvoiceZip.Header" xml:space="preserve">
+  <data name="SalesEditPage.Field.InvoiceZip.Header" xml:space="preserve">
     <value>PLZ</value>
   </data>
-  <data name="OrderEditPage.Field.InvoiceZip.PlaceholderText" xml:space="preserve">
+  <data name="SalesEditPage.Field.InvoiceZip.PlaceholderText" xml:space="preserve">
     <value>PLZ</value>
   </data>
-  <data name="OrderEditPage.Field.InvoiceCity.Header" xml:space="preserve">
+  <data name="SalesEditPage.Field.InvoiceCity.Header" xml:space="preserve">
     <value>Stadt</value>
   </data>
-  <data name="OrderEditPage.Field.InvoiceCity.PlaceholderText" xml:space="preserve">
+  <data name="SalesEditPage.Field.InvoiceCity.PlaceholderText" xml:space="preserve">
     <value>Stadt eingeben</value>
   </data>
-  <data name="OrderEditPage.Field.InvoiceCountry.Header" xml:space="preserve">
+  <data name="SalesEditPage.Field.InvoiceCountry.Header" xml:space="preserve">
     <value>Land</value>
   </data>
-  <data name="OrderEditPage.Field.InvoiceCountry.PlaceholderText" xml:space="preserve">
+  <data name="SalesEditPage.Field.InvoiceCountry.PlaceholderText" xml:space="preserve">
     <value>Land eingeben</value>
   </data>
 
-  <!-- Order Edit Page - Notes Fields -->
-  <data name="OrderEditPage.Field.CustomerNote.Label.Text" xml:space="preserve">
+  <!-- Sales Edit Page - Notes Fields -->
+  <data name="SalesEditPage.Field.CustomerNote.Label.Text" xml:space="preserve">
     <value>Kundennotiz</value>
   </data>
-  <data name="OrderEditPage.Field.CustomerNote.PlaceholderText" xml:space="preserve">
+  <data name="SalesEditPage.Field.CustomerNote.PlaceholderText" xml:space="preserve">
     <value>Notizen vom Kunden</value>
   </data>
-  <data name="OrderEditPage.Field.InternalNote.Label.Text" xml:space="preserve">
+  <data name="SalesEditPage.Field.InternalNote.Label.Text" xml:space="preserve">
     <value>Interne Notiz</value>
   </data>
-  <data name="OrderEditPage.Field.InternalNote.PlaceholderText" xml:space="preserve">
+  <data name="SalesEditPage.Field.InternalNote.PlaceholderText" xml:space="preserve">
     <value>Interne Notizen (für Kunden nicht sichtbar)</value>
   </data>
 
-  <!-- Order Edit Page - Buttons -->
-  <data name="OrderEditPage.Button.CopyToInvoice.ToolTip" xml:space="preserve">
+  <!-- Sales Edit Page - Buttons -->
+  <data name="SalesEditPage.Button.CopyToInvoice.ToolTip" xml:space="preserve">
     <value>Zur Rechnungsadresse kopieren</value>
   </data>
-  <data name="OrderEditPage.Button.CopyToInvoice.Text.Text" xml:space="preserve">
+  <data name="SalesEditPage.Button.CopyToInvoice.Text.Text" xml:space="preserve">
     <value>Kopieren</value>
   </data>
-  <data name="OrderEditPage.Button.CopyToDelivery.ToolTip" xml:space="preserve">
+  <data name="SalesEditPage.Button.CopyToDelivery.ToolTip" xml:space="preserve">
     <value>Zur Lieferadresse kopieren</value>
   </data>
-  <data name="OrderEditPage.Button.CopyToDelivery.Text.Text" xml:space="preserve">
+  <data name="SalesEditPage.Button.CopyToDelivery.Text.Text" xml:space="preserve">
     <value>Kopieren</value>
   </data>
 
-  <!-- Order Edit Page - Errors -->
-  <data name="OrderEditPage.Error.LoadFailed" xml:space="preserve">
-    <value>Bestellung konnte nicht geladen werden: {0}</value>
+  <!-- Sales Edit Page - Errors -->
+  <data name="SalesEditPage.Error.LoadFailed" xml:space="preserve">
+    <value>Verkauf konnte nicht geladen werden: {0}</value>
   </data>
-  <data name="OrderEditPage.Error.SaveFailed" xml:space="preserve">
-    <value>Bestellung konnte nicht gespeichert werden: {0}</value>
+  <data name="SalesEditPage.Error.SaveFailed" xml:space="preserve">
+    <value>Verkauf konnte nicht gespeichert werden: {0}</value>
   </data>
 
   <!-- Shell User Menu - Tenants -->
@@ -3432,36 +3432,36 @@
     <value>Kunden generieren</value>
   </data>
 
-  <!-- DemoDataGeneratorPage - Orders Section -->
-  <data name="DemoDataGeneratorPage.Orders.Title.Text" xml:space="preserve">
-    <value>Demo-Bestellungen</value>
+  <!-- DemoDataGeneratorPage - Saless Section -->
+  <data name="DemoDataGeneratorPage.Saless.Title.Text" xml:space="preserve">
+    <value>Demo-Verkäufe</value>
   </data>
-  <data name="DemoDataGeneratorPage.Orders.Subtitle.Text" xml:space="preserve">
+  <data name="DemoDataGeneratorPage.Saless.Subtitle.Text" xml:space="preserve">
     <value>Bestelldaten generieren</value>
   </data>
-  <data name="DemoDataGeneratorPage.Orders.Info.Title.Text" xml:space="preserve">
+  <data name="DemoDataGeneratorPage.Saless.Info.Title.Text" xml:space="preserve">
     <value>Was erstellt wird:</value>
   </data>
-  <data name="DemoDataGeneratorPage.Orders.Info.Item1.Text" xml:space="preserve">
-    <value>• Bestellungen mit zufälligen Produkten</value>
+  <data name="DemoDataGeneratorPage.Saless.Info.Item1.Text" xml:space="preserve">
+    <value>• Verkäufe mit zufälligen Produkten</value>
   </data>
-  <data name="DemoDataGeneratorPage.Orders.Info.Item2.Text" xml:space="preserve">
+  <data name="DemoDataGeneratorPage.Saless.Info.Item2.Text" xml:space="preserve">
     <value>• Verschiedene Bestellstatus</value>
   </data>
-  <data name="DemoDataGeneratorPage.Orders.Info.Item3.Text" xml:space="preserve">
+  <data name="DemoDataGeneratorPage.Saless.Info.Item3.Text" xml:space="preserve">
     <value>• Zufällige Bestelldaten in der Vergangenheit</value>
   </data>
-  <data name="DemoDataGeneratorPage.Orders.Count.Header" xml:space="preserve">
-    <value>Anzahl der Bestellungen</value>
+  <data name="DemoDataGeneratorPage.Saless.Count.Header" xml:space="preserve">
+    <value>Anzahl der Verkäufe</value>
   </data>
-  <data name="DemoDataGeneratorPage.Orders.Hint.Text" xml:space="preserve">
-    <value>Erfordert vorhandene Kunden und Produkte im System.</value>
+  <data name="DemoDataGeneratorPage.Saless.Hint.Text" xml:space="preserve">
+    <value>Erfsalest vorhandene Kunden und Produkte im System.</value>
   </data>
-  <data name="DemoDataGeneratorPage.Orders.Progress.Text" xml:space="preserve">
-    <value>Bestellungen werden generiert...</value>
+  <data name="DemoDataGeneratorPage.Saless.Progress.Text" xml:space="preserve">
+    <value>Verkäufe werden generiert...</value>
   </data>
-  <data name="DemoDataGeneratorPage.Orders.StartButton.Text.Text" xml:space="preserve">
-    <value>Bestellungen generieren</value>
+  <data name="DemoDataGeneratorPage.Saless.StartButton.Text.Text" xml:space="preserve">
+    <value>Verkäufe generieren</value>
   </data>
 
   <!-- DemoDataGeneratorPage - AI Data Section -->
@@ -3487,7 +3487,7 @@
     <value>Anzahl der Einträge</value>
   </data>
   <data name="DemoDataGeneratorPage.AiData.Hint.Text" xml:space="preserve">
-    <value>Verwendet KI zur Generierung realistischerer und zusammenhängender Demo-Daten. Erfordert eine aktive KI-Modell-Konfiguration.</value>
+    <value>Verwendet KI zur Generierung realistischerer und zusammenhängender Demo-Daten. Erfsalest eine aktive KI-Modell-Konfiguration.</value>
   </data>
   <data name="DemoDataGeneratorPage.AiData.Progress.Text" xml:space="preserve">
     <value>KI-Daten werden generiert...</value>
@@ -3508,7 +3508,7 @@
   <data name="DemoDataGeneratorPage.Customers.CancelButton.Text.Text" xml:space="preserve">
     <value>Abbrechen</value>
   </data>
-  <data name="DemoDataGeneratorPage.Orders.CancelButton.Text.Text" xml:space="preserve">
+  <data name="DemoDataGeneratorPage.Saless.CancelButton.Text.Text" xml:space="preserve">
     <value>Abbrechen</value>
   </data>
   <data name="DemoDataGeneratorPage.AiData.CancelButton.Text.Text" xml:space="preserve">
@@ -3596,8 +3596,8 @@
   <data name="PosDashboard.QuickSale.NoAddress.Text" xml:space="preserve">
     <value>Keine Adresse</value>
   </data>
-  <data name="PosDashboard.RecentSales.OrderNumber.Text" xml:space="preserve">
-    <value>Bestellung</value>
+  <data name="PosDashboard.RecentSales.SalesNumber.Text" xml:space="preserve">
+    <value>Verkauf</value>
   </data>
   <data name="PosDashboard.RecentSales.Customer.Text" xml:space="preserve">
     <value>Kunde</value>

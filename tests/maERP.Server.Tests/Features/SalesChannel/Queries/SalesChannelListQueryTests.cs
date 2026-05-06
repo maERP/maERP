@@ -36,8 +36,8 @@ public class SalesChannelListQueryTests : TenantIsolatedTestBase
             ExportProducts = true,
             ImportCustomers = false,
             ExportCustomers = false,
-            ImportOrders = true,
-            ExportOrders = false,
+            ImportSaless = true,
+            ExportSaless = false,
             TenantId = TenantConstants.TestTenant1Id
         };
 
@@ -53,8 +53,8 @@ public class SalesChannelListQueryTests : TenantIsolatedTestBase
             ExportProducts = true,
             ImportCustomers = true,
             ExportCustomers = true,
-            ImportOrders = false,
-            ExportOrders = true,
+            ImportSaless = false,
+            ExportSaless = true,
             TenantId = TenantConstants.TestTenant1Id
         };
 
@@ -71,8 +71,8 @@ public class SalesChannelListQueryTests : TenantIsolatedTestBase
             ExportProducts = false,
             ImportCustomers = true,
             ExportCustomers = false,
-            ImportOrders = true,
-            ExportOrders = true,
+            ImportSaless = true,
+            ExportSaless = true,
             TenantId = TenantConstants.TestTenant2Id
         };
 
@@ -88,8 +88,8 @@ public class SalesChannelListQueryTests : TenantIsolatedTestBase
             ExportProducts = false,
             ImportCustomers = false,
             ExportCustomers = false,
-            ImportOrders = false,
-            ExportOrders = false,
+            ImportSaless = false,
+            ExportSaless = false,
             TenantId = TenantConstants.TestTenant2Id
         };
 
@@ -267,12 +267,12 @@ public class SalesChannelListQueryTests : TenantIsolatedTestBase
     }
 
     [Fact]
-    public async Task GetSalesChannelsList_WithOrderBy_ShouldReturnOrderedResults()
+    public async Task GetSalesChannelsList_WithSalesBy_ShouldReturnSalesedResults()
     {
         await SeedTestDataAsync();
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.GetAsync("/api/v1/SalesChannels?OrderBy=Name desc");
+        var response = await Client.GetAsync("/api/v1/SalesChannels?SalesBy=Name desc");
 
         TestAssertions.AssertEqual(HttpStatusCode.OK, response.StatusCode);
         var result = await ReadResponseAsync<PaginatedResult<SalesChannelListDto>>(response);
@@ -284,12 +284,12 @@ public class SalesChannelListQueryTests : TenantIsolatedTestBase
     }
 
     [Fact]
-    public async Task GetSalesChannelsList_WithMultipleOrderBy_ShouldReturnOrderedResults()
+    public async Task GetSalesChannelsList_WithMultipleSalesBy_ShouldReturnSalesedResults()
     {
         await SeedTestDataAsync();
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.GetAsync("/api/v1/SalesChannels?OrderBy=Type,Name");
+        var response = await Client.GetAsync("/api/v1/SalesChannels?SalesBy=Type,Name");
 
         TestAssertions.AssertEqual(HttpStatusCode.OK, response.StatusCode);
         var result = await ReadResponseAsync<PaginatedResult<SalesChannelListDto>>(response);
@@ -410,8 +410,8 @@ public class SalesChannelListQueryTests : TenantIsolatedTestBase
             TestAssertions.AssertTrue(channel.ExportProducts || !channel.ExportProducts);
             TestAssertions.AssertTrue(channel.ImportCustomers || !channel.ImportCustomers);
             TestAssertions.AssertTrue(channel.ExportCustomers || !channel.ExportCustomers);
-            TestAssertions.AssertTrue(channel.ImportOrders || !channel.ImportOrders);
-            TestAssertions.AssertTrue(channel.ExportOrders || !channel.ExportOrders);
+            TestAssertions.AssertTrue(channel.ImportSaless || !channel.ImportSaless);
+            TestAssertions.AssertTrue(channel.ExportSaless || !channel.ExportSaless);
         }
     }
 

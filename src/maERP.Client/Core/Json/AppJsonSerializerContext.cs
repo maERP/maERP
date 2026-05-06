@@ -8,7 +8,7 @@ using maERP.Domain.Dtos.Country;
 using maERP.Domain.Dtos.Customer;
 using maERP.Domain.Dtos.Invoice;
 using maERP.Domain.Dtos.Manufacturer;
-using maERP.Domain.Dtos.Order;
+using maERP.Domain.Dtos.Sales;
 using maERP.Domain.Dtos.Product;
 using maERP.Domain.Dtos.SalesChannel;
 using maERP.Domain.Dtos.ServerInfo;
@@ -33,7 +33,7 @@ namespace maERP.Client.Core.Json;
 [JsonSerializable(typeof(PaginatedResponse<CustomerListWithAddressDto>))]
 [JsonSerializable(typeof(PaginatedResponse<TaxClassListDto>))]
 [JsonSerializable(typeof(PaginatedResponse<InvoiceListDto>))]
-[JsonSerializable(typeof(PaginatedResponse<OrderListDto>))]
+[JsonSerializable(typeof(PaginatedResponse<SalesListDto>))]
 [JsonSerializable(typeof(PaginatedResponse<ManufacturerListDto>))]
 [JsonSerializable(typeof(PaginatedResponse<SalesChannelListDto>))]
 [JsonSerializable(typeof(PaginatedResponse<CountryListDto>))]
@@ -50,12 +50,12 @@ namespace maERP.Client.Core.Json;
 [JsonSerializable(typeof(ApiResponse<SuperadminTenantDetailDto>))]
 [JsonSerializable(typeof(ApiResponse<InvoiceDetailDto>))]
 [JsonSerializable(typeof(ApiResponse<SalesTodayDto>))]
-[JsonSerializable(typeof(ApiResponse<OrdersTodayDto>))]
+[JsonSerializable(typeof(ApiResponse<SalessTodayDto>))]
 [JsonSerializable(typeof(ApiResponse<CustomersTodayDto>))]
 [JsonSerializable(typeof(ApiResponse<ProductsTodayDto>))]
-[JsonSerializable(typeof(ApiResponse<OrdersLatestDto>))]
+[JsonSerializable(typeof(ApiResponse<SalessLatestDto>))]
 [JsonSerializable(typeof(ApiResponse<ProductsBestSellingDto>))]
-[JsonSerializable(typeof(ApiResponse<OrderDetailDto>))]
+[JsonSerializable(typeof(ApiResponse<SalesDetailDto>))]
 [JsonSerializable(typeof(ApiResponse<SalesChannelDetailDto>))]
 [JsonSerializable(typeof(ApiResponse<maERP.Domain.Dtos.SalesChannelOAuth.OAuthStartResponseDto>))]
 [JsonSerializable(typeof(ApiResponse<maERP.Domain.Dtos.SystemOAuthSettings.SystemOAuthSettingsDto>))]
@@ -84,7 +84,7 @@ namespace maERP.Client.Core.Json;
 [JsonSerializable(typeof(TaxClassInputDto))]
 [JsonSerializable(typeof(SalesChannelInputDto))]
 [JsonSerializable(typeof(ProductInputDto))]
-[JsonSerializable(typeof(OrderInputDto))]
+[JsonSerializable(typeof(SalesInputDto))]
 [JsonSerializable(typeof(ManufacturerInputDto))]
 [JsonSerializable(typeof(CustomerInputDto))]
 [JsonSerializable(typeof(LoginRequestDto))]

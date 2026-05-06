@@ -223,12 +223,12 @@ public class ManufacturerListQueryTests : TenantIsolatedTestBase
     }
 
     [Fact]
-    public async Task GetManufacturers_WithOrderByName_ShouldReturnOrderedResults()
+    public async Task GetManufacturers_WithSalesByName_ShouldReturnSalesedResults()
     {
         await SeedManufacturerTestDataAsync();
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.GetAsync("/api/v1/Manufacturers?orderBy=Name");
+        var response = await Client.GetAsync("/api/v1/Manufacturers?salesBy=Name");
 
         TestAssertions.AssertHttpSuccess(response);
         var result = await ReadResponseAsync<PaginatedResult<ManufacturerListDto>>(response);
@@ -243,12 +243,12 @@ public class ManufacturerListQueryTests : TenantIsolatedTestBase
     }
 
     [Fact]
-    public async Task GetManufacturers_WithOrderByNameDescending_ShouldReturnDescOrderedResults()
+    public async Task GetManufacturers_WithSalesByNameDescending_ShouldReturnDescSalesedResults()
     {
         await SeedManufacturerTestDataAsync();
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.GetAsync("/api/v1/Manufacturers?orderBy=Name desc");
+        var response = await Client.GetAsync("/api/v1/Manufacturers?salesBy=Name desc");
 
         TestAssertions.AssertHttpSuccess(response);
         var result = await ReadResponseAsync<PaginatedResult<ManufacturerListDto>>(response);
@@ -263,12 +263,12 @@ public class ManufacturerListQueryTests : TenantIsolatedTestBase
     }
 
     [Fact]
-    public async Task GetManufacturers_WithOrderByCity_ShouldReturnCityOrderedResults()
+    public async Task GetManufacturers_WithSalesByCity_ShouldReturnCitySalesedResults()
     {
         await SeedManufacturerTestDataAsync();
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.GetAsync("/api/v1/Manufacturers?orderBy=City");
+        var response = await Client.GetAsync("/api/v1/Manufacturers?salesBy=City");
 
         TestAssertions.AssertHttpSuccess(response);
         var result = await ReadResponseAsync<PaginatedResult<ManufacturerListDto>>(response);
@@ -278,12 +278,12 @@ public class ManufacturerListQueryTests : TenantIsolatedTestBase
     }
 
     [Fact]
-    public async Task GetManufacturers_WithMultipleOrderBy_ShouldRespectMultipleSorting()
+    public async Task GetManufacturers_WithMultipleSalesBy_ShouldRespectMultipleSorting()
     {
         await SeedManufacturerTestDataAsync();
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.GetAsync("/api/v1/Manufacturers?orderBy=Country,Name");
+        var response = await Client.GetAsync("/api/v1/Manufacturers?salesBy=Country,Name");
 
         TestAssertions.AssertHttpSuccess(response);
         var result = await ReadResponseAsync<PaginatedResult<ManufacturerListDto>>(response);

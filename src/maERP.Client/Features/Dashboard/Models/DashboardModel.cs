@@ -1,6 +1,6 @@
 using maERP.Client.Features.Dashboard.Services;
-using maERP.Client.Features.Orders;
-using maERP.Client.Features.Orders.Models;
+using maERP.Client.Features.Saless;
+using maERP.Client.Features.Saless.Models;
 using maERP.Client.Features.Products.Models;
 using maERP.Domain.Enums;
 using Microsoft.Extensions.Logging;
@@ -30,9 +30,9 @@ public partial record DashboardModel
         _logger = logger;
     }
 
-    public async ValueTask NavigateToOrderList()
+    public async ValueTask NavigateToSalesList()
     {
-        await _navigator.NavigateViewModelAsync<OrderListModel>(this);
+        await _navigator.NavigateViewModelAsync<SalesListModel>(this);
     }
 
     public async ValueTask NavigateToProductList()
@@ -40,19 +40,19 @@ public partial record DashboardModel
         await _navigator.NavigateViewModelAsync<ProductListModel>(this);
     }
 
-    public async ValueTask ViewOrder(RecentOrderItem order)
+    public async ValueTask ViewSales(RecentSalesItem sales)
     {
-        await _navigator.NavigateDataAsync(this, new OrderDetailData(order.Id));
+        await _navigator.NavigateDataAsync(this, new SalesDetailData(sales.Id));
     }
 
     // KPI Data Feeds - four separate feeds for parallel loading
     public IFeed<RevenueKpiData> RevenueData => Feed.Async(LoadRevenueDataAsync);
-    public IFeed<OrdersKpiData> OrdersData => Feed.Async(LoadOrdersDataAsync);
+    public IFeed<SalessKpiData> SalessData => Feed.Async(LoadSalessDataAsync);
     public IFeed<CustomersKpiData> CustomersData => Feed.Async(LoadCustomersDataAsync);
     public IFeed<ProductsKpiData> ProductsData => Feed.Async(LoadProductsDataAsync);
 
-    // Recent Orders Feed
-    public IListFeed<RecentOrderItem> RecentOrders => ListFeed.Async(LoadRecentOrdersAsync);
+    // Recent Saless Feed
+    public IListFeed<RecentSalesItem> RecentSaless => ListFeed.Async(LoadRecentSalessAsync);
 
     // Top Selling Products Feed
     public IListFeed<TopProductItem> TopProducts => ListFeed.Async(LoadTopProductsAsync);
@@ -90,32 +90,32 @@ public partial record DashboardModel
         }
     }
 
-    private async ValueTask<OrdersKpiData> LoadOrdersDataAsync(CancellationToken ct)
+    private async ValueTask<SalessKpiData> LoadSalessDataAsync(CancellationToken ct)
     {
         try
         {
-            _logger.LogInformation("Loading orders KPI data");
-            var data = await _statisticsService.GetOrdersTodayAsync(ct);
+            _logger.LogInformation("Loading saless KPI data");
+            var data = await _statisticsService.GetSalessTodayAsync(ct);
 
             if (data == null)
             {
-                _logger.LogWarning("OrdersToday service returned null");
-                return new OrdersKpiData();
+                _logger.LogWarning("SalessToday service returned null");
+                return new SalessKpiData();
             }
 
-            _logger.LogInformation("Orders KPI loaded - OrdersToday: {OrdersToday}", data.OrdersToday);
+            _logger.LogInformation("Saless KPI loaded - SalessToday: {SalessToday}", data.SalessToday);
 
-            return new OrdersKpiData
+            return new SalessKpiData
             {
-                OrdersToday = data.OrdersToday,
-                OrdersPending = data.OrdersPending,
-                OrdersThisWeek = data.OrdersThisWeek,
-                OrdersChange = data.OrdersChangePercent
+                SalessToday = data.SalessToday,
+                SalessPending = data.SalessPending,
+                SalessThisWeek = data.SalessThisWeek,
+                SalessChange = data.SalessChangePercent
             };
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error loading orders KPI data");
+            _logger.LogError(ex, "Error loading saless KPI data");
             throw;
         }
     }
@@ -179,35 +179,35 @@ public partial record DashboardModel
         }
     }
 
-    private async ValueTask<IImmutableList<RecentOrderItem>> LoadRecentOrdersAsync(CancellationToken ct)
+    private async ValueTask<IImmutableList<RecentSalesItem>> LoadRecentSalessAsync(CancellationToken ct)
     {
         try
         {
-            _logger.LogInformation("Loading recent orders");
-            var data = await _statisticsService.GetOrdersLatestAsync(5, ct);
+            _logger.LogInformation("Loading recent saless");
+            var data = await _statisticsService.GetSalessLatestAsync(5, ct);
 
-            if (data == null || data.Orders.Count == 0)
+            if (data == null || data.Saless.Count == 0)
             {
-                _logger.LogWarning("OrdersLatest service returned null or empty");
-                return ImmutableList<RecentOrderItem>.Empty;
+                _logger.LogWarning("SalessLatest service returned null or empty");
+                return ImmutableList<RecentSalesItem>.Empty;
             }
 
-            var orders = data.Orders.Select(o => new RecentOrderItem
+            var saless = data.Saless.Select(o => new RecentSalesItem
             {
                 Id = o.Id,
-                OrderNumber = o.OrderNumber,
+                SalesNumber = o.SalesNumber,
                 CustomerName = o.CustomerName,
                 Amount = o.Amount,
                 Status = o.Status,
-                OrderDate = o.OrderDate
+                SalesDate = o.SalesDate
             }).ToImmutableList();
 
-            _logger.LogInformation("Successfully loaded {Count} recent orders", orders.Count);
-            return orders;
+            _logger.LogInformation("Successfully loaded {Count} recent saless", saless.Count);
+            return saless;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error loading recent orders");
+            _logger.LogError(ex, "Error loading recent saless");
             throw;
         }
     }
@@ -279,17 +279,17 @@ public record RevenueKpiData
 }
 
 /// <summary>
-/// Orders KPI data for the second dashboard card.
+/// Saless KPI data for the second dashboard card.
 /// </summary>
-public record OrdersKpiData
+public record SalessKpiData
 {
-    public int OrdersToday { get; init; }
-    public int OrdersPending { get; init; }
-    public int OrdersThisWeek { get; init; }
-    public decimal OrdersChange { get; init; }
+    public int SalessToday { get; init; }
+    public int SalessPending { get; init; }
+    public int SalessThisWeek { get; init; }
+    public decimal SalessChange { get; init; }
 
-    public string OrdersChangeFormatted => $"{(OrdersChange >= 0 ? "+" : "")}{OrdersChange:F1}%";
-    public bool OrdersChangePositive => OrdersChange >= 0;
+    public string SalessChangeFormatted => $"{(SalessChange >= 0 ? "+" : "")}{SalessChange:F1}%";
+    public bool SalessChangePositive => SalessChange >= 0;
 }
 
 /// <summary>
@@ -321,31 +321,31 @@ public record ProductsKpiData
 }
 
 /// <summary>
-/// Recent order item for the activity list.
+/// Recent sales item for the activity list.
 /// </summary>
-public partial record RecentOrderItem
+public partial record RecentSalesItem
 {
     public Guid Id { get; init; }
-    public string OrderNumber { get; init; } = string.Empty;
+    public string SalesNumber { get; init; } = string.Empty;
     public string CustomerName { get; init; } = string.Empty;
     public decimal Amount { get; init; }
-    public OrderStatus Status { get; init; }
-    public DateTime OrderDate { get; init; }
+    public SalesStatus Status { get; init; }
+    public DateTime SalesDate { get; init; }
 
     public string AmountFormatted => Amount.ToString("C2");
-    public string DateFormatted => OrderDate.ToString("g");
+    public string DateFormatted => SalesDate.ToString("g");
     public string StatusIcon => Status switch
     {
-        OrderStatus.Pending => "\uE823",           // Clock
-        OrderStatus.Processing => "\uE895",        // Sync
-        OrderStatus.ReadyForDelivery => "\uE7B8",  // Package
-        OrderStatus.PartiallyDelivered => "\uE122", // Airplane
-        OrderStatus.Completed => "\uE73E",         // Checkmark
-        OrderStatus.Cancelled => "\uE711",         // Cancel
-        OrderStatus.Returned => "\uE72B",          // Back
-        OrderStatus.Refunded => "\uE8BB",          // Money
-        OrderStatus.OnHold => "\uE769",            // Pause
-        OrderStatus.Failed => "\uE783",            // Error
+        SalesStatus.Pending => "\uE823",           // Clock
+        SalesStatus.Processing => "\uE895",        // Sync
+        SalesStatus.ReadyForDelivery => "\uE7B8",  // Package
+        SalesStatus.PartiallyDelivered => "\uE122", // Airplane
+        SalesStatus.Completed => "\uE73E",         // Checkmark
+        SalesStatus.Cancelled => "\uE711",         // Cancel
+        SalesStatus.Returned => "\uE72B",          // Back
+        SalesStatus.Refunded => "\uE8BB",          // Money
+        SalesStatus.OnHold => "\uE769",            // Pause
+        SalesStatus.Failed => "\uE783",            // Error
         _ => "\uE946"                              // Unknown
     };
 }

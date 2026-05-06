@@ -28,7 +28,7 @@ public class TenantsController(IMediator mediator) : ControllerBase
     /// <param name="pageNumber">Page number (default: 0, zero-based)</param>
     /// <param name="pageSize">Page size (default: 10, max: 100)</param>
     /// <param name="searchString">Search string to filter tenants</param>
-    /// <param name="orderBy">Order by fields (comma-separated)</param>
+    /// <param name="salesBy">Sales by fields (comma-separated)</param>
     /// <returns>Paginated list of tenants</returns>
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -38,7 +38,7 @@ public class TenantsController(IMediator mediator) : ControllerBase
         [FromQuery] int pageNumber = 0,
         [FromQuery] int pageSize = 10,
         [FromQuery] string searchString = "",
-        [FromQuery] string orderBy = "")
+        [FromQuery] string salesBy = "")
     {
         // Get the current user's ID from the authenticated claims
         // Try "uid" claim first (JWT), then fall back to NameIdentifier (Test/Standard)
@@ -54,7 +54,7 @@ public class TenantsController(IMediator mediator) : ControllerBase
             });
         }
 
-        var query = new TenantListQuery(userId, pageNumber, pageSize, searchString, orderBy);
+        var query = new TenantListQuery(userId, pageNumber, pageSize, searchString, salesBy);
         var response = await mediator.Send(query);
 
         return StatusCode((int)response.StatusCode, response);

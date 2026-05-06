@@ -1,4 +1,4 @@
-﻿using maERP.Application.Contracts.Persistence;
+using maERP.Application.Contracts.Persistence;
 using maERP.Application.Contracts.Services;
 using maERP.Domain.Entities;
 using maERP.Persistence.DatabaseContext;
@@ -27,7 +27,7 @@ public class CustomerRepository : GenericRepository<Customer>, ICustomerReposito
 
         return await query
             .Include(x => x.CustomerAddresses)
-            .Include(x => x.Orders)
+            .Include(x => x.Saless)
             .AsSplitQuery()
             .FirstOrDefaultAsync() ?? null;
     }

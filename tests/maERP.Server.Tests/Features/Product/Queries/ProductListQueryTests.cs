@@ -231,12 +231,12 @@ public class ProductListQueryTests : TenantIsolatedTestBase
     }
 
     [Fact]
-    public async Task GetProducts_WithOrderByName_ShouldReturnOrderedResults()
+    public async Task GetProducts_WithSalesByName_ShouldReturnSalesedResults()
     {
         await SeedProductTestDataAsync();
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.GetAsync("/api/v1/Products?orderBy=Name");
+        var response = await Client.GetAsync("/api/v1/Products?salesBy=Name");
 
         TestAssertions.AssertHttpSuccess(response);
         var result = await ReadResponseAsync<PaginatedResult<ProductListDto>>(response);
@@ -250,12 +250,12 @@ public class ProductListQueryTests : TenantIsolatedTestBase
     }
 
     [Fact]
-    public async Task GetProducts_WithOrderByNameDescending_ShouldReturnDescOrderedResults()
+    public async Task GetProducts_WithSalesByNameDescending_ShouldReturnDescSalesedResults()
     {
         await SeedProductTestDataAsync();
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.GetAsync("/api/v1/Products?orderBy=Name desc");
+        var response = await Client.GetAsync("/api/v1/Products?salesBy=Name desc");
 
         TestAssertions.AssertHttpSuccess(response);
         var result = await ReadResponseAsync<PaginatedResult<ProductListDto>>(response);
@@ -269,12 +269,12 @@ public class ProductListQueryTests : TenantIsolatedTestBase
     }
 
     [Fact]
-    public async Task GetProducts_WithOrderByPrice_ShouldReturnPriceOrderedResults()
+    public async Task GetProducts_WithSalesByPrice_ShouldReturnPriceSalesedResults()
     {
         await SeedProductTestDataAsync();
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.GetAsync("/api/v1/Products?orderBy=Price");
+        var response = await Client.GetAsync("/api/v1/Products?salesBy=Price");
 
         TestAssertions.AssertHttpSuccess(response);
         var result = await ReadResponseAsync<PaginatedResult<ProductListDto>>(response);
@@ -288,12 +288,12 @@ public class ProductListQueryTests : TenantIsolatedTestBase
     }
 
     [Fact]
-    public async Task GetProducts_WithMultipleOrderBy_ShouldRespectMultipleSorting()
+    public async Task GetProducts_WithMultipleSalesBy_ShouldRespectMultipleSorting()
     {
         await SeedProductTestDataAsync();
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.GetAsync("/api/v1/Products?orderBy=Price,Name");
+        var response = await Client.GetAsync("/api/v1/Products?salesBy=Price,Name");
 
         TestAssertions.AssertHttpSuccess(response);
         var result = await ReadResponseAsync<PaginatedResult<ProductListDto>>(response);

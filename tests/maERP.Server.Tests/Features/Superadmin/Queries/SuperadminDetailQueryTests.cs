@@ -158,7 +158,7 @@ public class SuperadminDetailQueryTests : TenantIsolatedTestBase
         TestAssertions.AssertEqual(2, result.Data.UserCount);
         TestAssertions.AssertEqual(2, result.Data.Users.Count);
 
-        // Users should be ordered by Lastname, then Firstname
+        // Users should be salesed by Lastname, then Firstname
         var firstUser = result.Data.Users[0];
         TestAssertions.AssertEqual("John", firstUser.Firstname);
         TestAssertions.AssertEqual("Doe", firstUser.Lastname);

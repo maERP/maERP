@@ -30,7 +30,7 @@ public class SalesChannelListHandler : IRequestHandler<SalesChannelListQuery, Pa
 
         _logger.LogInformation("Handle SalesChannelListQuery: {0}", request);
 
-        if (request.OrderBy.Any() != true)
+        if (request.SalesBy.Any() != true)
         {
             return await _salesChannelRepository.Entities
                .Specify(salesChannelFilterSpec)
@@ -44,10 +44,10 @@ public class SalesChannelListHandler : IRequestHandler<SalesChannelListQuery, Pa
                    Username = entity.Username,
                    ImportProducts = entity.ImportProducts,
                    ImportCustomers = entity.ImportCustomers,
-                   ImportOrders = entity.ImportOrders,
+                   ImportSaless = entity.ImportSaless,
                    ExportProducts = entity.ExportProducts,
                    ExportCustomers = entity.ExportCustomers,
-                   ExportOrders = entity.ExportOrders,
+                   ExportSaless = entity.ExportSaless,
                    Warehouses = entity.Warehouses.Select(w => new WarehouseDetailDto
                    {
                        Id = w.Id,
@@ -57,11 +57,11 @@ public class SalesChannelListHandler : IRequestHandler<SalesChannelListQuery, Pa
                .ToPaginatedListAsync(request.PageNumber, request.PageSize);
         }
 
-        var ordering = string.Join(",", request.OrderBy);
+        var salesing = string.Join(",", request.SalesBy);
 
         return await _salesChannelRepository.Entities
             .Specify(salesChannelFilterSpec)
-            .OrderBy(ordering)
+            .OrderBy(salesing)
             .Select(entity => new SalesChannelListDto
             {
                 Id = entity.Id,
@@ -72,10 +72,10 @@ public class SalesChannelListHandler : IRequestHandler<SalesChannelListQuery, Pa
                 Username = entity.Username,
                 ImportProducts = entity.ImportProducts,
                 ImportCustomers = entity.ImportCustomers,
-                ImportOrders = entity.ImportOrders,
+                ImportSaless = entity.ImportSaless,
                 ExportProducts = entity.ExportProducts,
                 ExportCustomers = entity.ExportCustomers,
-                ExportOrders = entity.ExportOrders,
+                ExportSaless = entity.ExportSaless,
                 Warehouses = entity.Warehouses.Select(w => new WarehouseDetailDto
                 {
                     Id = w.Id,

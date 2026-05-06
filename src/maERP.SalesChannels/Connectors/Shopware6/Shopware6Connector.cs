@@ -23,20 +23,20 @@ public sealed class Shopware6Connector : ConnectorBase
 
     private readonly Shopware6AuthHelper _auth;
     private readonly IProductImportRepository _productImportRepository;
-    private readonly IOrderImportRepository _orderImportRepository;
+    private readonly ISalesImportRepository _salesImportRepository;
     private readonly ISalesChannelRepository _salesChannelRepository;
     private readonly ILogger<Shopware6Connector> _logger;
 
     public Shopware6Connector(
         Shopware6AuthHelper auth,
         IProductImportRepository productImportRepository,
-        IOrderImportRepository orderImportRepository,
+        ISalesImportRepository salesImportRepository,
         ISalesChannelRepository salesChannelRepository,
         ILogger<Shopware6Connector> logger)
     {
         _auth = auth;
         _productImportRepository = productImportRepository;
-        _orderImportRepository = orderImportRepository;
+        _salesImportRepository = salesImportRepository;
         _salesChannelRepository = salesChannelRepository;
         _logger = logger;
     }
@@ -45,7 +45,7 @@ public sealed class Shopware6Connector : ConnectorBase
 
     public override SalesChannelCapabilities Capabilities =>
         SalesChannelCapabilities.ImportProducts |
-        SalesChannelCapabilities.ImportOrders |
+        SalesChannelCapabilities.ImportSaless |
         SalesChannelCapabilities.UpdateStock |
         SalesChannelCapabilities.UpdatePrice |
         SalesChannelCapabilities.OAuth;
@@ -98,7 +98,7 @@ public sealed class Shopware6Connector : ConnectorBase
                 {
                     page,
                     limit = PageSize,
-                    sort = new[] { new { field = "createdAt", order = "ASC" } },
+                    sort = new[] { new { field = "createdAt", sales = "ASC" } },
                 };
                 var url = $"{baseUrl}/api/search/product";
                 var response = await context.HttpClient.PostAsJsonAsync(url, requestBody, context.CancellationToken);
@@ -162,7 +162,7 @@ public sealed class Shopware6Connector : ConnectorBase
         return new SyncResult(processed, failed);
     }
 
-    public override async Task<SyncResult> ImportOrdersAsync(SalesChannelContext context)
+    public override async Task<SyncResult> ImportSalessAsync(SalesChannelContext context)
     {
         var salesChannel = context.SalesChannel;
         try
@@ -192,40 +192,40 @@ public sealed class Shopware6Connector : ConnectorBase
                     limit = PageSize,
                     associations = new
                     {
-                        orderCustomer = new { },
+                        salesCustomer = new { },
                         billingAddress = new { associations = new { country = new { } } },
-                        deliveries = new { associations = new { shippingOrderAddress = new { associations = new { country = new { } } } } },
+                        deliveries = new { associations = new { shippingSalesAddress = new { associations = new { country = new { } } } } },
                         lineItems = new { },
                         stateMachineState = new { },
                     },
-                    sort = new[] { new { field = "orderDateTime", order = "ASC" } },
+                    sort = new[] { new { field = "salesDateTime", sales = "ASC" } },
                 };
-                var url = $"{baseUrl}/api/search/order";
+                var url = $"{baseUrl}/api/search/sales";
                 var response = await context.HttpClient.PostAsJsonAsync(url, requestBody, context.CancellationToken);
                 if (!response.IsSuccessStatusCode)
                 {
                     var body = await response.Content.ReadAsStringAsync(context.CancellationToken);
-                    _logger.LogError("Shopware6 order search HTTP {Status}: {Body}", (int)response.StatusCode, body);
+                    _logger.LogError("Shopware6 sales search HTTP {Status}: {Body}", (int)response.StatusCode, body);
                     failed++;
                     break;
                 }
 
                 var raw = await response.Content.ReadAsStringAsync(context.CancellationToken);
-                var result = JsonSerializer.Deserialize<Sw6SearchResult<Sw6Order>>(raw);
+                var result = JsonSerializer.Deserialize<Sw6SearchResult<Sw6Sales>>(raw);
                 if (result?.Data is null || result.Data.Count == 0) break;
 
-                foreach (var order in result.Data)
+                foreach (var sales in result.Data)
                 {
                     try
                     {
-                        var importOrder = MapOrder(order);
-                        await _orderImportRepository.ImportOrUpdateFromSalesChannel(salesChannel, importOrder);
+                        var importSales = MapSales(sales);
+                        await _salesImportRepository.ImportOrUpdateFromSalesChannel(salesChannel, importSales);
                         processed++;
                     }
                     catch (Exception ex)
                     {
                         failed++;
-                        _logger.LogError(ex, "Shopware6 order import failed for {Id}", order.Id);
+                        _logger.LogError(ex, "Shopware6 sales import failed for {Id}", sales.Id);
                     }
                 }
 
@@ -326,10 +326,10 @@ public sealed class Shopware6Connector : ConnectorBase
         context.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
     }
 
-    private static SalesChannelImportOrder MapOrder(Sw6Order order)
+    private static SalesChannelImportSales MapSales(Sw6Sales sales)
     {
-        var billing = order.BillingAddress;
-        var shipping = order.Deliveries.FirstOrDefault()?.ShippingOrderAddress ?? billing;
+        var billing = sales.BillingAddress;
+        var shipping = sales.Deliveries.FirstOrDefault()?.ShippingSalesAddress ?? billing;
 
         var billingAddress = new SalesChannelImportCustomerAddress
         {
@@ -353,29 +353,29 @@ public sealed class Shopware6Connector : ConnectorBase
             Country = shipping?.Country?.Iso ?? string.Empty,
         };
 
-        return new SalesChannelImportOrder
+        return new SalesChannelImportSales
         {
-            RemoteOrderId = order.Id,
-            RemoteCustomerId = order.OrderCustomer?.CustomerId ?? string.Empty,
-            DateOrdered = order.OrderDateTime,
-            Status = MapOrderStatus(order.StateMachineState?.TechnicalName),
+            RemoteSalesId = sales.Id,
+            RemoteCustomerId = sales.SalesCustomer?.CustomerId ?? string.Empty,
+            DateSalesed = sales.SalesDateTime,
+            Status = MapSalesStatus(sales.StateMachineState?.TechnicalName),
             PaymentStatus = PaymentStatus.Unknown,
-            Subtotal = order.AmountNet,
-            ShippingCost = order.ShippingTotal,
-            TotalTax = order.AmountTotal - order.AmountNet,
-            Total = order.AmountTotal,
+            Subtotal = sales.AmountNet,
+            ShippingCost = sales.ShippingTotal,
+            TotalTax = sales.AmountTotal - sales.AmountNet,
+            Total = sales.AmountTotal,
             Customer = new SalesChannelImportCustomer
             {
-                Firstname = order.OrderCustomer?.FirstName ?? string.Empty,
-                Lastname = order.OrderCustomer?.LastName ?? string.Empty,
-                CompanyName = order.OrderCustomer?.Company ?? string.Empty,
-                Email = order.OrderCustomer?.Email ?? string.Empty,
+                Firstname = sales.SalesCustomer?.FirstName ?? string.Empty,
+                Lastname = sales.SalesCustomer?.LastName ?? string.Empty,
+                CompanyName = sales.SalesCustomer?.Company ?? string.Empty,
+                Email = sales.SalesCustomer?.Email ?? string.Empty,
                 Phone = billing?.PhoneNumber ?? string.Empty,
                 DateEnrollment = DateTime.UtcNow,
             },
             BillingAddress = billingAddress,
             ShippingAddress = shippingAddress,
-            OrderItems = order.LineItems.Select(li => new SalesChannelImportOrderItem
+            SalesItems = sales.LineItems.Select(li => new SalesChannelImportSalesItem
             {
                 Name = li.Label ?? string.Empty,
                 Sku = li.Payload?.ProductNumber ?? string.Empty,
@@ -387,13 +387,13 @@ public sealed class Shopware6Connector : ConnectorBase
         };
     }
 
-    private static OrderStatus MapOrderStatus(string? technicalName) => technicalName switch
+    private static SalesStatus MapSalesStatus(string? technicalName) => technicalName switch
     {
-        "open" => OrderStatus.Pending,
-        "in_progress" => OrderStatus.Processing,
-        "completed" => OrderStatus.Completed,
-        "cancelled" => OrderStatus.Cancelled,
-        _ => OrderStatus.Unknown,
+        "open" => SalesStatus.Pending,
+        "in_progress" => SalesStatus.Processing,
+        "completed" => SalesStatus.Completed,
+        "cancelled" => SalesStatus.Cancelled,
+        _ => SalesStatus.Unknown,
     };
 
     private static string Truncate(string value, int max)

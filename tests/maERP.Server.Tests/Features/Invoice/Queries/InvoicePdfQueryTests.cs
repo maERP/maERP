@@ -111,7 +111,7 @@ public class InvoicePdfQueryTests : IDisposable
                 DbContext.Product.Add(product1);
 
                 _invoice1Id = Guid.NewGuid();
-                var orderId = Guid.NewGuid();
+                var salesId = Guid.NewGuid();
 
                 var invoice1Tenant1 = new maERP.Domain.Entities.Invoice
                 {
@@ -119,7 +119,7 @@ public class InvoicePdfQueryTests : IDisposable
                     InvoiceNumber = "INV-001",
                     InvoiceDate = DateTime.Now.AddDays(-10),
                     CustomerId = customer1Id,
-                    OrderId = orderId,
+                    SalesId = salesId,
                     Subtotal = 200.00m,
                     ShippingCost = 10.00m,
                     TotalTax = 38.00m,

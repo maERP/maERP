@@ -1,10 +1,10 @@
-﻿namespace maERP.SalesChannels.Models.Shopware5;
+namespace maERP.SalesChannels.Models.Shopware5;
 
 public class Attribute1
 {
     public int id { get; set; }
-    public int orderShippingId { get; set; }
-    public int orderBillingId { get; set; }
+    public int salesShippingId { get; set; }
+    public int salesBillingId { get; set; }
     // public object text1 { get; set; } = new object();
     // public object text2 { get; set; } = new object();
     // public object text3 { get; set; } = new object();

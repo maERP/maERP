@@ -26,7 +26,7 @@ The active Uno features are declared in `maERP.Client.csproj` under `<UnoFeature
 
 ## Feature-Based Architecture
 
-Every business capability is a **module** under `Features/`. Module pattern is required for new features — copy an existing one (`Customers/`, `Orders/`).
+Every business capability is a **module** under `Features/`. Module pattern is required for new features — copy an existing one (`Customers/`, `Saless/`).
 
 ```
 Features/{Feature}/
@@ -103,17 +103,17 @@ Styles live in `Styles/`:
 
 ### Cards (mandatory pattern)
 
-Cards must use `ThemeShadow` + `Translation` for the 3D effect. **Do not use `BorderBrush`/`BorderThickness`** to outline cards.
+Cards must use `ThemeShadow` + `Translation` for the 3D effect. **Do not use `BsalesBrush`/`BsalesThickness`** to outline cards.
 
 ```xml
-<Border Background="{ThemeResource SurfaceBrush}"
+<Bsales Background="{ThemeResource SurfaceBrush}"
         CornerRadius="12"
         Translation="0,0,8">
-  <Border.Shadow>
+  <Bsales.Shadow>
     <ThemeShadow />
-  </Border.Shadow>
+  </Bsales.Shadow>
   <!-- card content -->
-</Border>
+</Bsales>
 ```
 
 - `CornerRadius="12"` for rounded corners

@@ -1,4 +1,4 @@
-using maERP.Application.Contracts.Infrastructure;
+﻿using maERP.Application.Contracts.Infrastructure;
 using maERP.Application.Contracts.Persistence;
 using maERP.Application.Contracts.Services;
 using maERP.Domain.Entities;
@@ -52,7 +52,7 @@ public class InvoiceRepository : GenericRepository<Invoice>, IInvoiceRepository
         return await query
             .Where(x => x.Id == id)
             .Include(x => x.Customer)
-            .Include(x => x.Order)
+            .Include(x => x.Sales)
             .Include(x => x.InvoiceItems)
             .AsSplitQuery()
             .FirstOrDefaultAsync();
@@ -83,69 +83,69 @@ public class InvoiceRepository : GenericRepository<Invoice>, IInvoiceRepository
     }
 
     /// <summary>
-    /// Creates an invoice from an order, including all invoice items from order items
+    /// Creates an invoice from an sales, including all invoice items from sales items
     /// </summary>
-    /// <param name="order">The order with details to create invoice from</param>
+    /// <param name="sales">The sales with details to create invoice from</param>
     /// <returns>The created invoice</returns>
-    public async Task<Invoice> CreateInvoiceFromOrderAsync(Order order)
+    public async Task<Invoice> CreateInvoiceFromSalesAsync(Sales sales)
     {
-        _logger.LogInformation("Creating invoice for order with ID: {Id}", order.Id);
+        _logger.LogInformation("Creating invoice for sales with ID: {Id}", sales.Id);
 
         try
         {
             // Rechnung erstellen
             var invoice = new Invoice
             {
-                InvoiceNumber = $"INV-{DateTime.UtcNow:yyyyMMdd}-{order.Id}",
+                InvoiceNumber = $"INV-{DateTime.UtcNow:yyyyMMdd}-{sales.Id}",
                 InvoiceDate = DateTime.UtcNow,
-                CustomerId = order.CustomerId,
-                OrderId = order.Id,
-                Subtotal = order.Subtotal,
-                ShippingCost = order.ShippingCost,
-                TotalTax = order.TotalTax,
-                Total = order.Total,
-                PaymentStatus = order.PaymentStatus,
+                CustomerId = sales.CustomerId,
+                SalesId = sales.Id,
+                Subtotal = sales.Subtotal,
+                ShippingCost = sales.ShippingCost,
+                TotalTax = sales.TotalTax,
+                Total = sales.Total,
+                PaymentStatus = sales.PaymentStatus,
                 InvoiceStatus = InvoiceStatus.Created,
-                PaymentMethod = order.PaymentMethod,
-                PaymentTransactionId = order.PaymentTransactionId,
-                Notes = $"Automatisch erstellte Rechnung für Bestellung {order.Id}",
+                PaymentMethod = sales.PaymentMethod,
+                PaymentTransactionId = sales.PaymentTransactionId,
+                Notes = $"Automatisch erstellte Rechnung für Verkauf {sales.Id}",
 
                 // Rechnungsadresse
-                InvoiceAddressFirstName = order.InvoiceAddressFirstName,
-                InvoiceAddressLastName = order.InvoiceAddressLastName,
-                InvoiceAddressCompanyName = order.InvoiceAddressCompanyName,
-                InvoiceAddressPhone = order.InvoiceAddressPhone,
-                InvoiceAddressStreet = order.InvoiceAddressStreet,
-                InvoiceAddressCity = order.InvoiceAddressCity,
-                InvoiceAddressZip = order.InvoiceAddressZip,
-                InvoiceAddressCountry = order.InvoiceAddressCountry,
+                InvoiceAddressFirstName = sales.InvoiceAddressFirstName,
+                InvoiceAddressLastName = sales.InvoiceAddressLastName,
+                InvoiceAddressCompanyName = sales.InvoiceAddressCompanyName,
+                InvoiceAddressPhone = sales.InvoiceAddressPhone,
+                InvoiceAddressStreet = sales.InvoiceAddressStreet,
+                InvoiceAddressCity = sales.InvoiceAddressCity,
+                InvoiceAddressZip = sales.InvoiceAddressZip,
+                InvoiceAddressCountry = sales.InvoiceAddressCountry,
 
                 // Lieferadresse
-                DeliveryAddressFirstName = order.DeliveryAddressFirstName,
-                DeliveryAddressLastName = order.DeliveryAddressLastName,
-                DeliveryAddressCompanyName = order.DeliveryAddressCompanyName,
-                DeliveryAddressPhone = order.DeliveryAddressPhone,
-                DeliveryAddressStreet = order.DeliveryAddressStreet,
-                DeliveryAddressCity = order.DeliveryAddressCity,
-                DeliveryAddressZip = order.DeliveryAddressZip,
-                DeliveryAddressCountry = order.DeliveryAddressCountry
+                DeliveryAddressFirstName = sales.DeliveryAddressFirstName,
+                DeliveryAddressLastName = sales.DeliveryAddressLastName,
+                DeliveryAddressCompanyName = sales.DeliveryAddressCompanyName,
+                DeliveryAddressPhone = sales.DeliveryAddressPhone,
+                DeliveryAddressStreet = sales.DeliveryAddressStreet,
+                DeliveryAddressCity = sales.DeliveryAddressCity,
+                DeliveryAddressZip = sales.DeliveryAddressZip,
+                DeliveryAddressCountry = sales.DeliveryAddressCountry
             };
 
-            // Rechnungspositionen aus OrderItems erstellen
-            if (order.OrderItems != null)
+            // Rechnungspositionen aus SalesItems erstellen
+            if (sales.SalesItems != null)
             {
-                foreach (var orderItem in order.OrderItems)
+                foreach (var salesItem in sales.SalesItems)
                 {
                     var invoiceItem = new InvoiceItem
                     {
-                        Name = orderItem.Name,
-                        //SKU = orderItem.SKU,
-                        Quantity = orderItem.Quantity,
-                        // UnitPrice = orderItem.UnitPrice,
-                        TaxRate = orderItem.TaxRate,
-                        //TaxAmount = orderItem.TaxAmount,
-                        //Total = orderItem.Total,
-                        //Notes = orderItem.Notes
+                        Name = salesItem.Name,
+                        //SKU = salesItem.SKU,
+                        Quantity = salesItem.Quantity,
+                        // UnitPrice = salesItem.UnitPrice,
+                        TaxRate = salesItem.TaxRate,
+                        //TaxAmount = salesItem.TaxAmount,
+                        //Total = salesItem.Total,
+                        //Notes = salesItem.Notes
                     };
 
                     invoice.InvoiceItems.Add(invoiceItem);
@@ -156,15 +156,15 @@ public class InvoiceRepository : GenericRepository<Invoice>, IInvoiceRepository
             var createdInvoice = await this.CreateAsync(invoice);
 
             // PDF-Rechnung erstellen
-            string outputPath = $"Invoices/INV-{DateTime.UtcNow:yyyyMMdd}-{order.Id}.pdf";
+            string outputPath = $"Invoices/INV-{DateTime.UtcNow:yyyyMMdd}-{sales.Id}.pdf";
             _pdfService.GenerateInvoice(invoice, outputPath);
 
-            _logger.LogInformation("Successfully created invoice for order ID: {Id}", order.Id);
+            _logger.LogInformation("Successfully created invoice for sales ID: {Id}", sales.Id);
             return invoice;
         }
         catch (Exception ex)
         {
-            _logger.LogError("Error creating invoice for order ID {Id}: {Message}", order.Id, ex.Message);
+            _logger.LogError("Error creating invoice for sales ID {Id}: {Message}", sales.Id, ex.Message);
             throw;
         }
     }

@@ -1,4 +1,4 @@
-using System.Linq.Dynamic.Core;
+﻿using System.Linq.Dynamic.Core;
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
 using maERP.Application.Extensions;
@@ -29,7 +29,7 @@ public class AiModelListHandler : IRequestHandler<AiModelListQuery, PaginatedRes
 
         _logger.LogInformation("Handle AiModelListQuery: {0}", request);
 
-        if (request.OrderBy.Any() != true)
+        if (request.SalesBy.Any() != true)
         {
             return await _aiModelRepository.Entities
                .Specify(aiModelFilterSpec)
@@ -43,11 +43,11 @@ public class AiModelListHandler : IRequestHandler<AiModelListQuery, PaginatedRes
                .ToPaginatedListAsync(request.PageNumber, request.PageSize);
         }
 
-        var ordering = string.Join(",", request.OrderBy);
+        var salesing = string.Join(",", request.SalesBy);
 
         return await _aiModelRepository.Entities
             .Specify(aiModelFilterSpec)
-            .OrderBy(ordering)
+            .OrderBy(salesing)
             .Select(a => new AiModelListDto
             {
                 Id = a.Id,

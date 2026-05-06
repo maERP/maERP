@@ -238,12 +238,12 @@ public class CustomerListQueryTests : TenantIsolatedTestBase
     }
 
     [Fact]
-    public async Task GetCustomers_WithOrderByFirstname_ShouldReturnOrderedResults()
+    public async Task GetCustomers_WithSalesByFirstname_ShouldReturnSalesedResults()
     {
         await SeedCustomerTestDataAsync();
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.GetAsync("/api/v1/Customers?orderBy=Firstname");
+        var response = await Client.GetAsync("/api/v1/Customers?salesBy=Firstname");
 
         TestAssertions.AssertHttpSuccess(response);
         var result = await ReadResponseAsync<PaginatedResult<CustomerListDto>>(response);
@@ -258,12 +258,12 @@ public class CustomerListQueryTests : TenantIsolatedTestBase
     }
 
     [Fact]
-    public async Task GetCustomers_WithOrderByLastnameDescending_ShouldReturnDescOrderedResults()
+    public async Task GetCustomers_WithSalesByLastnameDescending_ShouldReturnDescSalesedResults()
     {
         await SeedCustomerTestDataAsync();
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.GetAsync("/api/v1/Customers?orderBy=Lastname desc");
+        var response = await Client.GetAsync("/api/v1/Customers?salesBy=Lastname desc");
 
         TestAssertions.AssertHttpSuccess(response);
         var result = await ReadResponseAsync<PaginatedResult<CustomerListDto>>(response);
@@ -278,12 +278,12 @@ public class CustomerListQueryTests : TenantIsolatedTestBase
     }
 
     [Fact]
-    public async Task GetCustomers_WithOrderByDateEnrollment_ShouldReturnDateOrderedResults()
+    public async Task GetCustomers_WithSalesByDateEnrollment_ShouldReturnDateSalesedResults()
     {
         await SeedCustomerTestDataAsync();
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.GetAsync("/api/v1/Customers?orderBy=DateEnrollment");
+        var response = await Client.GetAsync("/api/v1/Customers?salesBy=DateEnrollment");
 
         TestAssertions.AssertHttpSuccess(response);
         var result = await ReadResponseAsync<PaginatedResult<CustomerListDto>>(response);
@@ -297,12 +297,12 @@ public class CustomerListQueryTests : TenantIsolatedTestBase
     }
 
     [Fact]
-    public async Task GetCustomers_WithMultipleOrderBy_ShouldRespectMultipleSorting()
+    public async Task GetCustomers_WithMultipleSalesBy_ShouldRespectMultipleSorting()
     {
         await SeedCustomerTestDataAsync();
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.GetAsync("/api/v1/Customers?orderBy=Lastname,Firstname");
+        var response = await Client.GetAsync("/api/v1/Customers?salesBy=Lastname,Firstname");
 
         TestAssertions.AssertHttpSuccess(response);
         var result = await ReadResponseAsync<PaginatedResult<CustomerListDto>>(response);
@@ -495,7 +495,7 @@ public class CustomerListQueryTests : TenantIsolatedTestBase
     }
 
     [Fact]
-    public async Task GetCustomers_DefaultSorting_ShouldReturnConsistentOrder()
+    public async Task GetCustomers_DefaultSorting_ShouldReturnConsistentSales()
     {
         await SeedCustomerTestDataAsync();
         SetTenantHeader(TenantConstants.TestTenant1Id);

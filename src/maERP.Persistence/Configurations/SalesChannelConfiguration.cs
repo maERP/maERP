@@ -1,4 +1,4 @@
-﻿using maERP.Domain.Entities;
+using maERP.Domain.Entities;
 using maERP.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -37,10 +37,10 @@ public class SalesChannelConfiguration : IEntityTypeConfiguration<SalesChannel>
                 Password = string.Empty,
                 ImportProducts = false,
                 ImportCustomers = false,
-                ImportOrders = false,
+                ImportSaless = false,
                 ExportProducts = false,
                 ExportCustomers = false,
-                ExportOrders = false
+                ExportSaless = false
             }
         );
 

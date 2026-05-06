@@ -25,21 +25,21 @@ public class ProductsController(IMediator mediator) : ControllerBase
     /// <param name="pageNumber">Page number (0-based)</param>
     /// <param name="pageSize">Number of items per page (max 100)</param>
     /// <param name="searchString">Search term to filter products by name or SKU</param>
-    /// <param name="orderBy">Sort order (e.g., "Name Ascending", "DateCreated Descending")</param>
+    /// <param name="salesBy">Sort sales (e.g., "Name Ascending", "DateCreated Descending")</param>
     /// <returns>Paginated list of products</returns>
     /// <response code="200">Returns the paginated list of products</response>
     /// <response code="400">Invalid pagination parameters or search criteria</response>
     [HttpGet]
     [ProducesResponseType(typeof(PaginatedResult<ProductListDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(Microsoft.AspNetCore.Mvc.ProblemDetails), StatusCodes.Status400BadRequest, "application/problem+json")]
-    public async Task<ActionResult<PaginatedResult<ProductListDto>>> GetAll(int pageNumber = 0, int pageSize = 10, string searchString = "", string orderBy = "")
+    public async Task<ActionResult<PaginatedResult<ProductListDto>>> GetAll(int pageNumber = 0, int pageSize = 10, string searchString = "", string salesBy = "")
     {
-        if (string.IsNullOrEmpty(orderBy))
+        if (string.IsNullOrEmpty(salesBy))
         {
-            orderBy = "DateCreated Descending";
+            salesBy = "DateCreated Descending";
         }
 
-        var response = await mediator.Send(new ProductListQuery(pageNumber, pageSize, searchString, orderBy));
+        var response = await mediator.Send(new ProductListQuery(pageNumber, pageSize, searchString, salesBy));
         return response.ToActionResult();
     }
 

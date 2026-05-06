@@ -1,4 +1,4 @@
-using System.Linq.Dynamic.Core;
+﻿using System.Linq.Dynamic.Core;
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
 using maERP.Application.Extensions;
@@ -33,7 +33,7 @@ public class CustomerListWithAddressHandler : IRequestHandler<CustomerListWithAd
             .Specify(customerFilterSpec)
             .Include(c => c.CustomerAddresses);
 
-        if (request.OrderBy.Any() != true)
+        if (request.SalesBy.Any() != true)
         {
             return await baseQuery
                 .Select(c => new CustomerListWithAddressDto
@@ -54,10 +54,10 @@ public class CustomerListWithAddressHandler : IRequestHandler<CustomerListWithAd
                 .ToPaginatedListAsync(request.PageNumber, request.PageSize);
         }
 
-        var ordering = string.Join(",", request.OrderBy);
+        var salesing = string.Join(",", request.SalesBy);
 
         return await baseQuery
-            .OrderBy(ordering)
+            .OrderBy(salesing)
             .Select(c => new CustomerListWithAddressDto
             {
                 Id = c.Id,

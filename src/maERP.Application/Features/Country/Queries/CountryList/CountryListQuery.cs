@@ -9,18 +9,18 @@ public class CountryListQuery : IRequest<PaginatedResult<CountryListDto>>
     public int PageNumber { get; set; }
     public int PageSize { get; set; }
     public string SearchString { get; set; }
-    public string[] OrderBy { get; set; }
+    public string[] SalesBy { get; set; }
 
-    public CountryListQuery(int pageNumber = 0, int pageSize = 300, string searchString = "", string orderBy = "")
+    public CountryListQuery(int pageNumber = 0, int pageSize = 300, string searchString = "", string salesBy = "")
     {
         PageNumber = pageNumber;
         PageSize = pageSize;
         SearchString = searchString;
 
-        if (!string.IsNullOrWhiteSpace(orderBy))
+        if (!string.IsNullOrWhiteSpace(salesBy))
         {
-            OrderBy = orderBy.Split(',');
+            SalesBy = salesBy.Split(',');
         }
-        else OrderBy = Array.Empty<string>();
+        else SalesBy = Array.Empty<string>();
     }
 }

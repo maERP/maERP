@@ -10,14 +10,14 @@ namespace maERP.Application.Features.Statistic.Queries.SalesToday;
 public class SalesTodayHandler : IRequestHandler<SalesTodayQuery, Result<SalesTodayDto>>
 {
     private readonly IAppLogger<SalesTodayHandler> _logger;
-    private readonly IOrderRepository _orderRepository;
+    private readonly ISalesRepository _salesRepository;
 
     public SalesTodayHandler(
         IAppLogger<SalesTodayHandler> logger,
-        IOrderRepository orderRepository)
+        ISalesRepository salesRepository)
     {
         _logger = logger;
-        _orderRepository = orderRepository;
+        _salesRepository = salesRepository;
     }
 
     public async Task<Result<SalesTodayDto>> Handle(SalesTodayQuery request, CancellationToken cancellationToken)
@@ -33,28 +33,28 @@ public class SalesTodayHandler : IRequestHandler<SalesTodayQuery, Result<SalesTo
             var weekStart = todayStart.AddDays(-(int)todayStart.DayOfWeek);
             var monthStart = new DateTime(now.Year, now.Month, 1, 0, 0, 0, DateTimeKind.Utc);
 
-            var baseQuery = _orderRepository.Entities.AsQueryable();
+            var baseQuery = _salesRepository.Entities.AsQueryable();
             if (request.SalesChannelId.HasValue)
                 baseQuery = baseQuery.Where(o => o.SalesChannelId == request.SalesChannelId.Value);
 
             // Revenue calculations
             dto.RevenueToday = await baseQuery
-                .Where(o => o.DateOrdered >= todayStart)
+                .Where(o => o.DateSalesed >= todayStart)
                 .SumAsync(o => o.Total, cancellationToken);
 
             dto.RevenueThisWeek = await baseQuery
-                .Where(o => o.DateOrdered >= weekStart)
+                .Where(o => o.DateSalesed >= weekStart)
                 .SumAsync(o => o.Total, cancellationToken);
 
             dto.RevenueThisMonth = await baseQuery
-                .Where(o => o.DateOrdered >= monthStart)
+                .Where(o => o.DateSalesed >= monthStart)
                 .SumAsync(o => o.Total, cancellationToken);
 
             // Calculate revenue change compared to last week's same day
             var lastWeekSameDayStart = todayStart.AddDays(-7);
             var lastWeekSameDayEnd = lastWeekSameDayStart.AddDays(1);
             var revenueLastWeekSameDay = await baseQuery
-                .Where(o => o.DateOrdered >= lastWeekSameDayStart && o.DateOrdered < lastWeekSameDayEnd)
+                .Where(o => o.DateSalesed >= lastWeekSameDayStart && o.DateSalesed < lastWeekSameDayEnd)
                 .SumAsync(o => o.Total, cancellationToken);
 
             dto.RevenueChangePercent = revenueLastWeekSameDay > 0

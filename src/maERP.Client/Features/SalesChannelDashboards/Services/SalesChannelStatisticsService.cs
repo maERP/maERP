@@ -70,68 +70,68 @@ public class SalesChannelStatisticsService : ISalesChannelStatisticsService
         }
     }
 
-    public async Task<OrdersTodayDto?> GetOrdersTodayAsync(Guid salesChannelId, CancellationToken ct = default)
+    public async Task<SalessTodayDto?> GetSalessTodayAsync(Guid salesChannelId, CancellationToken ct = default)
     {
         var baseUrl = await GetBaseUrlAsync();
-        var url = $"{baseUrl}{ApiEndpoints.Statistics.OrdersToday}?salesChannelId={salesChannelId}";
+        var url = $"{baseUrl}{ApiEndpoints.Statistics.SalessToday}?salesChannelId={salesChannelId}";
 
-        _logger.LogInformation("Fetching orders today statistics for SalesChannel {SalesChannelId} from URL: {Url}", salesChannelId, url);
+        _logger.LogInformation("Fetching saless today statistics for SalesChannel {SalesChannelId} from URL: {Url}", salesChannelId, url);
 
         try
         {
             var apiResponse = await _httpClient.GetFromJsonAsync(
-                url, AppJsonSerializerContext.Default.ApiResponseOrdersTodayDto, ct);
+                url, AppJsonSerializerContext.Default.ApiResponseSalessTodayDto, ct);
 
             if (apiResponse?.Succeeded != true)
             {
-                _logger.LogWarning("API returned unsuccessful response for OrdersToday (SalesChannel {SalesChannelId})", salesChannelId);
+                _logger.LogWarning("API returned unsuccessful response for SalessToday (SalesChannel {SalesChannelId})", salesChannelId);
                 return null;
             }
 
             if (apiResponse.Data == null)
             {
-                _logger.LogWarning("API returned success but OrdersToday Data is null (SalesChannel {SalesChannelId})", salesChannelId);
-                return new OrdersTodayDto();
+                _logger.LogWarning("API returned success but SalessToday Data is null (SalesChannel {SalesChannelId})", salesChannelId);
+                return new SalessTodayDto();
             }
 
             return apiResponse.Data;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error fetching orders today statistics for SalesChannel {SalesChannelId}", salesChannelId);
+            _logger.LogError(ex, "Error fetching saless today statistics for SalesChannel {SalesChannelId}", salesChannelId);
             throw;
         }
     }
 
-    public async Task<OrdersLatestDto?> GetOrdersLatestAsync(Guid salesChannelId, int count = 5, CancellationToken ct = default)
+    public async Task<SalessLatestDto?> GetSalessLatestAsync(Guid salesChannelId, int count = 5, CancellationToken ct = default)
     {
         var baseUrl = await GetBaseUrlAsync();
-        var url = $"{baseUrl}{ApiEndpoints.Statistics.OrdersLatest}?count={count}&salesChannelId={salesChannelId}";
+        var url = $"{baseUrl}{ApiEndpoints.Statistics.SalessLatest}?count={count}&salesChannelId={salesChannelId}";
 
-        _logger.LogInformation("Fetching latest orders for SalesChannel {SalesChannelId} from URL: {Url}", salesChannelId, url);
+        _logger.LogInformation("Fetching latest saless for SalesChannel {SalesChannelId} from URL: {Url}", salesChannelId, url);
 
         try
         {
             var apiResponse = await _httpClient.GetFromJsonAsync(
-                url, AppJsonSerializerContext.Default.ApiResponseOrdersLatestDto, ct);
+                url, AppJsonSerializerContext.Default.ApiResponseSalessLatestDto, ct);
 
             if (apiResponse?.Succeeded != true)
             {
-                _logger.LogWarning("API returned unsuccessful response for OrdersLatest (SalesChannel {SalesChannelId})", salesChannelId);
+                _logger.LogWarning("API returned unsuccessful response for SalessLatest (SalesChannel {SalesChannelId})", salesChannelId);
                 return null;
             }
 
             if (apiResponse.Data == null)
             {
-                _logger.LogWarning("API returned success but OrdersLatest Data is null (SalesChannel {SalesChannelId})", salesChannelId);
-                return new OrdersLatestDto();
+                _logger.LogWarning("API returned success but SalessLatest Data is null (SalesChannel {SalesChannelId})", salesChannelId);
+                return new SalessLatestDto();
             }
 
             return apiResponse.Data;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error fetching latest orders for SalesChannel {SalesChannelId}", salesChannelId);
+            _logger.LogError(ex, "Error fetching latest saless for SalesChannel {SalesChannelId}", salesChannelId);
             throw;
         }
     }

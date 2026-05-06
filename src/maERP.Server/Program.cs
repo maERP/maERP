@@ -138,7 +138,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddControllers().AddJsonOptions(opts =>
 {
     opts.JsonSerializerOptions.PropertyNamingPolicy = null; // JsonNamingPolicy.CamelCase);
-    opts.JsonSerializerOptions.Converters.Add(new StrictEnumConverter<OrderStatus>());
+    opts.JsonSerializerOptions.Converters.Add(new StrictEnumConverter<SalesStatus>());
     opts.JsonSerializerOptions.Converters.Add(new StrictEnumConverter<PaymentStatus>());
     opts.JsonSerializerOptions.Converters.Add(new StrictEnumConverter<CustomerStatus>());
 });
@@ -227,7 +227,7 @@ builder.Services.AddScoped<IAiModelRepository, AiModelRepository>();
 builder.Services.AddScoped<IAiPromptRepository, AiPromptRepository>();
 builder.Services.AddScoped<ICountryRepository, CountryRepository>();
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
-builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<ISalesRepository, SalesRepository>();
 builder.Services.AddScoped<IInvoiceRepository, InvoiceRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IProductSalesChannelRepository, ProductSalesChannelRepository>();

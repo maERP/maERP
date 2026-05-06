@@ -1,4 +1,4 @@
-using System.Net;
+﻿using System.Net;
 using maERP.Domain.Wrapper;
 using maERP.Server.Tests.Infrastructure;
 using Microsoft.EntityFrameworkCore;

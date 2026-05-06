@@ -17,12 +17,12 @@ public interface ISalesChannelConnector
     Task<ConnectionTestResult> TestConnectionAsync(SalesChannelContext context);
 
     Task<SyncResult> ImportProductsAsync(SalesChannelContext context);
-    Task<SyncResult> ImportOrdersAsync(SalesChannelContext context);
+    Task<SyncResult> ImportSalessAsync(SalesChannelContext context);
     Task<SyncResult> ImportCustomersAsync(SalesChannelContext context);
 
     Task<ExportResult> ExportProductAsync(SalesChannelContext context, ProductExportPayload payload);
     Task<ExportResult> UpdateStockAsync(SalesChannelContext context, StockUpdatePayload payload);
     Task<ExportResult> UpdatePriceAsync(SalesChannelContext context, PriceUpdatePayload payload);
-    Task<ExportResult> UpdateOrderAsync(SalesChannelContext context, OrderUpdatePayload payload);
+    Task<ExportResult> UpdateSalesAsync(SalesChannelContext context, SalesUpdatePayload payload);
     Task<ExportResult> DelistProductAsync(SalesChannelContext context, DelistPayload payload);
 }

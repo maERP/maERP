@@ -1,4 +1,4 @@
-<Page x:Class="maERP.Client.Features.Invoices.Views.InvoiceListPage"
+﻿<Page x:Class="maERP.Client.Features.Invoices.Views.InvoiceListPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:local="using:maERP.Client.Features.Invoices.Views"

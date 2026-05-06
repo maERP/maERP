@@ -1,4 +1,4 @@
-﻿using maERP.Domain.Dtos.Warehouse;
+using maERP.Domain.Dtos.Warehouse;
 using maERP.Domain.Enums;
 
 namespace maERP.Domain.Dtos.SalesChannel;
@@ -17,8 +17,8 @@ public class SalesChannelListDto
     public bool ExportProducts { get; set; }
     public bool ImportCustomers { get; set; }
     public bool ExportCustomers { get; set; }
-    public bool ImportOrders { get; set; }
-    public bool ExportOrders { get; set; }
+    public bool ImportSaless { get; set; }
+    public bool ExportSaless { get; set; }
 
     public List<WarehouseDetailDto> Warehouses { get; set; } = new();
 }

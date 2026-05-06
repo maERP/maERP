@@ -17,7 +17,7 @@ public class InvoiceInputDto : IInvoiceInputModel
     [Required]
     public int CustomerId { get; set; }
 
-    public Guid? OrderId { get; set; }
+    public Guid? SalesId { get; set; }
 
     public List<InvoiceItemDto> InvoiceItems { get; set; } = new();
 

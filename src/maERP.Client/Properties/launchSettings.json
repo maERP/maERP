@@ -8,11 +8,12 @@
     }
   },
   "profiles": {
-    // This profile is first in order for dotnet run to pick it up by default
+    // This profile is first in sales for dotnet run to pick it up by default
     "maERP.Client (WebAssembly)": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,
+      "launchUrl": "http://localhost:5001",
       "applicationUrl": "http://localhost:5001",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"

@@ -44,22 +44,22 @@ public sealed class Sw6Price
     [JsonPropertyName("currencyId")] public string? CurrencyId { get; set; }
 }
 
-public sealed class Sw6Order
+public sealed class Sw6Sales
 {
     [JsonPropertyName("id")] public string Id { get; set; } = string.Empty;
-    [JsonPropertyName("orderNumber")] public string? OrderNumber { get; set; }
-    [JsonPropertyName("orderDateTime")] public DateTime OrderDateTime { get; set; }
+    [JsonPropertyName("salesNumber")] public string? SalesNumber { get; set; }
+    [JsonPropertyName("salesDateTime")] public DateTime SalesDateTime { get; set; }
     [JsonPropertyName("amountTotal")] public decimal AmountTotal { get; set; }
     [JsonPropertyName("amountNet")] public decimal AmountNet { get; set; }
     [JsonPropertyName("shippingTotal")] public decimal ShippingTotal { get; set; }
-    [JsonPropertyName("orderCustomer")] public Sw6OrderCustomer? OrderCustomer { get; set; }
+    [JsonPropertyName("salesCustomer")] public Sw6SalesCustomer? SalesCustomer { get; set; }
     [JsonPropertyName("billingAddress")] public Sw6Address? BillingAddress { get; set; }
     [JsonPropertyName("deliveries")] public List<Sw6Delivery> Deliveries { get; set; } = new();
     [JsonPropertyName("lineItems")] public List<Sw6LineItem> LineItems { get; set; } = new();
     [JsonPropertyName("stateMachineState")] public Sw6StateMachineState? StateMachineState { get; set; }
 }
 
-public sealed class Sw6OrderCustomer
+public sealed class Sw6SalesCustomer
 {
     [JsonPropertyName("email")] public string? Email { get; set; }
     [JsonPropertyName("firstName")] public string? FirstName { get; set; }
@@ -87,7 +87,7 @@ public sealed class Sw6Country
 
 public sealed class Sw6Delivery
 {
-    [JsonPropertyName("shippingOrderAddress")] public Sw6Address? ShippingOrderAddress { get; set; }
+    [JsonPropertyName("shippingSalesAddress")] public Sw6Address? ShippingSalesAddress { get; set; }
 }
 
 public sealed class Sw6LineItem

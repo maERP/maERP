@@ -1,4 +1,4 @@
-using maERP.Application.Contracts.Logging;
+﻿using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
 using maERP.Domain.Dtos.Statistic;
 using maERP.Domain.Wrapper;
@@ -10,16 +10,16 @@ namespace maERP.Application.Features.Statistic.Queries.StatisticMostSellingProdu
 public class StatisticMostSellingProductsHandler : IRequestHandler<StatisticMostSellingProductsQuery, Result<StatisticMostSellingProductsDto>>
 {
     private readonly IAppLogger<StatisticMostSellingProductsHandler> _logger;
-    private readonly IOrderRepository _orderRepository;
+    private readonly ISalesRepository _salesRepository;
     private readonly IProductRepository _productRepository;
 
     public StatisticMostSellingProductsHandler(
         IAppLogger<StatisticMostSellingProductsHandler> logger,
-        IOrderRepository orderRepository,
+        ISalesRepository salesRepository,
         IProductRepository productRepository)
     {
         _logger = logger;
-        _orderRepository = orderRepository;
+        _salesRepository = salesRepository;
         _productRepository = productRepository;
     }
 
@@ -68,24 +68,24 @@ public class StatisticMostSellingProductsHandler : IRequestHandler<StatisticMost
         DateTime? endDate,
         CancellationToken cancellationToken)
     {
-        var query = _orderRepository.Entities
-            .Include(o => o.OrderItems)
-            .Where(o => o.OrderItems.Any());
+        var query = _salesRepository.Entities
+            .Include(o => o.SalesItems)
+            .Where(o => o.SalesItems.Any());
 
         // Zeitraum-Filter anwenden, falls vorhanden
         if (startDate.HasValue)
         {
-            query = query.Where(o => o.DateOrdered >= startDate.Value);
+            query = query.Where(o => o.DateSalesed >= startDate.Value);
         }
 
         if (endDate.HasValue)
         {
-            query = query.Where(o => o.DateOrdered < endDate.Value);
+            query = query.Where(o => o.DateSalesed < endDate.Value);
         }
 
-        // Bestellungen mit ihren Positionen abrufen und nach Produkt gruppieren
+        // Verkäufe mit ihren Positionen abrufen und nach Produkt gruppieren
         var topProducts = await query
-            .SelectMany(o => o.OrderItems)
+            .SelectMany(o => o.SalesItems)
             .GroupBy(oi => new { oi.ProductId })
             .Select(g => new
             {

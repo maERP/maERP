@@ -183,9 +183,9 @@ public partial class ShellModel : INotifyPropertyChanged
                     Console.WriteLine($"[ShellModel] Navigation to CustomerListModel FAILED: {ex.Message}");
                 }
                 break;
-            case "Orders":
-                // TODO: Add Orders page when created
-                // await _navigator.NavigateViewModelAsync<OrderListModel>(this);
+            case "Saless":
+                // TODO: Add Saless page when created
+                // await _navigator.NavigateViewModelAsync<SalesListModel>(this);
                 break;
             case "Products":
                 // TODO: Add Products page when created

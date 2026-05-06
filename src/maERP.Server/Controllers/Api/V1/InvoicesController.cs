@@ -23,7 +23,7 @@ public class InvoicesController(IMediator mediator) : ControllerBase
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<PaginatedResult<InvoiceListDto>>> GetAll(int pageNumber = 0, int pageSize = 10, string searchString = "", string orderBy = "")
+    public async Task<ActionResult<PaginatedResult<InvoiceListDto>>> GetAll(int pageNumber = 0, int pageSize = 10, string searchString = "", string salesBy = "")
     {
         // Validate pagination parameters
         if (pageNumber < 0)
@@ -44,12 +44,12 @@ public class InvoicesController(IMediator mediator) : ControllerBase
             return BadRequest(errorResult);
         }
 
-        if (string.IsNullOrEmpty(orderBy))
+        if (string.IsNullOrEmpty(salesBy))
         {
-            orderBy = "InvoiceDate Descending";
+            salesBy = "InvoiceDate Descending";
         }
 
-        var invoices = await mediator.Send(new InvoiceListQuery(pageNumber, pageSize, searchString, orderBy));
+        var invoices = await mediator.Send(new InvoiceListQuery(pageNumber, pageSize, searchString, salesBy));
         return Ok(invoices);
     }
 
@@ -65,7 +65,7 @@ public class InvoicesController(IMediator mediator) : ControllerBase
             var errorResult = new Result<InvoiceDetailDto>();
             errorResult.Succeeded = false;
             errorResult.StatusCode = ResultStatusCode.BadRequest;
-            errorResult.Messages.Add("Ungültige ID-Format. Eine gültige GUID ist erforderlich.");
+            errorResult.Messages.Add("Ungültige ID-Format. Eine gültige GUID ist erfsaleslich.");
             return BadRequest(errorResult);
         }
 
@@ -85,7 +85,7 @@ public class InvoicesController(IMediator mediator) : ControllerBase
             var errorResult = new Result<byte[]>();
             errorResult.Succeeded = false;
             errorResult.StatusCode = ResultStatusCode.BadRequest;
-            errorResult.Messages.Add("Ungültige ID-Format. Eine gültige GUID ist erforderlich.");
+            errorResult.Messages.Add("Ungültige ID-Format. Eine gültige GUID ist erfsaleslich.");
             return BadRequest(errorResult);
         }
 
@@ -117,7 +117,7 @@ public class InvoicesController(IMediator mediator) : ControllerBase
             var errorResult = new Result();
             errorResult.Succeeded = false;
             errorResult.StatusCode = ResultStatusCode.BadRequest;
-            errorResult.Messages.Add("Ungültige ID-Format. Eine gültige GUID ist erforderlich.");
+            errorResult.Messages.Add("Ungültige ID-Format. Eine gültige GUID ist erfsaleslich.");
             return BadRequest(errorResult);
         }
 
@@ -145,7 +145,7 @@ public class InvoicesController(IMediator mediator) : ControllerBase
             var errorResult = new Result();
             errorResult.Succeeded = false;
             errorResult.StatusCode = ResultStatusCode.BadRequest;
-            errorResult.Messages.Add("Ungültige ID-Format. Eine gültige GUID ist erforderlich.");
+            errorResult.Messages.Add("Ungültige ID-Format. Eine gültige GUID ist erfsaleslich.");
             return BadRequest(errorResult);
         }
 

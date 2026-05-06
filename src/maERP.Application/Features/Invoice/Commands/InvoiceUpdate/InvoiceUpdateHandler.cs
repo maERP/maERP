@@ -1,4 +1,4 @@
-using maERP.Application.Contracts.Logging;
+﻿using maERP.Application.Contracts.Logging;
 using System.Linq;
 using maERP.Application.Contracts.Persistence;
 using maERP.Application.Contracts.Services;
@@ -24,7 +24,7 @@ public class InvoiceUpdateHandler : IRequestHandler<InvoiceUpdateCommand, Result
     /// </summary>
     private readonly IInvoiceRepository _invoiceRepository;
     private readonly ICustomerRepository _customerRepository;
-    private readonly IOrderRepository _orderRepository;
+    private readonly ISalesRepository _salesRepository;
     private readonly ITenantContext _tenantContext;
 
     /// <summary>
@@ -36,13 +36,13 @@ public class InvoiceUpdateHandler : IRequestHandler<InvoiceUpdateCommand, Result
         IAppLogger<InvoiceUpdateHandler> logger,
         IInvoiceRepository invoiceRepository,
         ICustomerRepository customerRepository,
-        IOrderRepository orderRepository,
+        ISalesRepository salesRepository,
         ITenantContext tenantContext)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _invoiceRepository = invoiceRepository ?? throw new ArgumentNullException(nameof(invoiceRepository));
         _customerRepository = customerRepository ?? throw new ArgumentNullException(nameof(customerRepository));
-        _orderRepository = orderRepository ?? throw new ArgumentNullException(nameof(orderRepository));
+        _salesRepository = salesRepository ?? throw new ArgumentNullException(nameof(salesRepository));
         _tenantContext = tenantContext ?? throw new ArgumentNullException(nameof(tenantContext));
     }
 
@@ -83,7 +83,7 @@ public class InvoiceUpdateHandler : IRequestHandler<InvoiceUpdateCommand, Result
             {
                 result.Succeeded = false;
                 result.StatusCode = ResultStatusCode.BadRequest;
-                result.Messages.Add("Ein Mandantenkontext ist erforderlich.");
+                result.Messages.Add("Ein Mandantenkontext ist erfsaleslich.");
                 return result;
             }
 
@@ -114,22 +114,22 @@ public class InvoiceUpdateHandler : IRequestHandler<InvoiceUpdateCommand, Result
                 return result;
             }
 
-            if (request.OrderId.HasValue)
+            if (request.SalesId.HasValue)
             {
-                var order = await _orderRepository.GetByIdAsync(request.OrderId.Value);
-                if (order == null || order.TenantId != currentTenantId.Value)
+                var sales = await _salesRepository.GetByIdAsync(request.SalesId.Value);
+                if (sales == null || sales.TenantId != currentTenantId.Value)
                 {
                     result.Succeeded = false;
                     result.StatusCode = ResultStatusCode.BadRequest;
-                    result.Messages.Add("Bestellung wurde nicht gefunden oder gehört zu einem anderen Mandanten.");
+                    result.Messages.Add("Verkauf wurde nicht gefunden oder gehört zu einem anderen Mandanten.");
                     return result;
                 }
 
-                if (order.CustomerId != request.CustomerId)
+                if (sales.CustomerId != request.CustomerId)
                 {
                     result.Succeeded = false;
                     result.StatusCode = ResultStatusCode.BadRequest;
-                    result.Messages.Add("Die Bestellung gehört nicht zum ausgewählten Kunden.");
+                    result.Messages.Add("Die Verkauf gehört nicht zum ausgewählten Kunden.");
                     return result;
                 }
             }
@@ -147,7 +147,7 @@ public class InvoiceUpdateHandler : IRequestHandler<InvoiceUpdateCommand, Result
             invoiceToUpdate.InvoiceNumber = request.InvoiceNumber;
             invoiceToUpdate.InvoiceDate = request.InvoiceDate;
             invoiceToUpdate.CustomerId = request.CustomerId;
-            invoiceToUpdate.OrderId = request.OrderId;
+            invoiceToUpdate.SalesId = request.SalesId;
             invoiceToUpdate.Subtotal = request.Subtotal;
             invoiceToUpdate.ShippingCost = request.ShippingCost;
             invoiceToUpdate.TotalTax = request.TotalTax;

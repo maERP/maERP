@@ -1,4 +1,4 @@
-using System.Linq.Dynamic.Core;
+﻿using System.Linq.Dynamic.Core;
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
 using maERP.Application.Extensions;
@@ -28,7 +28,7 @@ public class ManufacturerListHandler : IRequestHandler<ManufacturerListQuery, Pa
 
         _logger.LogInformation("Handle ManufacturerListQuery: {0}", request);
 
-        if (request.OrderBy.Any() != true)
+        if (request.SalesBy.Any() != true)
         {
             return await _manufacturerRepository.Entities
                .Specify(manufacturerFilterSpec)
@@ -42,11 +42,11 @@ public class ManufacturerListHandler : IRequestHandler<ManufacturerListQuery, Pa
                .ToPaginatedListAsync(request.PageNumber, request.PageSize);
         }
 
-        var ordering = string.Join(",", request.OrderBy);
+        var salesing = string.Join(",", request.SalesBy);
 
         return await _manufacturerRepository.Entities
             .Specify(manufacturerFilterSpec)
-            .OrderBy(ordering)
+            .OrderBy(salesing)
             .Select(m => new ManufacturerListDto
             {
                 Id = m.Id,

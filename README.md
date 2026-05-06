@@ -1,4 +1,4 @@
-**Wichtiger Hinweis:** maERP ist keine schlüsselfertige ERP-Lösung für Endkund:innen und darf nicht ohne eigene Anpassungen im Livebetrieb eingesetzt werden. Das Projekt dient als technische Basis, auf der eigene, individuelle Unternehmenslösungen aufgebaut werden können.
+﻿**Wichtiger Hinweis:** maERP ist keine schlüsselfertige ERP-Lösung für Endkund:innen und darf nicht ohne eigene Anpassungen im Livebetrieb eingesetzt werden. Das Projekt dient als technische Basis, auf der eigene, individuelle Unternehmenslösungen aufgebaut werden können.
 
 # maERP
 
@@ -6,7 +6,7 @@ maERP ist ein kostenloses, Open-Source-ERP-System mit mandantenfähiger Architek
 
 ## Was maERP bietet
 - Mandantenisolierte REST-API für Kunden-, Produkt-, Lager- und Auftragsverwaltung
-- Module für Angebote, Bestellungen, Rechnungen und Warenzugänge inklusive Nachverfolgung
+- Module für Angebote, Verkäufe, Rechnungen und Warenzugänge inklusive Nachverfolgung
 - Cross-Plattform-Oberflächen auf Basis von Uno Platform unterstützen Desktop-, Web- und Mobile-Clients
 - Anbindung externer Vertriebskanäle und Versanddienstleister über konfigurierbare Schnittstellen
 - Auswertungen zu Verkäufen, Produkten und Lagerbewegungen zur schnellen Entscheidungsfindung
@@ -14,7 +14,7 @@ maERP ist ein kostenloses, Open-Source-ERP-System mit mandantenfähiger Architek
 - Kostenfrei, quelloffen und erweiterbar
 
 ## Für wen eignet sich maERP?
-maERP adressiert Unternehmen, Integrator:innen und IT-Dienstleister, die ein funktionsreiches Fundament benötigen, um eigene ERP-Prozesse zu digitalisieren. Durch die klare Trennung von Server, UI-Clients und Integrationen bleibt das System flexibel genug, um branchenspezifische Anforderungen abzubilden. Umfangreiche automatische Tests (rund 1.500 Szenarien) sorgen für eine hohe Abdeckung von Kernprozessen und erleichtern kontinuierliche Weiterentwicklungen.
+maERP adressiert Unternehmen, Integrator:innen und IT-Dienstleister, die ein funktionsreiches Fundament benötigen, um eigene ERP-Prozesse zu digitalisieren. Durch die klare Trennung von Server, UI-Clients und Integrationen bleibt das System flexibel genug, um branchenspezifische Anfsalesungen abzubilden. Umfangreiche automatische Tests (rund 1.500 Szenarien) sorgen für eine hohe Abdeckung von Kernprozessen und erleichtern kontinuierliche Weiterentwicklungen.
 
 # Installation
 
@@ -32,7 +32,7 @@ Die einfachste Art, maERP mit einer vollständigen Umgebung zu starten. Alle ben
 - Docker und Docker Compose installiert
 - Git für das Klonen des Repositories
 
-### SQLite (Standard, keine externe Datenbank erforderlich)
+### SQLite (Standard, keine externe Datenbank erfsaleslich)
 ```bash
 # Repository klonen
 git clone https://github.com/maERP/maERP.git

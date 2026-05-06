@@ -1,4 +1,4 @@
-<Page x:Class="maERP.Client.Features.Tenants.Views.DemoDataGeneratorPage"
+﻿<Page x:Class="maERP.Client.Features.Tenants.Views.DemoDataGeneratorPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:local="using:maERP.Client.Features.Tenants.Views"
@@ -47,9 +47,9 @@
                 <Setter Target="CustomersCard.(Grid.Column)" Value="0" />
                 <Setter Target="CustomersCard.(Grid.Row)" Value="1" />
                 <Setter Target="CustomersCard.Margin" Value="0,0,0,16" />
-                <Setter Target="OrdersCard.(Grid.Column)" Value="0" />
-                <Setter Target="OrdersCard.(Grid.Row)" Value="2" />
-                <Setter Target="OrdersCard.Margin" Value="0,0,0,16" />
+                <Setter Target="SalessCard.(Grid.Column)" Value="0" />
+                <Setter Target="SalessCard.(Grid.Row)" Value="2" />
+                <Setter Target="SalessCard.Margin" Value="0,0,0,16" />
                 <Setter Target="AiDataCard.(Grid.Column)" Value="0" />
                 <Setter Target="AiDataCard.(Grid.Row)" Value="3" />
                 <Setter Target="AiDataCard.Margin" Value="0" />
@@ -72,9 +72,9 @@
                 <Setter Target="CustomersCard.(Grid.Column)" Value="1" />
                 <Setter Target="CustomersCard.(Grid.Row)" Value="0" />
                 <Setter Target="CustomersCard.Margin" Value="8,0,0,16" />
-                <Setter Target="OrdersCard.(Grid.Column)" Value="0" />
-                <Setter Target="OrdersCard.(Grid.Row)" Value="1" />
-                <Setter Target="OrdersCard.Margin" Value="0,0,8,16" />
+                <Setter Target="SalessCard.(Grid.Column)" Value="0" />
+                <Setter Target="SalessCard.(Grid.Row)" Value="1" />
+                <Setter Target="SalessCard.Margin" Value="0,0,8,16" />
                 <Setter Target="AiDataCard.(Grid.Column)" Value="1" />
                 <Setter Target="AiDataCard.(Grid.Row)" Value="1" />
                 <Setter Target="AiDataCard.Margin" Value="8,0,0,16" />
@@ -97,9 +97,9 @@
                 <Setter Target="CustomersCard.(Grid.Column)" Value="1" />
                 <Setter Target="CustomersCard.(Grid.Row)" Value="0" />
                 <Setter Target="CustomersCard.Margin" Value="8,0,8,0" />
-                <Setter Target="OrdersCard.(Grid.Column)" Value="2" />
-                <Setter Target="OrdersCard.(Grid.Row)" Value="0" />
-                <Setter Target="OrdersCard.Margin" Value="8,0,8,0" />
+                <Setter Target="SalessCard.(Grid.Column)" Value="2" />
+                <Setter Target="SalessCard.(Grid.Row)" Value="0" />
+                <Setter Target="SalessCard.Margin" Value="8,0,8,0" />
                 <Setter Target="AiDataCard.(Grid.Column)" Value="3" />
                 <Setter Target="AiDataCard.(Grid.Row)" Value="0" />
                 <Setter Target="AiDataCard.Margin" Value="8,0,0,0" />
@@ -447,8 +447,8 @@
               </Grid>
             </Border>
 
-            <!-- Orders Card -->
-            <Border x:Name="OrdersCard"
+            <!-- Saless Card -->
+            <Border x:Name="SalessCard"
                     Grid.Column="2"
                     Grid.Row="0"
                     Margin="8,0,8,0"
@@ -488,10 +488,10 @@
                   <StackPanel Grid.Column="1"
                               VerticalAlignment="Center"
                               Spacing="2">
-                    <TextBlock x:Uid="DemoDataGeneratorPage.Orders.Title"
+                    <TextBlock x:Uid="DemoDataGeneratorPage.Saless.Title"
                                Style="{StaticResource TitleMedium}"
                                Foreground="{ThemeResource OnSurfaceBrush}" />
-                    <TextBlock x:Uid="DemoDataGeneratorPage.Orders.Subtitle"
+                    <TextBlock x:Uid="DemoDataGeneratorPage.Saless.Subtitle"
                                Style="{StaticResource LabelMedium}"
                                Foreground="{ThemeResource OnSurfaceVariantBrush}" />
                   </StackPanel>
@@ -506,17 +506,17 @@
                           CornerRadius="8"
                           Padding="12">
                     <StackPanel Spacing="8">
-                      <TextBlock x:Uid="DemoDataGeneratorPage.Orders.Info.Title"
+                      <TextBlock x:Uid="DemoDataGeneratorPage.Saless.Info.Title"
                                  Style="{StaticResource LabelLarge}"
                                  Foreground="{ThemeResource OnSurfaceVariantBrush}" />
                       <StackPanel Spacing="4">
-                        <TextBlock x:Uid="DemoDataGeneratorPage.Orders.Info.Item1"
+                        <TextBlock x:Uid="DemoDataGeneratorPage.Saless.Info.Item1"
                                    Style="{StaticResource BodySmall}"
                                    Foreground="{ThemeResource OnSurfaceVariantBrush}" />
-                        <TextBlock x:Uid="DemoDataGeneratorPage.Orders.Info.Item2"
+                        <TextBlock x:Uid="DemoDataGeneratorPage.Saless.Info.Item2"
                                    Style="{StaticResource BodySmall}"
                                    Foreground="{ThemeResource OnSurfaceVariantBrush}" />
-                        <TextBlock x:Uid="DemoDataGeneratorPage.Orders.Info.Item3"
+                        <TextBlock x:Uid="DemoDataGeneratorPage.Saless.Info.Item3"
                                    Style="{StaticResource BodySmall}"
                                    Foreground="{ThemeResource OnSurfaceVariantBrush}" />
                       </StackPanel>
@@ -524,17 +524,17 @@
                   </Border>
 
                   <!-- Count Input -->
-                  <NumberBox x:Uid="DemoDataGeneratorPage.Orders.Count"
-                             x:Name="OrdersCountInput"
-                             Value="{Binding OrdersCount, Mode=TwoWay}"
+                  <NumberBox x:Uid="DemoDataGeneratorPage.Saless.Count"
+                             x:Name="SalessCountInput"
+                             Value="{Binding SalessCount, Mode=TwoWay}"
                              Minimum="1"
                              Maximum="1000"
                              SpinButtonPlacementMode="Inline"
                              SmallChange="1"
                              LargeChange="10"
-                             IsEnabled="{Binding IsNotGeneratingOrders}" />
+                             IsEnabled="{Binding IsNotGeneratingSaless}" />
 
-                  <!-- Orders Hint -->
+                  <!-- Saless Hint -->
                   <Border Background="{ThemeResource SurfaceVariantBrush}"
                           CornerRadius="6"
                           Padding="10"
@@ -551,7 +551,7 @@
                                 Margin="0,0,8,0"
                                 VerticalAlignment="Top" />
                       <TextBlock Grid.Column="1"
-                                 x:Uid="DemoDataGeneratorPage.Orders.Hint"
+                                 x:Uid="DemoDataGeneratorPage.Saless.Hint"
                                  Style="{StaticResource LabelSmall}"
                                  Foreground="{ThemeResource OnSurfaceVariantBrush}"
                                  TextWrapping="Wrap" />
@@ -565,51 +565,51 @@
                             Spacing="12">
                   <!-- Progress -->
                   <StackPanel Spacing="4"
-                              Visibility="{Binding IsGeneratingOrders, Converter={StaticResource BoolToVisibilityConverter}}">
-                    <ProgressBar Value="{Binding OrdersProgressPercent}"
+                              Visibility="{Binding IsGeneratingSaless, Converter={StaticResource BoolToVisibilityConverter}}">
+                    <ProgressBar Value="{Binding SalessProgressPercent}"
                                  Maximum="100"
                                  IsIndeterminate="False" />
                     <TextBlock Style="{StaticResource LabelSmall}"
                                Foreground="{ThemeResource OnSurfaceVariantBrush}"
                                HorizontalAlignment="Center">
-                      <Run Text="{Binding OrdersProgress}" />
+                      <Run Text="{Binding SalessProgress}" />
                       <Run Text=" / " />
-                      <Run Text="{Binding OrdersTotalCount}" />
+                      <Run Text="{Binding SalessTotalCount}" />
                       <Run x:Uid="DemoDataGeneratorPage.Progress.Created" />
                     </TextBlock>
                   </StackPanel>
 
                   <!-- Error Message -->
-                  <TextBlock Text="{Binding OrdersErrorMessage}"
-                             Visibility="{Binding OrdersErrorMessage, Converter={StaticResource StringToVisibilityConverter}}"
+                  <TextBlock Text="{Binding SalessErrorMessage}"
+                             Visibility="{Binding SalessErrorMessage, Converter={StaticResource StringToVisibilityConverter}}"
                              Style="{StaticResource BodySmall}"
                              Foreground="{ThemeResource ErrorBrush}"
                              TextWrapping="Wrap" />
 
                   <!-- Buttons: Generate / Cancel -->
                   <Grid>
-                    <Button x:Uid="DemoDataGeneratorPage.Orders.StartButton"
-                            Click="GenerateOrders_Click"
+                    <Button x:Uid="DemoDataGeneratorPage.Saless.StartButton"
+                            Click="GenerateSaless_Click"
                             HorizontalAlignment="Stretch"
-                            Visibility="{Binding IsNotGeneratingOrders, Converter={StaticResource BoolToVisibilityConverter}}"
+                            Visibility="{Binding IsNotGeneratingSaless, Converter={StaticResource BoolToVisibilityConverter}}"
                             Style="{StaticResource FilledButtonStyle}">
                       <StackPanel Orientation="Horizontal"
                                   Spacing="8">
                         <FontIcon Glyph="&#xE768;"
                                   FontSize="16" />
-                        <TextBlock x:Uid="DemoDataGeneratorPage.Orders.StartButton.Text" />
+                        <TextBlock x:Uid="DemoDataGeneratorPage.Saless.StartButton.Text" />
                       </StackPanel>
                     </Button>
-                    <Button x:Uid="DemoDataGeneratorPage.Orders.CancelButton"
-                            Click="CancelOrders_Click"
+                    <Button x:Uid="DemoDataGeneratorPage.Saless.CancelButton"
+                            Click="CancelSaless_Click"
                             HorizontalAlignment="Stretch"
-                            Visibility="{Binding IsGeneratingOrders, Converter={StaticResource BoolToVisibilityConverter}}"
+                            Visibility="{Binding IsGeneratingSaless, Converter={StaticResource BoolToVisibilityConverter}}"
                             Style="{StaticResource OutlinedButtonStyle}">
                       <StackPanel Orientation="Horizontal"
                                   Spacing="8">
                         <FontIcon Glyph="&#xE711;"
                                   FontSize="16" />
-                        <TextBlock x:Uid="DemoDataGeneratorPage.Orders.CancelButton.Text" />
+                        <TextBlock x:Uid="DemoDataGeneratorPage.Saless.CancelButton.Text" />
                       </StackPanel>
                     </Button>
                   </Grid>

@@ -60,7 +60,7 @@ public partial record SalesChannelDetailModel
     public IState<bool> IsBusy => State<bool>.Value(this, () => false);
 
     public Task TriggerSyncProducts() => RunAsync("Products import", ct => _salesChannelService.TriggerSyncAsync(_salesChannelId, "products", ct));
-    public Task TriggerSyncOrders() => RunAsync("Orders import", ct => _salesChannelService.TriggerSyncAsync(_salesChannelId, "orders", ct));
+    public Task TriggerSyncSaless() => RunAsync("Saless import", ct => _salesChannelService.TriggerSyncAsync(_salesChannelId, "saless", ct));
     public Task TriggerSyncCustomers() => RunAsync("Customers import", ct => _salesChannelService.TriggerSyncAsync(_salesChannelId, "customers", ct));
 
     public async Task TestConnection()

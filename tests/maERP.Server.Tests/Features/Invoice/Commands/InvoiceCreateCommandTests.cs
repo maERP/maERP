@@ -22,8 +22,8 @@ public class InvoiceCreateCommandTests : IDisposable
     protected readonly IServiceScope Scope;
     private static readonly int Customer1Id = 1;
     private static readonly int Customer2Id = 2;
-    private static readonly Guid Order1Id = Guid.NewGuid();
-    private static readonly Guid Order2Id = Guid.NewGuid();
+    private static readonly Guid Sales1Id = Guid.NewGuid();
+    private static readonly Guid Sales2Id = Guid.NewGuid();
 
     public InvoiceCreateCommandTests()
     {
@@ -182,21 +182,21 @@ public class InvoiceCreateCommandTests : IDisposable
 
                 DbContext.Customer.AddRange(customer1, customer2);
 
-                var order1 = new maERP.Domain.Entities.Order
+                var sales1 = new maERP.Domain.Entities.Sales
                 {
-                    Id = Order1Id,
+                    Id = Sales1Id,
                     CustomerId = Customer1Id,
                     TenantId = TenantConstants.TestTenant1Id
                 };
 
-                var order2 = new maERP.Domain.Entities.Order
+                var sales2 = new maERP.Domain.Entities.Sales
                 {
-                    Id = Order2Id,
+                    Id = Sales2Id,
                     CustomerId = Customer2Id,
                     TenantId = TenantConstants.TestTenant2Id
                 };
 
-                DbContext.Order.AddRange(order1, order2);
+                DbContext.Sales.AddRange(sales1, sales2);
 
                 await DbContext.SaveChangesAsync();
             }
@@ -214,7 +214,7 @@ public class InvoiceCreateCommandTests : IDisposable
             InvoiceNumber = $"INV-{DateTime.Now.Ticks}",
             InvoiceDate = DateTime.Now,
             CustomerId = Customer1Id,
-            OrderId = Order1Id,
+            SalesId = Sales1Id,
             Subtotal = 100.00m,
             ShippingCost = 10.00m,
             TotalTax = 19.00m,
@@ -457,7 +457,7 @@ public class InvoiceCreateCommandTests : IDisposable
         var invoice2 = CreateValidInvoiceDto();
         invoice2.InvoiceNumber = "INV-T2-001";
         invoice2.CustomerId = Customer2Id;
-        invoice2.OrderId = Order2Id;
+        invoice2.SalesId = Sales2Id;
         var response2 = await PostAsJsonAsync("/api/v1/Invoices", invoice2);
         TestAssertions.AssertEqual(HttpStatusCode.Created, response2.StatusCode);
 
@@ -475,12 +475,12 @@ public class InvoiceCreateCommandTests : IDisposable
     }
 
     [Fact]
-    public async Task CreateInvoice_WithInvalidOrderId_ShouldReturnBadRequest()
+    public async Task CreateInvoice_WithInvalidSalesId_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
         SetTenantHeader(TenantConstants.TestTenant1Id);
         var invoiceDto = CreateValidInvoiceDto();
-        invoiceDto.OrderId = Guid.NewGuid(); // Non-existent order
+        invoiceDto.SalesId = Guid.NewGuid(); // Non-existent sales
 
         var response = await PostAsJsonAsync("/api/v1/Invoices", invoiceDto);
 
@@ -492,12 +492,12 @@ public class InvoiceCreateCommandTests : IDisposable
     }
 
     [Fact]
-    public async Task CreateInvoice_WithValidOrderFromDifferentTenant_ShouldReturnBadRequest()
+    public async Task CreateInvoice_WithValidSalesFromDifferentTenant_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
         SetTenantHeader(TenantConstants.TestTenant1Id);
         var invoiceDto = CreateValidInvoiceDto();
-        invoiceDto.OrderId = Order2Id; // Order from tenant 2
+        invoiceDto.SalesId = Sales2Id; // Sales from tenant 2
 
         var response = await PostAsJsonAsync("/api/v1/Invoices", invoiceDto);
 

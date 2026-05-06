@@ -6,7 +6,7 @@ using maERP.Client.Features.Dashboard;
 using maERP.Client.Features.Dashboard.Models;
 using maERP.Client.Features.Invoices;
 using maERP.Client.Features.Manufacturers;
-using maERP.Client.Features.Orders;
+using maERP.Client.Features.Saless;
 using maERP.Client.Features.Products;
 using maERP.Client.Features.Shell;
 using maERP.Client.Features.AiModels;
@@ -252,7 +252,7 @@ public partial class App : Application
 #endif
 
         // Register Named HttpClient "MaErpApi" with handlers for API requests
-        // Handler order: ServerUrlHandler (sets base URL) -> AuthenticationHandler (adds token/tenant) -> DebugHttpHandler (logging)
+        // Handler sales: ServerUrlHandler (sets base URL) -> AuthenticationHandler (adds token/tenant) -> DebugHttpHandler (logging)
 #if DEBUG
         services.AddHttpClient("MaErpApi")
             .AddHttpMessageHandler<ServerUrlHandler>()
@@ -272,7 +272,7 @@ public partial class App : Application
         AuthModule.RegisterServices(services);
         DashboardModule.RegisterServices(services);
         CustomersModule.RegisterServices(services);
-        OrdersModule.RegisterServices(services);
+        SalessModule.RegisterServices(services);
         ProductsModule.RegisterServices(services);
         ManufacturersModule.RegisterServices(services);
         InvoicesModule.RegisterServices(services);
@@ -299,7 +299,7 @@ public partial class App : Application
         AuthModule.RegisterViews(views);
         DashboardModule.RegisterViews(views);
         CustomersModule.RegisterViews(views);
-        OrdersModule.RegisterViews(views);
+        SalessModule.RegisterViews(views);
         ProductsModule.RegisterViews(views);
         ManufacturersModule.RegisterViews(views);
         InvoicesModule.RegisterViews(views);
@@ -320,7 +320,7 @@ public partial class App : Application
         nestedRoutes.AddRange(AuthModule.GetRoutes(views));
         nestedRoutes.AddRange(DashboardModule.GetRoutes(views));
         nestedRoutes.AddRange(CustomersModule.GetRoutes(views));
-        nestedRoutes.AddRange(OrdersModule.GetRoutes(views));
+        nestedRoutes.AddRange(SalessModule.GetRoutes(views));
         nestedRoutes.AddRange(ProductsModule.GetRoutes(views));
         nestedRoutes.AddRange(ManufacturersModule.GetRoutes(views));
         nestedRoutes.AddRange(InvoicesModule.GetRoutes(views));

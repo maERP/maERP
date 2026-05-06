@@ -7,11 +7,11 @@ namespace maERP.Domain.Enums;
 public enum ChannelSyncOperation
 {
     ImportProducts = 1,
-    ImportOrders = 2,
+    ImportSaless = 2,
     ImportCustomers = 3,
     ExportProduct = 10,
     UpdateStock = 11,
     UpdatePrice = 12,
-    UpdateOrder = 13,
+    UpdateSales = 13,
     DelistProduct = 14,
 }

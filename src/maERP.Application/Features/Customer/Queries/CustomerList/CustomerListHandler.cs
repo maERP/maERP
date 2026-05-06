@@ -27,7 +27,7 @@ public class CustomerListHandler : IRequestHandler<CustomerListQuery, PaginatedR
 
         _logger.LogInformation("CustomerListHandler.Handle: Retrieving customers.");
 
-        if (request.OrderBy.Any() != true)
+        if (request.SalesBy.Any() != true)
         {
             return await _customerRepository.Entities
                .Specify(customerFilterSpec)
@@ -42,11 +42,11 @@ public class CustomerListHandler : IRequestHandler<CustomerListQuery, PaginatedR
                .ToPaginatedListAsync(request.PageNumber, request.PageSize);
         }
 
-        var ordering = string.Join(",", request.OrderBy);
+        var salesing = string.Join(",", request.SalesBy);
 
         return await _customerRepository.Entities
             .Specify(customerFilterSpec)
-            .OrderBy(ordering)
+            .OrderBy(salesing)
             .Select(c => new CustomerListDto
             {
                 Id = c.Id,

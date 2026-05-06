@@ -108,10 +108,10 @@ public class SalesChannelDetailHandler : IRequestHandler<SalesChannelDetailQuery
             TokenExpiresAt = entity.TokenExpiresAt,
             ImportProducts = entity.ImportProducts,
             ImportCustomers = entity.ImportCustomers,
-            ImportOrders = entity.ImportOrders,
+            ImportSaless = entity.ImportSaless,
             ExportProducts = entity.ExportProducts,
             ExportCustomers = entity.ExportCustomers,
-            ExportOrders = entity.ExportOrders,
+            ExportSaless = entity.ExportSaless,
             Warehouses = entity.Warehouses?.Select(w => new WarehouseDetailDto
             {
                 Id = w.Id,

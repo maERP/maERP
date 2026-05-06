@@ -24,8 +24,8 @@ public class InvoiceUpdateCommandTests : IDisposable
     private static readonly Guid Invoice1Id = Guid.NewGuid();
     private static readonly Guid Invoice2Id = Guid.NewGuid();
     private static readonly Guid InvoiceDuplicateId = Guid.NewGuid();
-    private static readonly Guid Order1Id = Guid.NewGuid();
-    private static readonly Guid Order2Id = Guid.NewGuid();
+    private static readonly Guid Sales1Id = Guid.NewGuid();
+    private static readonly Guid Sales2Id = Guid.NewGuid();
 
     public InvoiceUpdateCommandTests()
     {
@@ -105,21 +105,21 @@ public class InvoiceUpdateCommandTests : IDisposable
 
                 DbContext.Customer.AddRange(customer1, customer2);
 
-                var order1 = new maERP.Domain.Entities.Order
+                var sales1 = new maERP.Domain.Entities.Sales
                 {
-                    Id = Order1Id,
+                    Id = Sales1Id,
                     CustomerId = Customer1Id,
                     TenantId = TenantConstants.TestTenant1Id
                 };
 
-                var order2 = new maERP.Domain.Entities.Order
+                var sales2 = new maERP.Domain.Entities.Sales
                 {
-                    Id = Order2Id,
+                    Id = Sales2Id,
                     CustomerId = Customer2Id,
                     TenantId = TenantConstants.TestTenant2Id
                 };
 
-                DbContext.Order.AddRange(order1, order2);
+                DbContext.Sales.AddRange(sales1, sales2);
 
                 var invoice1Tenant1 = new maERP.Domain.Entities.Invoice
                 {
@@ -127,7 +127,7 @@ public class InvoiceUpdateCommandTests : IDisposable
                     InvoiceNumber = "INV-001",
                     InvoiceDate = DateTime.Now.AddDays(-10),
                     CustomerId = Customer1Id,
-                    OrderId = Order1Id,
+                    SalesId = Sales1Id,
                     Subtotal = 100.00m,
                     ShippingCost = 10.00m,
                     TotalTax = 19.00m,
@@ -151,7 +151,7 @@ public class InvoiceUpdateCommandTests : IDisposable
                     InvoiceNumber = "INV-T2-001",
                     InvoiceDate = DateTime.Now.AddDays(-5),
                     CustomerId = Customer2Id,
-                    OrderId = Order2Id,
+                    SalesId = Sales2Id,
                     Subtotal = 200.00m,
                     TotalTax = 38.00m,
                     Total = 238.00m,
@@ -193,7 +193,7 @@ public class InvoiceUpdateCommandTests : IDisposable
             InvoiceNumber = "INV-001-UPDATED",
             InvoiceDate = DateTime.Now,
             CustomerId = Customer1Id,
-            OrderId = Order1Id,
+            SalesId = Sales1Id,
             Subtotal = 150.00m,
             ShippingCost = 15.00m,
             TotalTax = 28.50m,

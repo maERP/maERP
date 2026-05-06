@@ -1,4 +1,4 @@
-using maERP.Application.Contracts.Logging;
+﻿using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
 using maERP.Domain.Dtos.Statistic;
 using maERP.Domain.Entities;
@@ -27,11 +27,11 @@ public class ProductsBestSellingHandler : IRequestHandler<ProductsBestSellingQue
         {
             _logger.LogInformation("Handle ProductsBestSellingQuery - fetching {Count} best-selling products", request.Count);
 
-            // Get OrderItems context
-            var orderItems = _productRepository.GetContext<OrderItem>();
+            // Get SalesItems context
+            var salesItems = _productRepository.GetContext<SalesItem>();
 
-            // Group order items by ProductId and calculate totals
-            var bestSelling = await orderItems
+            // Group sales items by ProductId and calculate totals
+            var bestSelling = await salesItems
                 .GroupBy(oi => oi.ProductId)
                 .Select(g => new
                 {

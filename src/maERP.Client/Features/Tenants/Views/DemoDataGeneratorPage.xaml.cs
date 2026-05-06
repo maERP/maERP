@@ -33,11 +33,11 @@ public sealed partial class DemoDataGeneratorPage : Page
         }
     }
 
-    private async void GenerateOrders_Click(object sender, RoutedEventArgs e)
+    private async void GenerateSaless_Click(object sender, RoutedEventArgs e)
     {
         if (DataContext is DemoDataGeneratorModel model)
         {
-            await model.GenerateOrdersAsync();
+            await model.GenerateSalessAsync();
         }
     }
 
@@ -59,9 +59,9 @@ public sealed partial class DemoDataGeneratorPage : Page
         (DataContext as DemoDataGeneratorModel)?.CancelCustomersGeneration();
     }
 
-    private void CancelOrders_Click(object sender, RoutedEventArgs e)
+    private void CancelSaless_Click(object sender, RoutedEventArgs e)
     {
-        (DataContext as DemoDataGeneratorModel)?.CancelOrdersGeneration();
+        (DataContext as DemoDataGeneratorModel)?.CancelSalessGeneration();
     }
 
     private void CancelAiData_Click(object sender, RoutedEventArgs e)

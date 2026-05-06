@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -126,10 +126,10 @@ namespace maERP.Persistence.MSSQL.Migrations
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ImportProducts = table.Column<bool>(type: "bit", nullable: false),
                     ImportCustomers = table.Column<bool>(type: "bit", nullable: false),
-                    ImportOrders = table.Column<bool>(type: "bit", nullable: false),
+                    ImportSaless = table.Column<bool>(type: "bit", nullable: false),
                     ExportProducts = table.Column<bool>(type: "bit", nullable: false),
                     ExportCustomers = table.Column<bool>(type: "bit", nullable: false),
-                    ExportOrders = table.Column<bool>(type: "bit", nullable: false),
+                    ExportSaless = table.Column<bool>(type: "bit", nullable: false),
                     InitialProductImportCompleted = table.Column<bool>(type: "bit", nullable: false),
                     InitialProductExportCompleted = table.Column<bool>(type: "bit", nullable: false),
                     DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -161,7 +161,7 @@ namespace maERP.Persistence.MSSQL.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    OrderId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    SalesId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ShippingProviderId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     TrackingNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ShippingCost = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -323,13 +323,13 @@ namespace maERP.Persistence.MSSQL.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "order",
+                name: "sales",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    OrderId = table.Column<int>(type: "int", nullable: false),
+                    SalesId = table.Column<int>(type: "int", nullable: false),
                     SalesChannelId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    RemoteOrderId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RemoteSalesId = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CustomerId = table.Column<int>(type: "int", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
                     Subtotal = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
@@ -358,19 +358,19 @@ namespace maERP.Persistence.MSSQL.Migrations
                     InvoiceAddressCity = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     InvoiceAddressZip = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     InvoiceAddressCountry = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    OrderConfirmationSent = table.Column<bool>(type: "bit", nullable: false),
+                    SalesConfirmationSent = table.Column<bool>(type: "bit", nullable: false),
                     InvoiceSent = table.Column<bool>(type: "bit", nullable: false),
                     ShippingInformationSent = table.Column<bool>(type: "bit", nullable: false),
-                    DateOrdered = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DateSalesed = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DateModified = table.Column<DateTime>(type: "datetime2", nullable: false),
                     TenantId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_order", x => x.Id);
+                    table.PrimaryKey("PK_sales", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_order_customer_CustomerId",
+                        name: "FK_sales_customer_CustomerId",
                         column: x => x.CustomerId,
                         principalTable: "customer",
                         principalColumn: "CustomerId",
@@ -531,7 +531,7 @@ namespace maERP.Persistence.MSSQL.Migrations
                     InvoiceNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     InvoiceDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CustomerId = table.Column<int>(type: "int", nullable: false),
-                    OrderId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    SalesId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     Subtotal = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
                     ShippingCost = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
                     TotalTax = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
@@ -571,21 +571,21 @@ namespace maERP.Persistence.MSSQL.Migrations
                         principalColumn: "CustomerId",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_invoice_order_OrderId",
-                        column: x => x.OrderId,
-                        principalTable: "order",
+                        name: "FK_invoice_sales_SalesId",
+                        column: x => x.SalesId,
+                        principalTable: "sales",
                         principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
-                name: "order_history",
+                name: "sales_history",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    OrderId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    OrderStatusOld = table.Column<int>(type: "int", nullable: true),
-                    OrderStatusNew = table.Column<int>(type: "int", nullable: true),
+                    SalesId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    SalesStatusOld = table.Column<int>(type: "int", nullable: true),
+                    SalesStatusNew = table.Column<int>(type: "int", nullable: true),
                     PaymentStatusOld = table.Column<int>(type: "int", nullable: true),
                     PaymentStatusNew = table.Column<int>(type: "int", nullable: true),
                     ShippingStatusOld = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -598,21 +598,21 @@ namespace maERP.Persistence.MSSQL.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_order_history", x => x.Id);
+                    table.PrimaryKey("PK_sales_history", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_order_history_order_OrderId",
-                        column: x => x.OrderId,
-                        principalTable: "order",
+                        name: "FK_sales_history_sales_SalesId",
+                        column: x => x.SalesId,
+                        principalTable: "sales",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "order_item",
+                name: "sales_item",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    OrderId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    SalesId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Quantity = table.Column<double>(type: "float", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -627,11 +627,11 @@ namespace maERP.Persistence.MSSQL.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_order_item", x => x.Id);
+                    table.PrimaryKey("PK_sales_item", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_order_item_order_OrderId",
-                        column: x => x.OrderId,
-                        principalTable: "order",
+                        name: "FK_sales_item_sales_SalesId",
+                        column: x => x.SalesId,
+                        principalTable: "sales",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -865,7 +865,7 @@ namespace maERP.Persistence.MSSQL.Migrations
                     TaxRate = table.Column<double>(type: "float", nullable: false),
                     TaxAmount = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
                     Unit = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    OrderItemId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    SalesItemId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DateModified = table.Column<DateTime>(type: "datetime2", nullable: false),
                     TenantId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
@@ -887,11 +887,11 @@ namespace maERP.Persistence.MSSQL.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "order_item_serialnumber",
+                name: "sales_item_serialnumber",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    OrderItemId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    SalesItemId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     SerialNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DateModified = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -899,11 +899,11 @@ namespace maERP.Persistence.MSSQL.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_order_item_serialnumber", x => x.Id);
+                    table.PrimaryKey("PK_sales_item_serialnumber", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_order_item_serialnumber_order_item_OrderItemId",
-                        column: x => x.OrderItemId,
-                        principalTable: "order_item",
+                        name: "FK_sales_item_serialnumber_sales_item_SalesItemId",
+                        column: x => x.SalesItemId,
+                        principalTable: "sales_item",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -1051,7 +1051,7 @@ namespace maERP.Persistence.MSSQL.Migrations
 
             migrationBuilder.InsertData(
                 table: "saleschannel",
-                columns: new[] { "Id", "DateCreated", "DateModified", "ExportCustomers", "ExportOrders", "ExportProducts", "ImportCustomers", "ImportOrders", "ImportProducts", "InitialProductExportCompleted", "InitialProductImportCompleted", "Name", "Password", "TenantId", "Type", "Url", "Username" },
+                columns: new[] { "Id", "DateCreated", "DateModified", "ExportCustomers", "ExportSaless", "ExportProducts", "ImportCustomers", "ImportSaless", "ImportProducts", "InitialProductExportCompleted", "InitialProductImportCompleted", "Name", "Password", "TenantId", "Type", "Url", "Username" },
                 values: new object[] { new Guid("88888888-8888-8888-8888-888888888888"), new DateTime(2025, 9, 26, 19, 15, 28, 565, DateTimeKind.Utc).AddTicks(9410), new DateTime(2025, 9, 26, 19, 15, 28, 565, DateTimeKind.Utc).AddTicks(9410), false, false, false, false, false, false, false, false, "Kasse Ladengeschäft", "", new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"), 1, "", "" });
 
             migrationBuilder.InsertData(
@@ -1156,9 +1156,9 @@ namespace maERP.Persistence.MSSQL.Migrations
                 column: "CustomerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_invoice_OrderId",
+                name: "IX_invoice_SalesId",
                 table: "invoice",
-                column: "OrderId");
+                column: "SalesId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_invoice_item_InvoiceId",
@@ -1171,31 +1171,31 @@ namespace maERP.Persistence.MSSQL.Migrations
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_order_CustomerId",
-                table: "order",
+                name: "IX_sales_CustomerId",
+                table: "sales",
                 column: "CustomerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_order_OrderId_TenantId",
-                table: "order",
-                columns: new[] { "OrderId", "TenantId" },
+                name: "IX_sales_SalesId_TenantId",
+                table: "sales",
+                columns: new[] { "SalesId", "TenantId" },
                 unique: true,
                 filter: "[TenantId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_order_history_OrderId",
-                table: "order_history",
-                column: "OrderId");
+                name: "IX_sales_history_SalesId",
+                table: "sales_history",
+                column: "SalesId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_order_item_OrderId",
-                table: "order_item",
-                column: "OrderId");
+                name: "IX_sales_item_SalesId",
+                table: "sales_item",
+                column: "SalesId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_order_item_serialnumber_OrderItemId",
-                table: "order_item_serialnumber",
-                column: "OrderItemId");
+                name: "IX_sales_item_serialnumber_SalesItemId",
+                table: "sales_item_serialnumber",
+                column: "SalesItemId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_product_ManufacturerId",
@@ -1318,10 +1318,10 @@ namespace maERP.Persistence.MSSQL.Migrations
                 name: "invoice_item");
 
             migrationBuilder.DropTable(
-                name: "order_history");
+                name: "sales_history");
 
             migrationBuilder.DropTable(
-                name: "order_item_serialnumber");
+                name: "sales_item_serialnumber");
 
             migrationBuilder.DropTable(
                 name: "product_saleschannel");
@@ -1369,7 +1369,7 @@ namespace maERP.Persistence.MSSQL.Migrations
                 name: "invoice");
 
             migrationBuilder.DropTable(
-                name: "order_item");
+                name: "sales_item");
 
             migrationBuilder.DropTable(
                 name: "product");
@@ -1390,7 +1390,7 @@ namespace maERP.Persistence.MSSQL.Migrations
                 name: "user");
 
             migrationBuilder.DropTable(
-                name: "order");
+                name: "sales");
 
             migrationBuilder.DropTable(
                 name: "manufacturer");

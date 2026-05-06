@@ -1,4 +1,4 @@
-using Asp.Versioning;
+﻿using Asp.Versioning;
 using maERP.Application.Contracts.Persistence;
 using maERP.Application.Features.SalesChannel.Commands.SalesChannelCreate;
 using maERP.Application.Features.SalesChannel.Commands.SalesChannelDelete;
@@ -34,14 +34,14 @@ public class SalesChannelsController(
 {
     // GET: api/v1/<SalesChannelsController>
     [HttpGet]
-    public async Task<ActionResult<PaginatedResult<SalesChannelListDto>>> GetAll(int pageNumber = 0, int pageSize = 10, string searchString = "", string orderBy = "")
+    public async Task<ActionResult<PaginatedResult<SalesChannelListDto>>> GetAll(int pageNumber = 0, int pageSize = 10, string searchString = "", string salesBy = "")
     {
-        if (string.IsNullOrEmpty(orderBy))
+        if (string.IsNullOrEmpty(salesBy))
         {
-            orderBy = "DateCreated Descending";
+            salesBy = "DateCreated Descending";
         }
 
-        var response = await mediator.Send(new SalesChannelListQuery(pageNumber, pageSize, searchString, orderBy));
+        var response = await mediator.Send(new SalesChannelListQuery(pageNumber, pageSize, searchString, salesBy));
         return StatusCode((int)response.StatusCode, response);
     }
 
@@ -126,7 +126,7 @@ public class SalesChannelsController(
         if (!Enum.TryParse<ChannelSyncOperation>(operation, ignoreCase: true, out var op) ||
             !IsImportOperation(op))
         {
-            return BadRequest(new { Error = $"Operation '{operation}' is not a valid import (products|orders|customers)" });
+            return BadRequest(new { Error = $"Operation '{operation}' is not a valid import (products|saless|customers)" });
         }
 
         var run = await syncDispatcher.RunImportAsync(salesChannel, op, ChannelSyncTriggerSource.Manual, cancellationToken);
@@ -228,6 +228,6 @@ public class SalesChannelsController(
 
     private static bool IsImportOperation(ChannelSyncOperation operation) => operation
         is ChannelSyncOperation.ImportProducts
-        or ChannelSyncOperation.ImportOrders
+        or ChannelSyncOperation.ImportSaless
         or ChannelSyncOperation.ImportCustomers;
 }

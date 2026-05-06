@@ -1,4 +1,4 @@
-using maERP.Application.Contracts.Infrastructure;
+﻿using maERP.Application.Contracts.Infrastructure;
 using maERP.Application.Contracts.Persistence;
 using maERP.Domain.Entities;
 using PdfSharp.Drawing;
@@ -282,13 +282,13 @@ public class PdfService : IPdfService
         paragraph = cell.AddParagraph($"Rechnungsdatum: {invoice.InvoiceDate:dd.MM.yyyy}");
         paragraph.Format.Alignment = ParagraphAlignment.Right;
 
-        if (invoice.OrderId.HasValue)
+        if (invoice.SalesId.HasValue)
         {
-            paragraph = cell.AddParagraph($"Bestellnummer: {invoice.Order?.Id.ToString() ?? "N/A"}");
+            paragraph = cell.AddParagraph($"Bestellnummer: {invoice.Sales?.Id.ToString() ?? "N/A"}");
             paragraph.Format.Alignment = ParagraphAlignment.Right;
         }
 
-        paragraph = cell.AddParagraph($"Kundennummer: {invoice.Order?.CustomerId.ToString() ?? "N/A"}");
+        paragraph = cell.AddParagraph($"Kundennummer: {invoice.Sales?.CustomerId.ToString() ?? "N/A"}");
         paragraph.Format.Alignment = ParagraphAlignment.Right;
 
         // Abstand nach Header

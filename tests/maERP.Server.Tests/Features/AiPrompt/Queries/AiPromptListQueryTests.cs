@@ -141,14 +141,14 @@ public class AiPromptListQueryTests : TenantIsolatedTestBase
     }
 
     [Fact]
-    public async Task GetAiPrompts_WithOrderByIdentifier_ShouldReturnOrderedResults()
+    public async Task GetAiPrompts_WithSalesByIdentifier_ShouldReturnSalesedResults()
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
-        var response = await Client.GetAsync("/api/v1/AiPrompts?orderBy=Identifier");
+        var response = await Client.GetAsync("/api/v1/AiPrompts?salesBy=Identifier");
 
         // Assert
         TestAssertions.AssertHttpSuccess(response);
@@ -162,14 +162,14 @@ public class AiPromptListQueryTests : TenantIsolatedTestBase
     }
 
     [Fact]
-    public async Task GetAiPrompts_WithOrderByIdentifierDescending_ShouldReturnDescOrderedResults()
+    public async Task GetAiPrompts_WithSalesByIdentifierDescending_ShouldReturnDescSalesedResults()
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
-        var response = await Client.GetAsync("/api/v1/AiPrompts?orderBy=Identifier desc");
+        var response = await Client.GetAsync("/api/v1/AiPrompts?salesBy=Identifier desc");
 
         // Assert
         TestAssertions.AssertHttpSuccess(response);
@@ -183,14 +183,14 @@ public class AiPromptListQueryTests : TenantIsolatedTestBase
     }
 
     [Fact]
-    public async Task GetAiPrompts_WithMultipleOrderBy_ShouldRespectMultipleSorting()
+    public async Task GetAiPrompts_WithMultipleSalesBy_ShouldRespectMultipleSorting()
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
-        var response = await Client.GetAsync("/api/v1/AiPrompts?orderBy=DateCreated,Identifier");
+        var response = await Client.GetAsync("/api/v1/AiPrompts?salesBy=DateCreated,Identifier");
 
         // Assert
         TestAssertions.AssertHttpSuccess(response);
@@ -328,14 +328,14 @@ public class AiPromptListQueryTests : TenantIsolatedTestBase
     }
 
     [Fact]
-    public async Task GetAiPrompts_WithOrderByDateCreated_ShouldOrderByCreationDate()
+    public async Task GetAiPrompts_WithSalesByDateCreated_ShouldSalesByCreationDate()
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
-        var response = await Client.GetAsync("/api/v1/AiPrompts?orderBy=DateCreated");
+        var response = await Client.GetAsync("/api/v1/AiPrompts?salesBy=DateCreated");
 
         // Assert
         TestAssertions.AssertHttpSuccess(response);
@@ -352,14 +352,14 @@ public class AiPromptListQueryTests : TenantIsolatedTestBase
     }
 
     [Fact]
-    public async Task GetAiPrompts_WithOrderByDateModified_ShouldOrderByModificationDate()
+    public async Task GetAiPrompts_WithSalesByDateModified_ShouldSalesByModificationDate()
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
-        var response = await Client.GetAsync("/api/v1/AiPrompts?orderBy=DateModified");
+        var response = await Client.GetAsync("/api/v1/AiPrompts?salesBy=DateModified");
 
         // Assert
         TestAssertions.AssertHttpSuccess(response);

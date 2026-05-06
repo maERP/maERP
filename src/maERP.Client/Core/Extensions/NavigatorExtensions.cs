@@ -24,18 +24,18 @@ public static class NavigatorExtensions
     }
 
     /// <summary>
-    /// Navigate to order detail page with order ID.
+    /// Navigate to sales detail page with sales ID.
     /// </summary>
-    public static async ValueTask<NavigationResponse?> NavigateToOrderDetailAsync(
+    public static async ValueTask<NavigationResponse?> NavigateToSalesDetailAsync(
         this INavigator navigator,
         object sender,
-        Guid orderId,
+        Guid salesId,
         CancellationToken ct = default)
     {
         return await navigator.NavigateRouteAsync(
             sender,
-            Routes.OrderDetail,
-            data: new Dictionary<string, object> { ["Id"] = orderId },
+            Routes.SalesDetail,
+            data: new Dictionary<string, object> { ["Id"] = salesId },
             cancellation: ct);
     }
 

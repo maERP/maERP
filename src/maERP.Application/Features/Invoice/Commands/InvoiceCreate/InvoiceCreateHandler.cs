@@ -1,4 +1,4 @@
-using maERP.Application.Contracts.Logging;
+﻿using maERP.Application.Contracts.Logging;
 using System.Linq;
 using maERP.Application.Contracts.Persistence;
 using maERP.Application.Contracts.Services;
@@ -24,7 +24,7 @@ public class InvoiceCreateHandler : IRequestHandler<InvoiceCreateCommand, Result
     /// </summary>
     private readonly IInvoiceRepository _invoiceRepository;
     private readonly ICustomerRepository _customerRepository;
-    private readonly IOrderRepository _orderRepository;
+    private readonly ISalesRepository _salesRepository;
     private readonly ITenantContext _tenantContext;
 
     /// <summary>
@@ -36,13 +36,13 @@ public class InvoiceCreateHandler : IRequestHandler<InvoiceCreateCommand, Result
         IAppLogger<InvoiceCreateHandler> logger,
         IInvoiceRepository invoiceRepository,
         ICustomerRepository customerRepository,
-        IOrderRepository orderRepository,
+        ISalesRepository salesRepository,
         ITenantContext tenantContext)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _invoiceRepository = invoiceRepository ?? throw new ArgumentNullException(nameof(invoiceRepository));
         _customerRepository = customerRepository ?? throw new ArgumentNullException(nameof(customerRepository));
-        _orderRepository = orderRepository ?? throw new ArgumentNullException(nameof(orderRepository));
+        _salesRepository = salesRepository ?? throw new ArgumentNullException(nameof(salesRepository));
         _tenantContext = tenantContext ?? throw new ArgumentNullException(nameof(tenantContext));
     }
 
@@ -83,7 +83,7 @@ public class InvoiceCreateHandler : IRequestHandler<InvoiceCreateCommand, Result
             {
                 result.Succeeded = false;
                 result.StatusCode = ResultStatusCode.BadRequest;
-                result.Messages.Add("Ein Mandantenkontext ist erforderlich.");
+                result.Messages.Add("Ein Mandantenkontext ist erfsaleslich.");
                 return result;
             }
 
@@ -105,22 +105,22 @@ public class InvoiceCreateHandler : IRequestHandler<InvoiceCreateCommand, Result
                 return result;
             }
 
-            if (request.OrderId.HasValue)
+            if (request.SalesId.HasValue)
             {
-                var relatedOrder = await _orderRepository.GetByIdAsync(request.OrderId.Value);
-                if (relatedOrder == null || relatedOrder.TenantId != currentTenantId.Value)
+                var relatedSales = await _salesRepository.GetByIdAsync(request.SalesId.Value);
+                if (relatedSales == null || relatedSales.TenantId != currentTenantId.Value)
                 {
                     result.Succeeded = false;
                     result.StatusCode = ResultStatusCode.BadRequest;
-                    result.Messages.Add("Bestellung wurde nicht gefunden oder gehört zu einem anderen Mandanten.");
+                    result.Messages.Add("Verkauf wurde nicht gefunden oder gehört zu einem anderen Mandanten.");
                     return result;
                 }
 
-                if (relatedOrder.CustomerId != request.CustomerId)
+                if (relatedSales.CustomerId != request.CustomerId)
                 {
                     result.Succeeded = false;
                     result.StatusCode = ResultStatusCode.BadRequest;
-                    result.Messages.Add("Die Bestellung gehört nicht zum ausgewählten Kunden.");
+                    result.Messages.Add("Die Verkauf gehört nicht zum ausgewählten Kunden.");
                     return result;
                 }
             }
@@ -131,7 +131,7 @@ public class InvoiceCreateHandler : IRequestHandler<InvoiceCreateCommand, Result
                 InvoiceNumber = request.InvoiceNumber,
                 InvoiceDate = request.InvoiceDate,
                 CustomerId = request.CustomerId,
-                OrderId = request.OrderId,
+                SalesId = request.SalesId,
                 Subtotal = request.Subtotal,
                 ShippingCost = request.ShippingCost,
                 TotalTax = request.TotalTax,

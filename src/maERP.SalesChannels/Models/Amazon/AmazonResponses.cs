@@ -13,23 +13,23 @@ public sealed class AmazonLwaTokenResponse
     [JsonPropertyName("expires_in")] public int ExpiresIn { get; set; }
 }
 
-public sealed class AmazonOrdersResponse
+public sealed class AmazonSalessResponse
 {
-    [JsonPropertyName("payload")] public AmazonOrdersPayload? Payload { get; set; }
+    [JsonPropertyName("payload")] public AmazonSalessPayload? Payload { get; set; }
 }
 
-public sealed class AmazonOrdersPayload
+public sealed class AmazonSalessPayload
 {
-    [JsonPropertyName("Orders")] public List<AmazonOrder> Orders { get; set; } = new();
+    [JsonPropertyName("Saless")] public List<AmazonSales> Saless { get; set; } = new();
     [JsonPropertyName("NextToken")] public string? NextToken { get; set; }
 }
 
-public sealed class AmazonOrder
+public sealed class AmazonSales
 {
-    [JsonPropertyName("AmazonOrderId")] public string AmazonOrderId { get; set; } = string.Empty;
+    [JsonPropertyName("AmazonSalesId")] public string AmazonSalesId { get; set; } = string.Empty;
     [JsonPropertyName("PurchaseDate")] public DateTime PurchaseDate { get; set; }
-    [JsonPropertyName("OrderStatus")] public string OrderStatus { get; set; } = string.Empty;
-    [JsonPropertyName("OrderTotal")] public AmazonMoney? OrderTotal { get; set; }
+    [JsonPropertyName("SalesStatus")] public string SalesStatus { get; set; } = string.Empty;
+    [JsonPropertyName("SalesTotal")] public AmazonMoney? SalesTotal { get; set; }
     [JsonPropertyName("BuyerInfo")] public AmazonBuyerInfo? BuyerInfo { get; set; }
     [JsonPropertyName("ShippingAddress")] public AmazonAddress? ShippingAddress { get; set; }
 }

@@ -28,27 +28,27 @@ public class UserListQuery : IRequest<PaginatedResult<UserListDto>>
     public string SearchString { get; set; }
 
     /// <summary>
-    /// Optional array of properties to order the results by
+    /// Optional array of properties to sales the results by
     /// </summary>
-    public string[] OrderBy { get; set; }
+    public string[] SalesBy { get; set; }
 
     /// <summary>
-    /// Constructor that initializes the query with pagination, search, and ordering parameters
+    /// Constructor that initializes the query with pagination, search, and salesing parameters
     /// </summary>
     /// <param name="pageNumber">The page number to retrieve (default: 1)</param>
     /// <param name="pageSize">The number of items per page (default: 10)</param>
     /// <param name="searchString">Optional search string to filter users (default: empty string)</param>
-    /// <param name="orderBy">Optional comma-separated list of properties to order by (default: empty string)</param>
-    public UserListQuery(int pageNumber = 1, int pageSize = 10, string searchString = "", string orderBy = "")
+    /// <param name="salesBy">Optional comma-separated list of properties to sales by (default: empty string)</param>
+    public UserListQuery(int pageNumber = 1, int pageSize = 10, string searchString = "", string salesBy = "")
     {
         PageNumber = pageNumber;
         PageSize = pageSize;
         SearchString = searchString;
 
-        // Parse the orderBy string into an array of property names
-        if (!string.IsNullOrWhiteSpace(orderBy))
+        // Parse the salesBy string into an array of property names
+        if (!string.IsNullOrWhiteSpace(salesBy))
         {
-            OrderBy = orderBy
+            SalesBy = salesBy
                 .Split(',', StringSplitOptions.RemoveEmptyEntries)
                 .Select(value => value.Trim())
                 .Where(value => !string.IsNullOrWhiteSpace(value))
@@ -56,7 +56,7 @@ public class UserListQuery : IRequest<PaginatedResult<UserListDto>>
         }
         else
         {
-            OrderBy = Array.Empty<string>();
+            SalesBy = Array.Empty<string>();
         }
     }
 }

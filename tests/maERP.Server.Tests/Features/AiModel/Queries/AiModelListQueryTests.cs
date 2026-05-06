@@ -141,14 +141,14 @@ public class AiModelListQueryTests : TenantIsolatedTestBase
     }
 
     [Fact]
-    public async Task GetAiModels_WithOrderByName_ShouldReturnOrderedResults()
+    public async Task GetAiModels_WithSalesByName_ShouldReturnSalesedResults()
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
-        var response = await Client.GetAsync("/api/v1/AiModels?orderBy=Name");
+        var response = await Client.GetAsync("/api/v1/AiModels?salesBy=Name");
 
         // Assert
         TestAssertions.AssertHttpSuccess(response);
@@ -163,14 +163,14 @@ public class AiModelListQueryTests : TenantIsolatedTestBase
     }
 
     [Fact]
-    public async Task GetAiModels_WithOrderByNameDescending_ShouldReturnDescOrderedResults()
+    public async Task GetAiModels_WithSalesByNameDescending_ShouldReturnDescSalesedResults()
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
-        var response = await Client.GetAsync("/api/v1/AiModels?orderBy=Name desc");
+        var response = await Client.GetAsync("/api/v1/AiModels?salesBy=Name desc");
 
         // Assert
         TestAssertions.AssertHttpSuccess(response);
@@ -185,14 +185,14 @@ public class AiModelListQueryTests : TenantIsolatedTestBase
     }
 
     [Fact]
-    public async Task GetAiModels_WithMultipleOrderBy_ShouldRespectMultipleSorting()
+    public async Task GetAiModels_WithMultipleSalesBy_ShouldRespectMultipleSorting()
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
-        var response = await Client.GetAsync("/api/v1/AiModels?orderBy=AiModelType,Name");
+        var response = await Client.GetAsync("/api/v1/AiModels?salesBy=AiModelType,Name");
 
         // Assert
         TestAssertions.AssertHttpSuccess(response);

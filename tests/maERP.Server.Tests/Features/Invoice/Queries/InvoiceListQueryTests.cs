@@ -264,7 +264,7 @@ public class InvoiceListQueryTests : IDisposable
         await SeedInvoiceTestDataAsync();
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.GetAsync("/api/v1/Invoices?orderBy=InvoiceNumber desc");
+        var response = await Client.GetAsync("/api/v1/Invoices?salesBy=InvoiceNumber desc");
 
         TestAssertions.AssertHttpSuccess(response);
         var result = await ReadResponseAsync<PaginatedResult<InvoiceListDto>>(response);

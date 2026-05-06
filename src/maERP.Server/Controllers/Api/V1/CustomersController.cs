@@ -24,14 +24,14 @@ public class CustomersController(IMediator mediator) : ControllerBase
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<PaginatedResult<CustomerListDto>>> GetAll(int pageNumber = 0, int pageSize = 10, string searchString = "", string orderBy = "")
+    public async Task<ActionResult<PaginatedResult<CustomerListDto>>> GetAll(int pageNumber = 0, int pageSize = 10, string searchString = "", string salesBy = "")
     {
-        if (string.IsNullOrEmpty(orderBy))
+        if (string.IsNullOrEmpty(salesBy))
         {
-            orderBy = "DateEnrollment Descending";
+            salesBy = "DateEnrollment Descending";
         }
 
-        var response = await mediator.Send(new CustomerListQuery(pageNumber, pageSize, searchString, orderBy));
+        var response = await mediator.Send(new CustomerListQuery(pageNumber, pageSize, searchString, salesBy));
         return response.ToActionResult();
     }
 
@@ -39,14 +39,14 @@ public class CustomersController(IMediator mediator) : ControllerBase
     [HttpGet("search")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<PaginatedResult<CustomerListWithAddressDto>>> Search(int pageNumber = 0, int pageSize = 10, string searchString = "", string orderBy = "")
+    public async Task<ActionResult<PaginatedResult<CustomerListWithAddressDto>>> Search(int pageNumber = 0, int pageSize = 10, string searchString = "", string salesBy = "")
     {
-        if (string.IsNullOrEmpty(orderBy))
+        if (string.IsNullOrEmpty(salesBy))
         {
-            orderBy = "Lastname Ascending";
+            salesBy = "Lastname Ascending";
         }
 
-        var response = await mediator.Send(new CustomerListWithAddressQuery(pageNumber, pageSize, searchString, orderBy));
+        var response = await mediator.Send(new CustomerListWithAddressQuery(pageNumber, pageSize, searchString, salesBy));
         return response.ToActionResult();
     }
 

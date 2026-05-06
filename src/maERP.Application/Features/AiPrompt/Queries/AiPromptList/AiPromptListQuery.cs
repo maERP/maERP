@@ -1,4 +1,4 @@
-﻿using maERP.Domain.Dtos.AiPrompt;
+using maERP.Domain.Dtos.AiPrompt;
 using maERP.Domain.Wrapper;
 using maERP.Application.Mediator;
 
@@ -9,18 +9,18 @@ public class AiPromptListQuery : IRequest<PaginatedResult<AiPromptListDto>>
     public int PageNumber { get; set; }
     public int PageSize { get; set; }
     public string SearchString { get; set; }
-    public string[] OrderBy { get; set; }
+    public string[] SalesBy { get; set; }
 
-    public AiPromptListQuery(int pageNumber = 1, int pageSize = 10, string searchString = "", string orderBy = "")
+    public AiPromptListQuery(int pageNumber = 1, int pageSize = 10, string searchString = "", string salesBy = "")
     {
         PageNumber = pageNumber;
         PageSize = pageSize;
         SearchString = searchString;
 
-        if (!string.IsNullOrWhiteSpace(orderBy))
+        if (!string.IsNullOrWhiteSpace(salesBy))
         {
-            OrderBy = orderBy.Split(',');
+            SalesBy = salesBy.Split(',');
         }
-        else OrderBy = new string[] { };
+        else SalesBy = new string[] { };
     }
 }

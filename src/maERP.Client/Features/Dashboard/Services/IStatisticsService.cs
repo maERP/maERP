@@ -13,9 +13,9 @@ public interface IStatisticsService
     Task<SalesTodayDto?> GetSalesTodayAsync(CancellationToken ct = default);
 
     /// <summary>
-    /// Gets the orders statistics for today.
+    /// Gets the saless statistics for today.
     /// </summary>
-    Task<OrdersTodayDto?> GetOrdersTodayAsync(CancellationToken ct = default);
+    Task<SalessTodayDto?> GetSalessTodayAsync(CancellationToken ct = default);
 
     /// <summary>
     /// Gets the customer statistics.
@@ -28,9 +28,9 @@ public interface IStatisticsService
     Task<ProductsTodayDto?> GetProductsTodayAsync(CancellationToken ct = default);
 
     /// <summary>
-    /// Gets the latest orders.
+    /// Gets the latest saless.
     /// </summary>
-    Task<OrdersLatestDto?> GetOrdersLatestAsync(int count = 5, CancellationToken ct = default);
+    Task<SalessLatestDto?> GetSalessLatestAsync(int count = 5, CancellationToken ct = default);
 
     /// <summary>
     /// Gets the best-selling products.

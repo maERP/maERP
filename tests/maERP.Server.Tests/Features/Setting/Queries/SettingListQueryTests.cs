@@ -1,4 +1,4 @@
-using System.Net;
+﻿using System.Net;
 using maERP.Domain.Dtos.Setting;
 using maERP.Domain.Wrapper;
 using maERP.Server.Tests.Infrastructure;
@@ -155,11 +155,11 @@ public class SettingListQueryTests : GlobalTestBase
     }
 
     [Fact]
-    public async Task GetSettings_WithOrderByKey_ShouldReturnOrderedResults()
+    public async Task GetSettings_WithSalesByKey_ShouldReturnSalesedResults()
     {
         await SeedSettingTestDataAsync();
 
-        var response = await Client.GetAsync("/api/v1/Settings?orderBy=Key");
+        var response = await Client.GetAsync("/api/v1/Settings?salesBy=Key");
 
         TestAssertions.AssertHttpSuccess(response);
         var result = await ReadResponseAsync<PaginatedResult<SettingListDto>>(response);
@@ -167,18 +167,18 @@ public class SettingListQueryTests : GlobalTestBase
         TestAssertions.AssertNotNull(result!.Data);
         TestAssertions.AssertTrue(result.Data!.Count > 0);
 
-        // Verify ordering - keys should be in ascending order
+        // Verify salesing - keys should be in ascending sales
         var keys = result.Data!.Select(x => x.Key).ToList();
         var sortedKeys = keys.OrderBy(k => k).ToList();
         TestAssertions.AssertEqual(sortedKeys, keys);
     }
 
     [Fact]
-    public async Task GetSettings_WithOrderByKeyDescending_ShouldReturnDescOrderedResults()
+    public async Task GetSettings_WithSalesByKeyDescending_ShouldReturnDescSalesedResults()
     {
         await SeedSettingTestDataAsync();
 
-        var response = await Client.GetAsync("/api/v1/Settings?orderBy=Key desc");
+        var response = await Client.GetAsync("/api/v1/Settings?salesBy=Key desc");
 
         TestAssertions.AssertHttpSuccess(response);
         var result = await ReadResponseAsync<PaginatedResult<SettingListDto>>(response);
@@ -186,18 +186,18 @@ public class SettingListQueryTests : GlobalTestBase
         TestAssertions.AssertNotNull(result!.Data);
         TestAssertions.AssertTrue(result.Data!.Count > 0);
 
-        // Verify descending ordering
+        // Verify descending salesing
         var keys = result.Data!.Select(x => x.Key).ToList();
         var sortedKeysDesc = keys.OrderByDescending(k => k).ToList();
         TestAssertions.AssertEqual(sortedKeysDesc, keys);
     }
 
     [Fact]
-    public async Task GetSettings_WithOrderByValue_ShouldReturnValueOrderedResults()
+    public async Task GetSettings_WithSalesByValue_ShouldReturnValueSalesedResults()
     {
         await SeedSettingTestDataAsync();
 
-        var response = await Client.GetAsync("/api/v1/Settings?orderBy=Value");
+        var response = await Client.GetAsync("/api/v1/Settings?salesBy=Value");
 
         TestAssertions.AssertHttpSuccess(response);
         var result = await ReadResponseAsync<PaginatedResult<SettingListDto>>(response);
@@ -205,7 +205,7 @@ public class SettingListQueryTests : GlobalTestBase
         TestAssertions.AssertNotNull(result!.Data);
         TestAssertions.AssertTrue(result.Data!.Count > 0);
 
-        // Verify value ordering
+        // Verify value salesing
         var values = result.Data!.Select(x => x.Value).ToList();
         var sortedValues = values.OrderBy(v => v).ToList();
         TestAssertions.AssertEqual(sortedValues, values);
@@ -405,11 +405,11 @@ public class SettingListQueryTests : GlobalTestBase
     }
 
     [Fact]
-    public async Task GetSettings_WithMultipleOrderBy_ShouldRespectMultipleSorting()
+    public async Task GetSettings_WithMultipleSalesBy_ShouldRespectMultipleSorting()
     {
         await SeedSettingTestDataAsync();
 
-        var response = await Client.GetAsync("/api/v1/Settings?orderBy=Key,Value&pageSize=100");
+        var response = await Client.GetAsync("/api/v1/Settings?salesBy=Key,Value&pageSize=100");
 
         TestAssertions.AssertHttpSuccess(response);
         var result = await ReadResponseAsync<PaginatedResult<SettingListDto>>(response);
@@ -419,7 +419,7 @@ public class SettingListQueryTests : GlobalTestBase
         // Verify we get all available settings (should be more than 3 due to system default settings)
         TestAssertions.AssertTrue((result.Data?.Count ?? 0) > 3, $"Expected more than 3 settings, got {result.Data?.Count ?? 0}");
 
-        // Verify sorting is applied by checking the order
+        // Verify sorting is applied by checking the sales
         var keys = result.Data!.Select(s => s.Key).ToList();
         var sortedKeys = keys.OrderBy(k => k).ToList();
         TestAssertions.AssertEqual(sortedKeys, keys);
@@ -430,7 +430,7 @@ public class SettingListQueryTests : GlobalTestBase
     {
         await SeedSettingTestDataAsync();
 
-        var response = await Client.GetAsync("/api/v1/Settings?searchString=test.setting&pageSize=1&orderBy=Key");
+        var response = await Client.GetAsync("/api/v1/Settings?searchString=test.setting&pageSize=1&salesBy=Key");
 
         TestAssertions.AssertHttpSuccess(response);
         var result = await ReadResponseAsync<PaginatedResult<SettingListDto>>(response);

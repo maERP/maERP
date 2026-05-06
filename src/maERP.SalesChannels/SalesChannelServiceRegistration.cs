@@ -25,7 +25,7 @@ public static class SalesChannelServiceRegistration
     public static IServiceCollection AddSalesChannelServices(this IServiceCollection services, bool includeBackgroundServices = true)
     {
         services.AddScoped<IProductImportRepository, ProductImportRepository>();
-        services.AddScoped<IOrderImportRepository, OrderImportRepository>();
+        services.AddScoped<ISalesImportRepository, SalesImportRepository>();
         services.AddScoped<ICustomerImportRepository, CustomerImportRepository>();
         // Auth helpers are singletons because they hold per-channel access-token caches; they
         // resolve the scoped IOAuthAppSettingsService internally via IServiceScopeFactory.

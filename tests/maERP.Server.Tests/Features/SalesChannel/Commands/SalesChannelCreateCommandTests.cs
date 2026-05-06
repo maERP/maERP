@@ -77,8 +77,8 @@ public class SalesChannelCreateCommandTests : TenantIsolatedTestBase
             ExportProducts = false,
             ImportCustomers = true,
             ExportCustomers = false,
-            ImportOrders = true,
-            ExportOrders = true,
+            ImportSaless = true,
+            ExportSaless = true,
             WarehouseIds = new List<Guid> { TestWarehouse1Id, TestWarehouse2Id }
         };
     }
@@ -488,8 +488,8 @@ public class SalesChannelCreateCommandTests : TenantIsolatedTestBase
         salesChannelDto.ExportProducts = true;
         salesChannelDto.ImportCustomers = false;
         salesChannelDto.ExportCustomers = true;
-        salesChannelDto.ImportOrders = false;
-        salesChannelDto.ExportOrders = true;
+        salesChannelDto.ImportSaless = false;
+        salesChannelDto.ExportSaless = true;
 
         var response = await PostAsJsonAsync("/api/v1/SalesChannels", salesChannelDto);
 
@@ -507,7 +507,7 @@ public class SalesChannelCreateCommandTests : TenantIsolatedTestBase
         TestAssertions.AssertTrue(salesChannelDetail.Data.ExportProducts);
         TestAssertions.AssertFalse(salesChannelDetail.Data.ImportCustomers);
         TestAssertions.AssertTrue(salesChannelDetail.Data.ExportCustomers);
-        TestAssertions.AssertFalse(salesChannelDetail.Data.ImportOrders);
-        TestAssertions.AssertTrue(salesChannelDetail.Data.ExportOrders);
+        TestAssertions.AssertFalse(salesChannelDetail.Data.ImportSaless);
+        TestAssertions.AssertTrue(salesChannelDetail.Data.ExportSaless);
     }
 }

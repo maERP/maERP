@@ -22,11 +22,11 @@ public class GoodsReceiptsController(IMediator mediator) : ControllerBase
         int pageNumber = 0,
         int pageSize = 50,
         string searchTerm = "",
-        string orderBy = "")
+        string salesBy = "")
     {
-        if (string.IsNullOrEmpty(orderBy))
+        if (string.IsNullOrEmpty(salesBy))
         {
-            orderBy = "ReceiptDate Descending";
+            salesBy = "ReceiptDate Descending";
         }
 
         var response = await mediator.Send(new GoodsReceiptListQuery
@@ -34,7 +34,7 @@ public class GoodsReceiptsController(IMediator mediator) : ControllerBase
             PageNumber = pageNumber,
             PageSize = pageSize,
             SearchTerm = searchTerm,
-            OrderBy = orderBy
+            SalesBy = salesBy
         });
 
         return StatusCode((int)response.StatusCode, response);

@@ -40,9 +40,9 @@ public partial record AiPromptListModel
     public IState<int> PageSize => State<int>.Value(this, () => 25);
 
     /// <summary>
-    /// Current sort order (e.g., "Identifier Ascending").
+    /// Current sort sales (e.g., "Identifier Ascending").
     /// </summary>
-    public IState<string> SortOrder => State<string>.Value(this, () => "DateModified Descending");
+    public IState<string> SortSales => State<string>.Value(this, () => "DateModified Descending");
 
     /// <summary>
     /// Pagination information from the last API response.
@@ -51,20 +51,20 @@ public partial record AiPromptListModel
 
     /// <summary>
     /// Feed of AI prompts from the API.
-    /// Automatically refreshes when SearchQuery, CurrentPage, or SortOrder changes.
+    /// Automatically refreshes when SearchQuery, CurrentPage, or SortSales changes.
     /// </summary>
     public IListFeed<AiPromptListDto> AiPrompts => Feed
-        .Combine(SearchQuery, CurrentPage, PageSize, SortOrder)
+        .Combine(SearchQuery, CurrentPage, PageSize, SortSales)
         .SelectAsync(async (combined, ct) =>
         {
-            var (query, page, size, orderBy) = combined;
+            var (query, page, size, salesBy) = combined;
 
             var parameters = new QueryParameters
             {
                 PageNumber = page,
                 PageSize = size,
                 SearchString = string.IsNullOrWhiteSpace(query) ? null : query,
-                OrderBy = orderBy
+                SalesBy = salesBy
             };
 
             var response = await _aiPromptService.GetAiPromptsAsync(parameters, ct);
@@ -136,11 +136,11 @@ public partial record AiPromptListModel
     }
 
     /// <summary>
-    /// Change the sort order.
+    /// Change the sort sales.
     /// </summary>
-    public async ValueTask SetSortOrder(string orderBy, CancellationToken ct = default)
+    public async ValueTask SetSortSales(string salesBy, CancellationToken ct = default)
     {
-        await SortOrder.UpdateAsync(_ => orderBy, ct);
+        await SortSales.UpdateAsync(_ => salesBy, ct);
         await CurrentPage.UpdateAsync(_ => 0, ct); // Reset to first page when sorting changes
     }
 

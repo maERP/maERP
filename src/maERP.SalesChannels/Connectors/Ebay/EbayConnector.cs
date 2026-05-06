@@ -15,22 +15,22 @@ namespace maERP.SalesChannels.Connectors.Ebay;
 
 /// <summary>
 /// eBay Sell-API connector. Migrates the legacy <c>EbayProductImportTask</c>,
-/// <c>EbayOrderImportTask</c> and <c>EbayCustomerImportTask</c> behind the connector contract.
-/// Customers are derived from orders (eBay does not expose a customer list endpoint), so
+/// <c>EbaySalesImportTask</c> and <c>EbayCustomerImportTask</c> behind the connector contract.
+/// Customers are derived from saless (eBay does not expose a customer list endpoint), so
 /// <see cref="ImportCustomersAsync"/> walks the same fulfillment endpoint as
-/// <see cref="ImportOrdersAsync"/> and just keeps buyers.
+/// <see cref="ImportSalessAsync"/> and just keeps buyers.
 ///
-/// Export operations (publish offer, update stock/price, mark order shipped) are not yet
+/// Export operations (publish offer, update stock/price, mark sales shipped) are not yet
 /// implemented — they land in PR 12 when the outbox drainer is wired up.
 /// </summary>
 public sealed class EbayConnector : ConnectorBase
 {
     private const int InventoryPageSize = 100;
-    private const int OrderPageSize = 50;
+    private const int SalesPageSize = 50;
 
     private readonly EbayAuthHelper _authHelper;
     private readonly IProductImportRepository _productImportRepository;
-    private readonly IOrderImportRepository _orderImportRepository;
+    private readonly ISalesImportRepository _salesImportRepository;
     private readonly ICustomerImportRepository _customerImportRepository;
     private readonly ISalesChannelRepository _salesChannelRepository;
     private readonly ILogger<EbayConnector> _logger;
@@ -38,14 +38,14 @@ public sealed class EbayConnector : ConnectorBase
     public EbayConnector(
         EbayAuthHelper authHelper,
         IProductImportRepository productImportRepository,
-        IOrderImportRepository orderImportRepository,
+        ISalesImportRepository salesImportRepository,
         ICustomerImportRepository customerImportRepository,
         ISalesChannelRepository salesChannelRepository,
         ILogger<EbayConnector> logger)
     {
         _authHelper = authHelper;
         _productImportRepository = productImportRepository;
-        _orderImportRepository = orderImportRepository;
+        _salesImportRepository = salesImportRepository;
         _customerImportRepository = customerImportRepository;
         _salesChannelRepository = salesChannelRepository;
         _logger = logger;
@@ -55,7 +55,7 @@ public sealed class EbayConnector : ConnectorBase
 
     public override SalesChannelCapabilities Capabilities =>
         SalesChannelCapabilities.ImportProducts |
-        SalesChannelCapabilities.ImportOrders |
+        SalesChannelCapabilities.ImportSaless |
         SalesChannelCapabilities.ImportCustomers |
         SalesChannelCapabilities.UpdateStock |
         SalesChannelCapabilities.UpdatePrice |
@@ -176,7 +176,7 @@ public sealed class EbayConnector : ConnectorBase
         return new SyncResult(processed, failed);
     }
 
-    public override async Task<SyncResult> ImportOrdersAsync(SalesChannelContext context)
+    public override async Task<SyncResult> ImportSalessAsync(SalesChannelContext context)
     {
         var salesChannel = context.SalesChannel;
         try
@@ -199,39 +199,39 @@ public sealed class EbayConnector : ConnectorBase
 
             while (true)
             {
-                var url = $"{salesChannel.Url}/sell/fulfillment/v1/order?limit={OrderPageSize}&offset={offset}";
+                var url = $"{salesChannel.Url}/sell/fulfillment/v1/sales?limit={SalesPageSize}&offset={offset}";
                 var response = await context.HttpClient.GetAsync(url, context.CancellationToken);
                 if (!response.IsSuccessStatusCode)
                 {
                     var body = await response.Content.ReadAsStringAsync(context.CancellationToken);
-                    _logger.LogError("eBay orders list HTTP {Status}: {Body}", (int)response.StatusCode, body);
+                    _logger.LogError("eBay saless list HTTP {Status}: {Body}", (int)response.StatusCode, body);
                     failed++;
                     break;
                 }
 
                 var raw = await response.Content.ReadAsStringAsync(context.CancellationToken);
-                var ordersResponse = JsonSerializer.Deserialize<EbayOrderResponse>(raw);
-                if (ordersResponse is null || ordersResponse.Total == 0 || ordersResponse.LineItems is null || ordersResponse.LineItems.Length == 0)
+                var salessResponse = JsonSerializer.Deserialize<EbaySalesResponse>(raw);
+                if (salessResponse is null || salessResponse.Total == 0 || salessResponse.LineItems is null || salessResponse.LineItems.Length == 0)
                 {
                     break;
                 }
 
-                foreach (var lineItem in ordersResponse.LineItems)
+                foreach (var lineItem in salessResponse.LineItems)
                 {
                     try
                     {
-                        var importOrder = MapOrder(ordersResponse, lineItem);
-                        await _orderImportRepository.ImportOrUpdateFromSalesChannel(salesChannel, importOrder);
+                        var importSales = MapSales(salessResponse, lineItem);
+                        await _salesImportRepository.ImportOrUpdateFromSalesChannel(salesChannel, importSales);
                         processed++;
                     }
                     catch (Exception ex)
                     {
                         failed++;
-                        _logger.LogError(ex, "eBay order import failed for line item {Id}", lineItem.LineItemId);
+                        _logger.LogError(ex, "eBay sales import failed for line item {Id}", lineItem.LineItemId);
                     }
                 }
 
-                offset += OrderPageSize;
+                offset += SalesPageSize;
             }
         }
         catch (Exception ex)
@@ -265,7 +265,7 @@ public sealed class EbayConnector : ConnectorBase
 
             while (true)
             {
-                var url = $"{salesChannel.Url}/sell/fulfillment/v1/order?limit={OrderPageSize}&offset={offset}";
+                var url = $"{salesChannel.Url}/sell/fulfillment/v1/sales?limit={SalesPageSize}&offset={offset}";
                 var response = await context.HttpClient.GetAsync(url, context.CancellationToken);
                 if (!response.IsSuccessStatusCode)
                 {
@@ -274,18 +274,18 @@ public sealed class EbayConnector : ConnectorBase
                 }
 
                 var raw = await response.Content.ReadAsStringAsync(context.CancellationToken);
-                var ordersResponse = JsonSerializer.Deserialize<EbayOrderResponse>(raw);
-                if (ordersResponse is null || ordersResponse.Total == 0 || ordersResponse.LineItems is null || ordersResponse.LineItems.Length == 0)
+                var salessResponse = JsonSerializer.Deserialize<EbaySalesResponse>(raw);
+                if (salessResponse is null || salessResponse.Total == 0 || salessResponse.LineItems is null || salessResponse.LineItems.Length == 0)
                 {
                     break;
                 }
 
-                var buyer = ordersResponse.Buyer;
+                var buyer = salessResponse.Buyer;
                 if (buyer?.TaxAddress is not null)
                 {
                     try
                     {
-                        var importCustomer = MapCustomer(ordersResponse);
+                        var importCustomer = MapCustomer(salessResponse);
                         await _customerImportRepository.ImportOrUpdateFromSalesChannel(salesChannel, importCustomer);
                         processed++;
                     }
@@ -296,7 +296,7 @@ public sealed class EbayConnector : ConnectorBase
                     }
                 }
 
-                offset += OrderPageSize;
+                offset += SalesPageSize;
             }
         }
         catch (Exception ex)
@@ -382,30 +382,30 @@ public sealed class EbayConnector : ConnectorBase
         context.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
     }
 
-    private static SalesChannelImportOrder MapOrder(EbayOrderResponse o, EbayLineItem line)
+    private static SalesChannelImportSales MapSales(EbaySalesResponse o, EbayLineItem line)
     {
-        var order = new SalesChannelImportOrder
+        var sales = new SalesChannelImportSales
         {
-            RemoteOrderId = line.LineItemId,
+            RemoteSalesId = line.LineItemId,
             RemoteCustomerId = o.Buyer?.Username ?? string.Empty,
-            DateOrdered = o.CreationDate,
+            DateSalesed = o.CreationDate,
             Subtotal = o.PricingSummary?.Subtotal?.Value ?? 0m,
             Total = o.PricingSummary?.Total?.Value ?? line.LineItemCost.Value,
             TotalTax = o.PricingSummary?.TotalTaxAmount?.Value ?? 0m,
             ShippingCost = CalculateShippingCost(o),
-            Status = MapOrderStatus(o.OrderFulfillmentStatus),
-            PaymentStatus = MapPaymentStatus(o.OrderPaymentStatus),
+            Status = MapSalesStatus(o.SalesFulfillmentStatus),
+            PaymentStatus = MapPaymentStatus(o.SalesPaymentStatus),
             PaymentMethod = "eBay",
             PaymentProvider = "eBay",
             CustomerNote = string.Empty,
-            OrderItems = new List<SalesChannelImportOrderItem>(),
+            SalesItems = new List<SalesChannelImportSalesItem>(),
             Customer = new SalesChannelImportCustomer(),
         };
 
         var buyer = o.Buyer;
         if (buyer?.TaxAddress is not null)
         {
-            order.Customer = new SalesChannelImportCustomer
+            sales.Customer = new SalesChannelImportCustomer
             {
                 Email = buyer.TaxAddress.Email ?? string.Empty,
                 RemoteCustomerId = buyer.Username ?? string.Empty,
@@ -425,8 +425,8 @@ public sealed class EbayConnector : ConnectorBase
                 Zip = buyer.TaxAddress.PostalCode ?? string.Empty,
                 Country = buyer.TaxAddress.CountryCode ?? string.Empty,
             };
-            order.Customer.BillingAddress = billingAddress;
-            order.BillingAddress = billingAddress;
+            sales.Customer.BillingAddress = billingAddress;
+            sales.BillingAddress = billingAddress;
 
             var shipTo = GetShippingAddress(o);
             if (shipTo is not null)
@@ -440,17 +440,17 @@ public sealed class EbayConnector : ConnectorBase
                     Zip = shipTo.PostalCode ?? string.Empty,
                     Country = shipTo.CountryCode ?? string.Empty,
                 };
-                order.Customer.ShippingAddress = shippingAddress;
-                order.ShippingAddress = shippingAddress;
+                sales.Customer.ShippingAddress = shippingAddress;
+                sales.ShippingAddress = shippingAddress;
             }
             else
             {
-                order.Customer.ShippingAddress = billingAddress;
-                order.ShippingAddress = billingAddress;
+                sales.Customer.ShippingAddress = billingAddress;
+                sales.ShippingAddress = billingAddress;
             }
         }
 
-        order.OrderItems.Add(new SalesChannelImportOrderItem
+        sales.SalesItems.Add(new SalesChannelImportSalesItem
         {
             Name = line.Title ?? string.Empty,
             Sku = line.Sku ?? string.Empty,
@@ -459,10 +459,10 @@ public sealed class EbayConnector : ConnectorBase
             TaxRate = 19,
         });
 
-        return order;
+        return sales;
     }
 
-    private static SalesChannelImportCustomer MapCustomer(EbayOrderResponse o)
+    private static SalesChannelImportCustomer MapCustomer(EbaySalesResponse o)
     {
         var buyer = o.Buyer;
         var importCustomer = new SalesChannelImportCustomer
@@ -501,7 +501,7 @@ public sealed class EbayConnector : ConnectorBase
         return importCustomer;
     }
 
-    private static EbayAddress GetShippingAddress(EbayOrderResponse o)
+    private static EbayAddress GetShippingAddress(EbaySalesResponse o)
     {
         var instructions = o.FulfillmentStartInstructions;
         if (instructions is { Length: > 0 } && instructions[0].ShippingStep is not null)
@@ -511,7 +511,7 @@ public sealed class EbayConnector : ConnectorBase
         return null;
     }
 
-    private static decimal CalculateShippingCost(EbayOrderResponse o)
+    private static decimal CalculateShippingCost(EbaySalesResponse o)
     {
         if (o.PricingSummary?.Total is null || o.PricingSummary.Subtotal is null)
         {
@@ -523,13 +523,13 @@ public sealed class EbayConnector : ConnectorBase
         return Math.Max(0, total - subtotal - tax);
     }
 
-    private static OrderStatus MapOrderStatus(string ebayStatus) => ebayStatus?.ToLower() switch
+    private static SalesStatus MapSalesStatus(string ebayStatus) => ebayStatus?.ToLower() switch
     {
-        "not_started" => OrderStatus.Pending,
-        "in_progress" => OrderStatus.Processing,
-        "fulfilled" => OrderStatus.Completed,
-        "failed" => OrderStatus.Failed,
-        _ => OrderStatus.Unknown,
+        "not_started" => SalesStatus.Pending,
+        "in_progress" => SalesStatus.Processing,
+        "fulfilled" => SalesStatus.Completed,
+        "failed" => SalesStatus.Failed,
+        _ => SalesStatus.Unknown,
     };
 
     private static PaymentStatus MapPaymentStatus(string status) => status?.ToLower() switch

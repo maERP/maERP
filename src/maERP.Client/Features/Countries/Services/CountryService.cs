@@ -53,7 +53,7 @@ public class CountryService : ICountryService
         }
 
         var baseUrl = await GetBaseUrlAsync();
-        var url = $"{baseUrl}{ApiEndpoints.Countries.Base}?pageSize=300&orderBy=Name";
+        var url = $"{baseUrl}{ApiEndpoints.Countries.Base}?pageSize=300&salesBy=Name";
 
         _logger.LogInformation("Fetching countries from URL: {Url}", url);
 

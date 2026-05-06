@@ -9,21 +9,21 @@ public sealed partial class DashboardPage : Page
         this.InitializeComponent();
     }
 
-    private async void OrderRow_Click(object sender, RoutedEventArgs e)
+    private async void SalesRow_Click(object sender, RoutedEventArgs e)
     {
         if (sender is Button button &&
-            button.DataContext is RecentOrderItem order &&
+            button.DataContext is RecentSalesItem sales &&
             DataContext is DashboardModel model)
         {
-            await model.ViewOrder(order);
+            await model.ViewSales(sales);
         }
     }
 
-    private async void ViewAllOrders_Click(object sender, RoutedEventArgs e)
+    private async void ViewAllSaless_Click(object sender, RoutedEventArgs e)
     {
         if (DataContext is DashboardModel model)
         {
-            await model.NavigateToOrderList();
+            await model.NavigateToSalesList();
         }
     }
 

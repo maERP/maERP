@@ -9,6 +9,7 @@ using maERP.Application.Contracts.Services;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace maERP.Persistence.DatabaseContext;
 
@@ -49,10 +50,10 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         modelBuilder.Entity<Invoice>().ToTable("invoice");
         modelBuilder.Entity<InvoiceItem>().ToTable("invoice_item");
         modelBuilder.Entity<Manufacturer>().ToTable("manufacturer");
-        modelBuilder.Entity<Order>().ToTable("order");
-        modelBuilder.Entity<OrderHistory>().ToTable("order_history");
-        modelBuilder.Entity<OrderItem>().ToTable("order_item");
-        modelBuilder.Entity<OrderItemSerialNumber>().ToTable("order_item_serialnumber");
+        modelBuilder.Entity<Sales>().ToTable("sales");
+        modelBuilder.Entity<SalesHistory>().ToTable("sales_history");
+        modelBuilder.Entity<SalesItem>().ToTable("sales_item");
+        modelBuilder.Entity<SalesItemSerialNumber>().ToTable("sales_item_serialnumber");
         modelBuilder.Entity<Product>().ToTable("product");
         modelBuilder.Entity<ProductSalesChannel>().ToTable("product_saleschannel");
         modelBuilder.Entity<ProductStock>().ToTable("product_stock");
@@ -95,10 +96,10 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         modelBuilder.ApplyConfiguration(new TaxClassConfiguration());
         modelBuilder.ApplyConfiguration(new GoodsReceiptConfiguration());
         modelBuilder.ApplyConfiguration(new InvoiceConfiguration());
-        modelBuilder.ApplyConfiguration(new OrderConfiguration());
+        modelBuilder.ApplyConfiguration(new SalesConfiguration());
         modelBuilder.ApplyConfiguration(new ProductConfiguration());
         modelBuilder.ApplyConfiguration(new InvoiceItemConfiguration());
-        modelBuilder.ApplyConfiguration(new OrderItemConfiguration());
+        modelBuilder.ApplyConfiguration(new SalesItemConfiguration());
         modelBuilder.ApplyConfiguration(new ProductSalesChannelConfiguration());
         modelBuilder.ApplyConfiguration(new ShippingProviderRateConfiguration());
         modelBuilder.ApplyConfiguration(new TenantEmailSettingsConfiguration());
@@ -108,6 +109,29 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         modelBuilder.ApplyConfiguration(new OAuthStateConfiguration());
 
         modelBuilder.SeedSettings();
+
+        // SQLite cannot ORDER BY / compare DateTimeOffset values when stored as TEXT.
+        // Apply DateTimeOffsetToBinaryConverter on the SQLite provider only, so the
+        // values are persisted as long (binary-encoded ticks + offset) and become
+        // sortable. MSSQL/PostgreSQL keep their native DateTimeOffset column types.
+        if (Database.ProviderName == "Microsoft.EntityFrameworkCore.Sqlite")
+        {
+            var dtoConverter = new DateTimeOffsetToBinaryConverter();
+
+            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+            {
+                foreach (var property in entityType.ClrType.GetProperties())
+                {
+                    if (property.PropertyType == typeof(DateTimeOffset)
+                        || property.PropertyType == typeof(DateTimeOffset?))
+                    {
+                        modelBuilder.Entity(entityType.ClrType)
+                            .Property(property.Name)
+                            .HasConversion(dtoConverter);
+                    }
+                }
+            }
+        }
 
         // Configure global query filters for multi-tenancy
         // IMPORTANT: Always apply global filters to ensure tenant isolation, but not in tests
@@ -127,10 +151,10 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<CustomerSalesChannel> CustomerSalesChannel { get; set; } = null!;
     public DbSet<Invoice> Invoice { get; set; } = null!;
     public DbSet<InvoiceItem> InvoiceItem { get; set; } = null!;
-    public DbSet<Order> Order { get; set; } = null!;
-    public DbSet<OrderHistory> OrderHistory { get; set; } = null!;
-    public DbSet<OrderItem> OrderItem { get; set; } = null!;
-    public DbSet<OrderItemSerialNumber> OrderItemSerialNumber { get; set; } = null!;
+    public DbSet<Sales> Sales { get; set; } = null!;
+    public DbSet<SalesHistory> SalesHistory { get; set; } = null!;
+    public DbSet<SalesItem> SalesItem { get; set; } = null!;
+    public DbSet<SalesItemSerialNumber> SalesItemSerialNumber { get; set; } = null!;
     public DbSet<Product> Product { get; set; } = null!;
     public DbSet<ProductSalesChannel> ProductSalesChannel { get; set; } = null!;
     public DbSet<ProductStock> ProductStock { get; set; } = null!;

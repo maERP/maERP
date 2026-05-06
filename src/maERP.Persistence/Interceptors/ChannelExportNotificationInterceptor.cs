@@ -4,30 +4,35 @@ using maERP.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace maERP.Persistence.Interceptors;
 
 /// <summary>
 /// EF Core save-changes interceptor that fans domain mutations out as notifications. Picks up
-/// every Add/Update/Delete on Product, ProductSalesChannel, ProductStock, Order and Customer
+/// every Add/Update/Delete on Product, ProductSalesChannel, ProductStock, Sales and Customer
 /// regardless of whether the caller went through a CQRS command-handler or wrote to the DbContext
 /// directly. Notifications are published after SaveChanges succeeds, so a failed save never
 /// produces phantom outbox rows.
 ///
 /// This is the safety-net half of the export pipeline; CQRS handlers are still free to publish
-/// richer notifications themselves (e.g. <c>OrderChangeKind.StatusChanged</c>), and the outbox
+/// richer notifications themselves (e.g. <c>SalesChangeKind.StatusChanged</c>), and the outbox
 /// enqueuer's idempotency-key coalesces both paths.
+///
+/// IMediator is resolved lazily so this interceptor can also be activated in bootstrap/migration
+/// contexts where no Application-layer services are registered. In that case notifications are
+/// silently skipped.
 /// </summary>
 public sealed class ChannelExportNotificationInterceptor : SaveChangesInterceptor
 {
-    private readonly IMediator _mediator;
+    private readonly IServiceProvider _services;
     private readonly ILogger<ChannelExportNotificationInterceptor> _logger;
     private List<INotification>? _pending;
 
-    public ChannelExportNotificationInterceptor(IMediator mediator, ILogger<ChannelExportNotificationInterceptor> logger)
+    public ChannelExportNotificationInterceptor(IServiceProvider services, ILogger<ChannelExportNotificationInterceptor> logger)
     {
-        _mediator = mediator;
+        _services = services;
         _logger = logger;
     }
 
@@ -112,9 +117,9 @@ public sealed class ChannelExportNotificationInterceptor : SaveChangesIntercepto
                         stock.ProductId, stock.WarehouseId, stock.TenantId));
                     break;
 
-                case Order order:
-                    notifications.Add(new OrderChangedNotification(
-                        order.Id, order.TenantId, MapOrderKind(entry.State)));
+                case Sales sales:
+                    notifications.Add(new SalesChangedNotification(
+                        sales.Id, sales.TenantId, MapSalesKind(entry.State)));
                     break;
 
                 case Customer customer:
@@ -129,22 +134,26 @@ public sealed class ChannelExportNotificationInterceptor : SaveChangesIntercepto
 
     private async Task PublishAsync(INotification notification, CancellationToken cancellationToken)
     {
+        var mediator = _services.GetService<IMediator>();
+        if (mediator is null)
+            return;
+
         switch (notification)
         {
             case ProductChangedNotification n:
-                await _mediator.Publish(n, cancellationToken);
+                await mediator.Publish(n, cancellationToken);
                 break;
             case ProductSalesChannelChangedNotification n:
-                await _mediator.Publish(n, cancellationToken);
+                await mediator.Publish(n, cancellationToken);
                 break;
             case StockChangedNotification n:
-                await _mediator.Publish(n, cancellationToken);
+                await mediator.Publish(n, cancellationToken);
                 break;
-            case OrderChangedNotification n:
-                await _mediator.Publish(n, cancellationToken);
+            case SalesChangedNotification n:
+                await mediator.Publish(n, cancellationToken);
                 break;
             case CustomerChangedNotification n:
-                await _mediator.Publish(n, cancellationToken);
+                await mediator.Publish(n, cancellationToken);
                 break;
         }
     }
@@ -156,11 +165,11 @@ public sealed class ChannelExportNotificationInterceptor : SaveChangesIntercepto
         _ => ProductChangeKind.Updated,
     };
 
-    private static OrderChangeKind MapOrderKind(EntityState state) => state switch
+    private static SalesChangeKind MapSalesKind(EntityState state) => state switch
     {
-        EntityState.Added => OrderChangeKind.Created,
-        EntityState.Deleted => OrderChangeKind.Cancelled,
-        _ => OrderChangeKind.StatusChanged,
+        EntityState.Added => SalesChangeKind.Created,
+        EntityState.Deleted => SalesChangeKind.Cancelled,
+        _ => SalesChangeKind.StatusChanged,
     };
 
     private static CustomerChangeKind MapCustomerKind(EntityState state) => state switch

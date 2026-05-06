@@ -1,4 +1,4 @@
-using System.Linq.Dynamic.Core;
+﻿using System.Linq.Dynamic.Core;
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
 using maERP.Application.Extensions;
@@ -28,7 +28,7 @@ public class GoodsReceiptListHandler : IRequestHandler<GoodsReceiptListQuery, Pa
 
         _logger.LogInformation("Handle GoodsReceiptListQuery: {0}", request);
 
-        if (string.IsNullOrEmpty(request.OrderBy))
+        if (string.IsNullOrEmpty(request.SalesBy))
         {
             var goodsReceipts = await _goodsReceiptRepository.Entities
                .Specify(filterSpec)
@@ -38,13 +38,13 @@ public class GoodsReceiptListHandler : IRequestHandler<GoodsReceiptListQuery, Pa
             return goodsReceipts;
         }
 
-        var orderedGoodsReceipts = await _goodsReceiptRepository.Entities
+        var salesedGoodsReceipts = await _goodsReceiptRepository.Entities
             .Specify(filterSpec)
-            .OrderBy(request.OrderBy)
+            .OrderBy(request.SalesBy)
             .Select(gr => MapToGoodsReceiptListDto(gr))
             .ToPaginatedListAsync(request.PageNumber, request.PageSize);
 
-        return orderedGoodsReceipts;
+        return salesedGoodsReceipts;
     }
 
     private static GoodsReceiptListDto MapToGoodsReceiptListDto(Domain.Entities.GoodsReceipt goodsReceipt)

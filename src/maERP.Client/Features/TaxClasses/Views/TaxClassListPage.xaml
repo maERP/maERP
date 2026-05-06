@@ -1,4 +1,4 @@
-<Page x:Class="maERP.Client.Features.TaxClasses.Views.TaxClassListPage"
+﻿<Page x:Class="maERP.Client.Features.TaxClasses.Views.TaxClassListPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:local="using:maERP.Client.Features.TaxClasses.Views"

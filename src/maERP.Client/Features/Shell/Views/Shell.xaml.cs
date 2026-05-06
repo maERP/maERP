@@ -10,7 +10,7 @@ using maERP.Client.Features.Dashboard.Models;
 using maERP.Client.Features.Customers.Models;
 using maERP.Client.Features.Invoices.Models;
 using maERP.Client.Features.Manufacturers.Models;
-using maERP.Client.Features.Orders.Models;
+using maERP.Client.Features.Saless.Models;
 using maERP.Client.Features.Products.Models;
 using maERP.Client.Features.SalesChannels.Models;
 using maERP.Client.Features.SalesChannels.Services;
@@ -74,7 +74,7 @@ public sealed partial class Shell : UserControl, IContentControlProvider
             { "Customers", NavItemCustomers },
             { "Products", NavItemProducts },
             { "Manufacturers", NavItemManufacturers },
-            { "Orders", NavItemOrders },
+            { "Saless", NavItemSaless },
             { "Invoices", NavItemInvoices },
             { "SalesChannels", NavItemSalesChannels },
             { "TaxClasses", NavItemTaxClasses },
@@ -263,7 +263,7 @@ public sealed partial class Shell : UserControl, IContentControlProvider
         NavItemCustomers.Visibility = Visibility.Visible;
         NavItemProducts.Visibility = Visibility.Visible;
         NavItemManufacturers.Visibility = Visibility.Visible;
-        NavItemOrders.Visibility = Visibility.Visible;
+        NavItemSaless.Visibility = Visibility.Visible;
         NavItemInvoices.Visibility = Visibility.Visible;
         NavItemSalesChannels.Visibility = Visibility.Visible;
         NavItemTaxClasses.Visibility = Visibility.Visible;
@@ -274,7 +274,7 @@ public sealed partial class Shell : UserControl, IContentControlProvider
 
         TabItemDashboard.Visibility = Visibility.Visible;
         TabItemCustomers.Visibility = Visibility.Visible;
-        TabItemOrders.Visibility = Visibility.Visible;
+        TabItemSaless.Visibility = Visibility.Visible;
         TabItemSettings.Visibility = Visibility.Visible;
         TabItemLogout.Visibility = Visibility.Visible;
     }
@@ -304,7 +304,7 @@ public sealed partial class Shell : UserControl, IContentControlProvider
 
         TabItemDashboard.Visibility = Visibility.Collapsed;
         TabItemCustomers.Visibility = Visibility.Collapsed;
-        TabItemOrders.Visibility = Visibility.Collapsed;
+        TabItemSaless.Visibility = Visibility.Collapsed;
         TabItemSettings.Visibility = Visibility.Collapsed;
         TabItemLogout.Visibility = Visibility.Collapsed;
 
@@ -334,7 +334,7 @@ public sealed partial class Shell : UserControl, IContentControlProvider
 
         TabItemDashboard.Visibility = Visibility.Collapsed;
         TabItemCustomers.Visibility = Visibility.Collapsed;
-        TabItemOrders.Visibility = Visibility.Collapsed;
+        TabItemSaless.Visibility = Visibility.Collapsed;
         TabItemSettings.Visibility = Visibility.Collapsed;
         TabItemLogout.Visibility = Visibility.Collapsed;
     }
@@ -439,8 +439,8 @@ public sealed partial class Shell : UserControl, IContentControlProvider
                 case "Customers":
                     await navigator.NavigateViewModelAsync<CustomerListModel>(this);
                     break;
-                case "Orders":
-                    await navigator.NavigateViewModelAsync<OrderListModel>(this);
+                case "Saless":
+                    await navigator.NavigateViewModelAsync<SalesListModel>(this);
                     break;
                 case "Products":
                     await navigator.NavigateViewModelAsync<ProductListModel>(this);

@@ -1,4 +1,4 @@
-using maERP.Domain.Entities;
+﻿using maERP.Domain.Entities;
 using maERP.Domain.Enums;
 using maERP.Persistence.DatabaseContext;
 using Microsoft.EntityFrameworkCore;

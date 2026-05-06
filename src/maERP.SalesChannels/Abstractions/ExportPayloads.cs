@@ -40,9 +40,9 @@ public sealed record PriceUpdatePayload(
     string? RemoteProductId,
     string? ExternalListingId);
 
-public sealed record OrderUpdatePayload(
-    Guid OrderId,
-    string? RemoteOrderId,
+public sealed record SalesUpdatePayload(
+    Guid SalesId,
+    string? RemoteSalesId,
     string Status,
     string? TrackingNumber,
     string? ShippingProvider);

@@ -31,10 +31,10 @@ public class SettingListHandler : IRequestHandler<SettingListQuery, PaginatedRes
 
         IQueryable<Domain.Entities.Setting> query = _SettingRepository.Entities.Specify(settingFilterSpec);
 
-        if (request.OrderBy.Any())
+        if (request.SalesBy.Any())
         {
-            var ordering = string.Join(",", request.OrderBy);
-            query = query.OrderBy(ordering);
+            var salesing = string.Join(",", request.SalesBy);
+            query = query.OrderBy(salesing);
         }
 
         // Use the standard pagination extension which handles zero-based pagination correctly

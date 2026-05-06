@@ -30,7 +30,7 @@ public interface ISalesChannelService
     /// </summary>
     Task UpdateSalesChannelAsync(Guid id, SalesChannelInputDto input, CancellationToken ct = default);
 
-    /// <summary>Trigger a manual sync (operation = "products" | "orders" | "customers" | "all").</summary>
+    /// <summary>Trigger a manual sync (operation = "products" | "saless" | "customers" | "all").</summary>
     Task<SalesChannelSyncResultDto?> TriggerSyncAsync(Guid id, string operation, CancellationToken ct = default);
 
     /// <summary>Test the channel's credentials/connectivity without doing any import.</summary>
