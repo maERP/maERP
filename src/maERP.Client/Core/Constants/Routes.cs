@@ -50,6 +50,7 @@ public static class Routes
     public const string InvoiceDetail = "InvoiceDetail";
 
     // Sales Channels
+    public const string SalesChannelOverview = "SalesChannelOverview";
     public const string SalesChannelList = "SalesChannels";
     public const string SalesChannelDetail = "SalesChannelDetail";
     public const string SalesChannelEdit = "SalesChannelEdit";

@@ -14,4 +14,10 @@ public interface ITokenStorageService
     Task<DateTimeOffset?> GetTokenExpiryAsync();
     Task<bool> GetRememberMeAsync();
     Task SetRememberMeAsync(bool rememberMe);
+
+    /// <summary>Long-lived refresh token. Read-write through <see cref="ISecureCredentialStore"/>.</summary>
+    Task<string?> GetRefreshTokenAsync();
+    Task SetRefreshTokenAsync(string refreshToken, DateTime? expiresAt);
+    Task ClearRefreshTokenAsync();
+    Task<DateTime?> GetRefreshTokenExpiryAsync();
 }

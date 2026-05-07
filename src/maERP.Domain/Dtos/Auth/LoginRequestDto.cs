@@ -16,4 +16,5 @@ public class LoginRequestDto
     [Url]
     public string Server { get; set; } = string.Empty;
 
+    public bool RememberMe { get; set; }
 }

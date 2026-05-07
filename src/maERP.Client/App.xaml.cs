@@ -125,11 +125,15 @@ public partial class App : Application
                                     return default;
                                 }
 
+                                var rememberMe = credentials.TryGetValue("RememberMe", out var r)
+                                    && bool.TryParse(r, out var parsed) && parsed;
+
                                 var loginRequest = new LoginRequestDto
                                 {
                                     Email = email,
                                     Password = password,
-                                    Server = serverUrl
+                                    Server = serverUrl,
+                                    RememberMe = rememberMe
                                 };
 
                                 var response = await authService.LoginAsync(loginRequest, cancellationToken);
@@ -163,7 +167,31 @@ public partial class App : Application
                                     return tokenCache;
                                 }
 
+                                // Access token missing/expired/invalid — try the long-lived refresh token.
+                                // On success, hand the new access token back to the Uno auth cache so the
+                                // user is silently re-authenticated without a login prompt.
+                                var refreshed = await authService.RefreshTokenAsync(cancellationToken);
+                                if (refreshed?.Succeeded == true && !string.IsNullOrEmpty(refreshed.Token))
+                                {
+                                    var tokens = new Dictionary<string, string>(tokenCache)
+                                    {
+                                        ["AccessToken"] = refreshed.Token
+                                    };
+                                    if (refreshed.CurrentTenantId.HasValue)
+                                    {
+                                        tokens["TenantId"] = refreshed.CurrentTenantId.Value.ToString();
+                                    }
+                                    return tokens;
+                                }
+
                                 return default;
+                            })
+                            .Logout(async (authService, dispatcher, tokenCache, cancellationToken) =>
+                            {
+                                // Best-effort server-side revoke before Uno clears the cache.
+                                try { await authService.LogoutAsync(cancellationToken); }
+                                catch { /* Refresh-token revocation is best-effort. */ }
+                                return true;
                             })
                     )
                 )

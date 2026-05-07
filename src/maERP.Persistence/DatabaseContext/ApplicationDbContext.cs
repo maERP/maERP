@@ -71,6 +71,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         modelBuilder.Entity<ChannelExportOutbox>().ToTable("channel_export_outbox");
         modelBuilder.Entity<TenantOAuthAppSettings>().ToTable("tenant_oauth_app_settings");
         modelBuilder.Entity<OAuthState>().ToTable("oauth_state");
+        modelBuilder.Entity<RefreshToken>().ToTable("refresh_token");
 
         // modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
         // modelBuilder.ApplyConfigurationsFromAssembly(typeof(MaErpIdentityDbContext).Assembly);
@@ -107,6 +108,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         modelBuilder.ApplyConfiguration(new ChannelExportOutboxConfiguration());
         modelBuilder.ApplyConfiguration(new TenantOAuthAppSettingsConfiguration());
         modelBuilder.ApplyConfiguration(new OAuthStateConfiguration());
+        modelBuilder.ApplyConfiguration(new RefreshTokenConfiguration());
 
         modelBuilder.SeedSettings();
 
@@ -174,6 +176,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<ChannelExportOutbox> ChannelExportOutbox { get; set; } = null!;
     public DbSet<TenantOAuthAppSettings> TenantOAuthAppSettings { get; set; } = null!;
     public DbSet<OAuthState> OAuthState { get; set; } = null!;
+    public DbSet<RefreshToken> RefreshToken { get; set; } = null!;
 
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {

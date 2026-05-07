@@ -1,4 +1,4 @@
-﻿#nullable disable
+#nullable disable
 
 using maERP.Domain.Dtos.Tenant;
 
@@ -10,6 +10,8 @@ public class LoginResponseDto
     public bool Succeeded { get; set; }
     public string Message { get; set; }
     public string Token { get; set; }
+    public string RefreshToken { get; set; }
+    public DateTime? RefreshTokenExpiresAt { get; set; }
     public List<TenantListDto> AvailableTenants { get; set; } = new();
     public Guid? CurrentTenantId { get; set; }
 }

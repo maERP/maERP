@@ -103,7 +103,8 @@ namespace maERP.Persistence.Repositories
                 new Setting { Key = "Jwt.Issuer", Value = "maERP.Server" },
                 new Setting { Key = "Jwt.Audience", Value = "maERP.Client" },
                 new Setting { Key = "Jwt.DurationInMinutes", Value = "60" },
-                new Setting { Key = "Jwt.RefreshTokenExpireDays", Value = "7" },
+                new Setting { Key = "Jwt.RefreshTokenExpireDays", Value = "30" },
+                new Setting { Key = "Jwt.RefreshTokenExpireDaysShort", Value = "1" },
 
                 // Email Settings - System-wide fallback configuration
                 new Setting { Key = "Email.ProviderType", Value = "Smtp" },

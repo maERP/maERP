@@ -58,18 +58,26 @@ public class AuthController(IAuthService authenticationService, ILogger<AuthCont
     }
 
     [HttpPost("refresh-token")]
+    [AllowAnonymous]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public async Task<ActionResult<LoginResponseDto>> RefreshToken()
+    public async Task<ActionResult<LoginResponseDto>> RefreshToken(RefreshTokenRequestDto request)
     {
-        var userId = User.FindFirst("uid")?.Value;
-        if (string.IsNullOrEmpty(userId))
-        {
-            return Unauthorized();
-        }
-
-        var result = await authenticationService.RefreshToken(userId);
+        var result = await authenticationService.RefreshToken(request.RefreshToken);
         return StatusCode((int)result.StatusCode, result);
+    }
+
+    /// <summary>
+    /// Revokes the supplied refresh-token (and its rotation chain). Anonymous so the client can
+    /// always log out, even after the access token has expired.
+    /// </summary>
+    [HttpPost("logout")]
+    [AllowAnonymous]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<IActionResult> Logout(RefreshTokenRequestDto request)
+    {
+        await authenticationService.Logout(request.RefreshToken);
+        return NoContent();
     }
 
     [HttpPost("forgot-password")]

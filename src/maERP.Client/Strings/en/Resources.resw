@@ -312,6 +312,12 @@
   <data name="Shell.NavItem.SalesChannels.Text" xml:space="preserve">
     <value>Sales Channels</value>
   </data>
+  <data name="Shell.NavItem.SalesChannelList.Content" xml:space="preserve">
+    <value>Manage Sales Channels</value>
+  </data>
+  <data name="Shell.NavItem.SalesChannelList.Text" xml:space="preserve">
+    <value>Manage Sales Channels</value>
+  </data>
 
   <!-- Shell First Tenant Creation -->
   <data name="Shell.FirstTenant.Title.Text" xml:space="preserve">
@@ -1570,6 +1576,83 @@
   </data>
   <data name="TaxClassEditPage.Error.SaveFailed" xml:space="preserve">
     <value>Failed to save tax class: {0}</value>
+  </data>
+
+  <!-- Sales Channel Overview Dashboard -->
+  <data name="SalesChannelOverviewPage.NavigationBar.Content" xml:space="preserve">
+    <value>Sales Channels</value>
+  </data>
+  <data name="SalesChannelOverviewPage.AppBarButton.Refresh.Label" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
+  <data name="SalesChannelOverviewPage.AppBarButton.Refresh.ToolTip" xml:space="preserve">
+    <value>Reload KPIs</value>
+  </data>
+  <data name="SalesChannelOverviewPage.AppBarButton.ManageList.Label" xml:space="preserve">
+    <value>Manage</value>
+  </data>
+  <data name="SalesChannelOverviewPage.AppBarButton.ManageList.ToolTip" xml:space="preserve">
+    <value>Create and edit sales channels</value>
+  </data>
+  <data name="SalesChannelOverviewPage.Header.Breadcrumb.Text" xml:space="preserve">
+    <value>SALES &#8250; OVERVIEW</value>
+  </data>
+  <data name="SalesChannelOverviewPage.Header.Title.Text" xml:space="preserve">
+    <value>Sales Channels</value>
+  </data>
+  <data name="SalesChannelOverviewPage.Header.Subtitle.Text" xml:space="preserve">
+    <value>Live overview of all sales channels and their revenue.</value>
+  </data>
+  <data name="SalesChannelOverviewPage.Empty.Title.Text" xml:space="preserve">
+    <value>No sales channels yet</value>
+  </data>
+  <data name="SalesChannelOverviewPage.Empty.Description.Text" xml:space="preserve">
+    <value>Create your first sales channel to see revenue and order numbers per channel.</value>
+  </data>
+  <data name="SalesChannelOverviewPage.Empty.Action.Content" xml:space="preserve">
+    <value>Manage sales channels</value>
+  </data>
+  <data name="SalesChannelOverviewPage.Kpi.TotalRevenueMonth.Text" xml:space="preserve">
+    <value>Revenue this month</value>
+  </data>
+  <data name="SalesChannelOverviewPage.Kpi.WeekPrefix.Text" xml:space="preserve">
+    <value>This week:</value>
+  </data>
+  <data name="SalesChannelOverviewPage.Kpi.SalesToday.Text" xml:space="preserve">
+    <value>Sales today</value>
+  </data>
+  <data name="SalesChannelOverviewPage.Kpi.SalesWeekSuffix.Text" xml:space="preserve">
+    <value>this week</value>
+  </data>
+  <data name="SalesChannelOverviewPage.Kpi.ActiveChannels.Text" xml:space="preserve">
+    <value>Active channels</value>
+  </data>
+  <data name="SalesChannelOverviewPage.Kpi.ActiveDescription.Text" xml:space="preserve">
+    <value>Channels with activity this month</value>
+  </data>
+  <data name="SalesChannelOverviewPage.Kpi.TopPerformer.Text" xml:space="preserve">
+    <value>Top performer</value>
+  </data>
+  <data name="SalesChannelOverviewPage.Section.Channels.Text" xml:space="preserve">
+    <value>Channels by revenue</value>
+  </data>
+  <data name="SalesChannelOverviewPage.Card.RevenueMonth.Text" xml:space="preserve">
+    <value>Revenue this month</value>
+  </data>
+  <data name="SalesChannelOverviewPage.Card.RevenueToday.Text" xml:space="preserve">
+    <value>Today</value>
+  </data>
+  <data name="SalesChannelOverviewPage.Card.RevenueWeek.Text" xml:space="preserve">
+    <value>This week</value>
+  </data>
+  <data name="SalesChannelOverviewPage.Card.SalessWeekSuffix.Text" xml:space="preserve">
+    <value>sales this week</value>
+  </data>
+  <data name="SalesChannelOverviewPage.Card.Share.Text" xml:space="preserve">
+    <value>Share of total revenue</value>
+  </data>
+  <data name="SalesChannelOverviewPage.LoadError.Text" xml:space="preserve">
+    <value>Unable to load overview.</value>
   </data>
 
   <!-- Sales Channel List Page -->

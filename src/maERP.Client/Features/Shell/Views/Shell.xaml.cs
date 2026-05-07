@@ -76,7 +76,8 @@ public sealed partial class Shell : UserControl, IContentControlProvider
             { "Manufacturers", NavItemManufacturers },
             { "Saless", NavItemSaless },
             { "Invoices", NavItemInvoices },
-            { "SalesChannels", NavItemSalesChannels },
+            { "SalesChannelOverview", NavItemSalesChannels },
+            { "SalesChannels", NavItemSalesChannelList },
             { "TaxClasses", NavItemTaxClasses },
             { "Warehouses", NavItemWarehouses },
             { "AiModels", NavItemAiModels },
@@ -271,6 +272,7 @@ public sealed partial class Shell : UserControl, IContentControlProvider
         NavItemAiModels.Visibility = Visibility.Visible;
         NavItemAiPrompts.Visibility = Visibility.Visible;
         NavItemTenantOAuthSettings.Visibility = Visibility.Visible;
+        NavItemSalesChannelList.Visibility = Visibility.Visible;
 
         TabItemDashboard.Visibility = Visibility.Visible;
         TabItemCustomers.Visibility = Visibility.Visible;
@@ -453,6 +455,9 @@ public sealed partial class Shell : UserControl, IContentControlProvider
                     break;
                 case "Warehouses":
                     await navigator.NavigateViewModelAsync<WarehouseListModel>(this);
+                    break;
+                case "SalesChannelOverview":
+                    await navigator.NavigateViewModelAsync<SalesChannelOverviewModel>(this);
                     break;
                 case "SalesChannels":
                     await navigator.NavigateViewModelAsync<SalesChannelListModel>(this);
@@ -901,18 +906,20 @@ public sealed partial class Shell : UserControl, IContentControlProvider
             var shellModel = app.Host.Services.GetRequiredService<ShellModel>();
             var tokenStorage = app.Host.Services.GetRequiredService<ITokenStorageService>();
 
+            var rememberMe = LoginRememberMe.IsChecked == true;
+
             var credentials = new Dictionary<string, string>
             {
                 ["Email"] = email,
                 ["Password"] = password,
-                ["ServerUrl"] = serverUrl
+                ["ServerUrl"] = serverUrl,
+                ["RememberMe"] = rememberMe.ToString()
             };
 
             var success = await auth.LoginAsync(dispatcher: null, credentials);
 
             if (success)
             {
-                await tokenStorage.SetRememberMeAsync(LoginRememberMe.IsChecked == true);
                 shellModel.UpdateAuthenticationState(true);
 
                 if (tenantContext.AvailableTenants.Count == 0)

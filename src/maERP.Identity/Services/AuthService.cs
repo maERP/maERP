@@ -1,5 +1,6 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using maERP.Application.Contracts.Identity;
@@ -25,6 +26,7 @@ public class AuthService : maERP.Application.Contracts.Identity.IAuthService
     private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly IUserTenantService _userTenantService;
     private readonly IUserTenantRepository _userTenantRepository;
+    private readonly IRefreshTokenRepository _refreshTokenRepository;
     private readonly IEmailService _emailService;
     private readonly IServerInfoService _serverInfoService;
     private readonly ILogger<AuthService> _logger;
@@ -35,6 +37,7 @@ public class AuthService : maERP.Application.Contracts.Identity.IAuthService
         SignInManager<ApplicationUser> signInManager,
         IUserTenantService userTenantService,
         IUserTenantRepository userTenantRepository,
+        IRefreshTokenRepository refreshTokenRepository,
         IEmailService emailService,
         IServerInfoService serverInfoService,
         ILogger<AuthService> logger)
@@ -44,6 +47,7 @@ public class AuthService : maERP.Application.Contracts.Identity.IAuthService
         _signInManager = signInManager;
         _userTenantService = userTenantService;
         _userTenantRepository = userTenantRepository;
+        _refreshTokenRepository = refreshTokenRepository;
         _emailService = emailService;
         _serverInfoService = serverInfoService;
         _logger = logger;
@@ -75,11 +79,14 @@ public class AuthService : maERP.Application.Contracts.Identity.IAuthService
             .FirstOrDefaultAsync();
 
         var jwtSecurityToken = await GenerateToken(user, availableTenants, defaultTenantId);
+        var refreshIssued = await IssueRefreshTokenAsync(user.Id, family: null, isPersistent: request.RememberMe);
 
         var response = new LoginResponseDto()
         {
             UserId = user.Id,
             Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken),
+            RefreshToken = refreshIssued.PlaintextToken,
+            RefreshTokenExpiresAt = refreshIssued.Entity.ExpiresAt,
             Succeeded = true,
             Message = "Anmeldung erfolgreich.",
             AvailableTenants = availableTenants,
@@ -128,11 +135,16 @@ public class AuthService : maERP.Application.Contracts.Identity.IAuthService
 
             var availableTenants = await _userTenantService.GetUserTenantsAsync(user.Id);
             var jwtSecurityToken = await GenerateToken(user, availableTenants, defaultTenantId: null);
+            // Auto-login after registration: issue a session-length refresh token. The user can
+            // re-tick "Eingeloggt bleiben" on the next manual login to upgrade to long-lived.
+            var refreshIssued = await IssueRefreshTokenAsync(user.Id, family: null, isPersistent: false);
 
             return Result<LoginResponseDto>.Success(new LoginResponseDto
             {
                 UserId = user.Id,
                 Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken),
+                RefreshToken = refreshIssued.PlaintextToken,
+                RefreshTokenExpiresAt = refreshIssued.Entity.ExpiresAt,
                 Succeeded = true,
                 Message = "Registrierung erfolgreich.",
                 AvailableTenants = availableTenants,
@@ -232,23 +244,54 @@ public class AuthService : maERP.Application.Contracts.Identity.IAuthService
         return jwtSecurityToken;
     }
 
-    public async Task<Result<LoginResponseDto>> RefreshToken(string userId)
+    public async Task<Result<LoginResponseDto>> RefreshToken(string refreshToken)
     {
-        var user = await _userManager.FindByIdAsync(userId);
+        if (string.IsNullOrWhiteSpace(refreshToken))
+        {
+            return Result<LoginResponseDto>.Fail(ResultStatusCode.Unauthorized, "Refresh-Token fehlt.");
+        }
 
+        var hash = HashToken(refreshToken);
+        var stored = await _refreshTokenRepository.GetByHashAsync(hash);
+
+        if (stored == null)
+        {
+            _logger.LogWarning("Refresh attempt with unknown token hash");
+            return Result<LoginResponseDto>.Fail(ResultStatusCode.Unauthorized, "Refresh-Token ungültig.");
+        }
+
+        // Replay detection: a previously-revoked token is being presented again.
+        // Treat as compromise — burn the entire family.
+        if (stored.RevokedAt.HasValue)
+        {
+            _logger.LogWarning("Refresh-token replay detected for family {Family} (user {UserId}) — revoking family", stored.Family, stored.UserId);
+            await _refreshTokenRepository.RevokeFamilyAsync(stored.Family, DateTime.UtcNow);
+            return Result<LoginResponseDto>.Fail(ResultStatusCode.Unauthorized, "Refresh-Token ungültig.");
+        }
+
+        if (stored.ExpiresAt <= DateTime.UtcNow)
+        {
+            return Result<LoginResponseDto>.Fail(ResultStatusCode.Unauthorized, "Refresh-Token abgelaufen.");
+        }
+
+        var user = await _userManager.FindByIdAsync(stored.UserId);
         if (user == null)
         {
             return Result<LoginResponseDto>.Fail(ResultStatusCode.Unauthorized, "Benutzer nicht gefunden.");
         }
 
-        // Load current tenant assignments from database
         var availableTenants = await _userTenantService.GetUserTenantsAsync(user.Id);
-
-        // Get the default tenant ID from UserTenant relationship
         var defaultTenantId = await _userTenantRepository.Entities
             .Where(ut => ut.UserId == user.Id && ut.IsDefault)
             .Select(ut => (Guid?)ut.TenantId)
             .FirstOrDefaultAsync();
+
+        // Rotate: issue successor in same family, mark current as revoked + chained.
+        var newRefresh = await IssueRefreshTokenAsync(user.Id, family: stored.Family, isPersistent: stored.IsPersistent);
+
+        stored.RevokedAt = DateTime.UtcNow;
+        stored.ReplacedByTokenId = newRefresh.Entity.Id;
+        await _refreshTokenRepository.UpdateAsync(stored);
 
         var jwtSecurityToken = await GenerateToken(user, availableTenants, defaultTenantId);
 
@@ -256,6 +299,8 @@ public class AuthService : maERP.Application.Contracts.Identity.IAuthService
         {
             UserId = user.Id,
             Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken),
+            RefreshToken = newRefresh.PlaintextToken,
+            RefreshTokenExpiresAt = newRefresh.Entity.ExpiresAt,
             Succeeded = true,
             Message = "Token erfolgreich aktualisiert.",
             AvailableTenants = availableTenants,
@@ -264,6 +309,50 @@ public class AuthService : maERP.Application.Contracts.Identity.IAuthService
 
         return Result<LoginResponseDto>.Success(response);
     }
+
+    public async Task Logout(string refreshToken)
+    {
+        if (string.IsNullOrWhiteSpace(refreshToken)) return;
+
+        var hash = HashToken(refreshToken);
+        var stored = await _refreshTokenRepository.GetByHashAsync(hash);
+        if (stored == null) return;
+
+        await _refreshTokenRepository.RevokeFamilyAsync(stored.Family, DateTime.UtcNow);
+    }
+
+    private async Task<(RefreshToken Entity, string PlaintextToken)> IssueRefreshTokenAsync(
+        string userId, Guid? family, bool isPersistent)
+    {
+        // 64 bytes = 512 bits of entropy → base64url ~86 chars. Plenty.
+        var bytes = RandomNumberGenerator.GetBytes(64);
+        var plaintext = Base64UrlEncode(bytes);
+
+        var lifetimeDays = isPersistent
+            ? Math.Max(1, _jwtSettings.RefreshTokenExpireDays)
+            : Math.Max(1, _jwtSettings.RefreshTokenExpireDaysShort);
+
+        var entity = new RefreshToken
+        {
+            UserId = userId,
+            TokenHash = HashToken(plaintext),
+            Family = family ?? Guid.NewGuid(),
+            ExpiresAt = DateTime.UtcNow.AddDays(lifetimeDays),
+            IsPersistent = isPersistent
+        };
+
+        await _refreshTokenRepository.CreateAsync(entity);
+        return (entity, plaintext);
+    }
+
+    private static string HashToken(string token)
+    {
+        var bytes = SHA256.HashData(Encoding.UTF8.GetBytes(token));
+        return Convert.ToBase64String(bytes);
+    }
+
+    private static string Base64UrlEncode(byte[] bytes)
+        => Convert.ToBase64String(bytes).TrimEnd('=').Replace('+', '-').Replace('/', '_');
 
     public async Task<Result<ForgotPasswordResponse>> ForgotPassword(ForgotPasswordRequest request)
     {

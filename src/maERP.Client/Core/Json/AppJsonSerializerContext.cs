@@ -88,6 +88,7 @@ namespace maERP.Client.Core.Json;
 [JsonSerializable(typeof(ManufacturerInputDto))]
 [JsonSerializable(typeof(CustomerInputDto))]
 [JsonSerializable(typeof(LoginRequestDto))]
+[JsonSerializable(typeof(RefreshTokenRequestDto))]
 [JsonSerializable(typeof(RegisterRequestDto))]
 [JsonSerializable(typeof(ServerInfoResponseDto))]
 [JsonSerializable(typeof(AddUserToTenantPayload))]

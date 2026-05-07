@@ -1,0 +1,496 @@
+<Page x:Class="maERP.Client.Features.SalesChannels.Views.SalesChannelOverviewPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:local="using:maERP.Client.Features.SalesChannels.Views"
+      xmlns:models="using:maERP.Client.Features.SalesChannels.Models"
+      xmlns:mvux="using:Uno.Extensions.Reactive.UI"
+      xmlns:utu="using:Uno.Toolkit.UI"
+      Background="{ThemeResource BackgroundBrush}">
+
+  <Page.Resources>
+    <SolidColorBrush x:Key="PositiveChangeBrush" Color="#16A34A" />
+    <SolidColorBrush x:Key="NegativeChangeBrush" Color="#DC2626" />
+  </Page.Resources>
+
+  <Grid utu:SafeArea.Insets="VisibleBounds">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="*" />
+    </Grid.RowDefinitions>
+
+    <utu:NavigationBar Grid.Row="0"
+                       x:Uid="SalesChannelOverviewPage.NavigationBar">
+      <utu:NavigationBar.PrimaryCommands>
+        <AppBarButton x:Uid="SalesChannelOverviewPage.AppBarButton.ManageList"
+                      Click="ManageList_Click">
+          <AppBarButton.Icon>
+            <FontIcon Glyph="&#xE71D;" />
+          </AppBarButton.Icon>
+        </AppBarButton>
+        <AppBarButton x:Uid="SalesChannelOverviewPage.AppBarButton.Refresh"
+                      Command="{Binding Refresh, ElementName=OverviewFeedView}">
+          <AppBarButton.Icon>
+            <FontIcon Glyph="&#xE72C;" />
+          </AppBarButton.Icon>
+        </AppBarButton>
+      </utu:NavigationBar.PrimaryCommands>
+    </utu:NavigationBar>
+
+    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+      <Grid Padding="24">
+
+        <mvux:FeedView x:Name="OverviewFeedView"
+                       Source="{Binding Overview}">
+
+          <mvux:FeedView.ValueTemplate>
+            <DataTemplate>
+              <StackPanel Spacing="20">
+
+                <!-- Page Header -->
+                <StackPanel Spacing="2">
+                  <TextBlock x:Uid="SalesChannelOverviewPage.Header.Breadcrumb"
+                             Style="{StaticResource LabelSmall}"
+                             Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                  <TextBlock x:Uid="SalesChannelOverviewPage.Header.Title"
+                             Style="{StaticResource HeadlineMedium}"
+                             Foreground="{ThemeResource OnBackgroundBrush}" />
+                  <TextBlock x:Uid="SalesChannelOverviewPage.Header.Subtitle"
+                             Style="{StaticResource BodyMedium}"
+                             Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                             TextWrapping="Wrap" />
+                </StackPanel>
+
+                <!-- Empty State -->
+                <Border Visibility="{Binding Data.HasNoChannels, Converter={StaticResource BoolToVisibilityConverter}}"
+                        Background="{ThemeResource SurfaceBrush}"
+                        CornerRadius="12"
+                        Padding="32"
+                        Translation="0,0,8">
+                  <Border.Shadow><ThemeShadow /></Border.Shadow>
+                  <StackPanel Spacing="12" HorizontalAlignment="Center">
+                    <FontIcon Glyph="&#xE8A7;" FontSize="48"
+                              Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                              HorizontalAlignment="Center" />
+                    <TextBlock x:Uid="SalesChannelOverviewPage.Empty.Title"
+                               Style="{StaticResource TitleMedium}"
+                               Foreground="{ThemeResource OnSurfaceBrush}"
+                               HorizontalAlignment="Center" />
+                    <TextBlock x:Uid="SalesChannelOverviewPage.Empty.Description"
+                               Style="{StaticResource BodyMedium}"
+                               Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                               TextAlignment="Center"
+                               TextWrapping="Wrap"
+                               MaxWidth="420" />
+                    <Button x:Uid="SalesChannelOverviewPage.Empty.Action"
+                            Click="ManageList_Click"
+                            Style="{StaticResource FilledButtonStyle}"
+                            HorizontalAlignment="Center"
+                            Margin="0,8,0,0" />
+                  </StackPanel>
+                </Border>
+
+                <!-- KPI Strip (visible when channels exist) -->
+                <Grid Visibility="{Binding Data.HasChannels, Converter={StaticResource BoolToVisibilityConverter}}"
+                      ColumnSpacing="12" RowSpacing="12">
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                  </Grid.ColumnDefinitions>
+
+                  <!-- KPI: Total Revenue This Month -->
+                  <Border Grid.Column="0"
+                          Background="{ThemeResource SurfaceBrush}"
+                          CornerRadius="12" Padding="20"
+                          Translation="0,0,8">
+                    <Border.Shadow><ThemeShadow /></Border.Shadow>
+                    <Grid>
+                      <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                      </Grid.ColumnDefinitions>
+                      <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                      </Grid.RowDefinitions>
+                      <TextBlock Grid.Row="0" Grid.Column="0"
+                                 x:Uid="SalesChannelOverviewPage.Kpi.TotalRevenueMonth"
+                                 Style="{StaticResource LabelLarge}"
+                                 Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                      <Border Grid.Row="0" Grid.Column="1"
+                              Background="{ThemeResource TertiaryContainerBrush}"
+                              CornerRadius="20" Width="40" Height="40">
+                        <FontIcon Glyph="&#xE8C7;" FontSize="18"
+                                  Foreground="{ThemeResource OnTertiaryContainerBrush}"
+                                  HorizontalAlignment="Center" VerticalAlignment="Center" />
+                      </Border>
+                      <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                                 Text="{Binding Data.TotalRevenueThisMonthFormatted}"
+                                 Style="{StaticResource HeadlineLarge}"
+                                 Foreground="{ThemeResource OnSurfaceBrush}"
+                                 Margin="0,8,0,0" />
+                      <TextBlock Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
+                                 Style="{StaticResource BodySmall}"
+                                 Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                 Margin="0,4,0,0">
+                        <Run x:Uid="SalesChannelOverviewPage.Kpi.WeekPrefix" />
+                        <Run Text=" " />
+                        <Run Text="{Binding Data.TotalRevenueThisWeekFormatted}" />
+                      </TextBlock>
+                    </Grid>
+                  </Border>
+
+                  <!-- KPI: Total Sales Today -->
+                  <Border Grid.Column="1"
+                          Background="{ThemeResource SurfaceBrush}"
+                          CornerRadius="12" Padding="20"
+                          Translation="0,0,8">
+                    <Border.Shadow><ThemeShadow /></Border.Shadow>
+                    <Grid>
+                      <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                      </Grid.ColumnDefinitions>
+                      <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                      </Grid.RowDefinitions>
+                      <TextBlock Grid.Row="0" Grid.Column="0"
+                                 x:Uid="SalesChannelOverviewPage.Kpi.SalesToday"
+                                 Style="{StaticResource LabelLarge}"
+                                 Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                      <Border Grid.Row="0" Grid.Column="1"
+                              Background="{ThemeResource PrimaryContainerBrush}"
+                              CornerRadius="20" Width="40" Height="40">
+                        <FontIcon Glyph="&#xE7BF;" FontSize="18"
+                                  Foreground="{ThemeResource OnPrimaryContainerBrush}"
+                                  HorizontalAlignment="Center" VerticalAlignment="Center" />
+                      </Border>
+                      <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                                 Text="{Binding Data.TotalSalessToday}"
+                                 Style="{StaticResource HeadlineLarge}"
+                                 Foreground="{ThemeResource OnSurfaceBrush}"
+                                 Margin="0,8,0,0" />
+                      <TextBlock Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
+                                 Style="{StaticResource BodySmall}"
+                                 Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                 Margin="0,4,0,0">
+                        <Run Text="{Binding Data.TotalSalessThisWeek}" />
+                        <Run Text=" " />
+                        <Run x:Uid="SalesChannelOverviewPage.Kpi.SalesWeekSuffix" />
+                      </TextBlock>
+                    </Grid>
+                  </Border>
+
+                  <!-- KPI: Active Channels -->
+                  <Border Grid.Column="2"
+                          Background="{ThemeResource SurfaceBrush}"
+                          CornerRadius="12" Padding="20"
+                          Translation="0,0,8">
+                    <Border.Shadow><ThemeShadow /></Border.Shadow>
+                    <Grid>
+                      <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                      </Grid.ColumnDefinitions>
+                      <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                      </Grid.RowDefinitions>
+                      <TextBlock Grid.Row="0" Grid.Column="0"
+                                 x:Uid="SalesChannelOverviewPage.Kpi.ActiveChannels"
+                                 Style="{StaticResource LabelLarge}"
+                                 Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                      <Border Grid.Row="0" Grid.Column="1"
+                              Background="{ThemeResource SecondaryContainerBrush}"
+                              CornerRadius="20" Width="40" Height="40">
+                        <FontIcon Glyph="&#xE8A7;" FontSize="18"
+                                  Foreground="{ThemeResource OnSecondaryContainerBrush}"
+                                  HorizontalAlignment="Center" VerticalAlignment="Center" />
+                      </Border>
+                      <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                                 Text="{Binding Data.ActiveOfTotalFormatted}"
+                                 Style="{StaticResource HeadlineLarge}"
+                                 Foreground="{ThemeResource OnSurfaceBrush}"
+                                 Margin="0,8,0,0" />
+                      <TextBlock Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
+                                 x:Uid="SalesChannelOverviewPage.Kpi.ActiveDescription"
+                                 Style="{StaticResource BodySmall}"
+                                 Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                 Margin="0,4,0,0" />
+                    </Grid>
+                  </Border>
+
+                  <!-- KPI: Top Performer -->
+                  <Border Grid.Column="3"
+                          Background="{ThemeResource SurfaceBrush}"
+                          CornerRadius="12" Padding="20"
+                          Translation="0,0,8">
+                    <Border.Shadow><ThemeShadow /></Border.Shadow>
+                    <Grid>
+                      <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                      </Grid.ColumnDefinitions>
+                      <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                      </Grid.RowDefinitions>
+                      <TextBlock Grid.Row="0" Grid.Column="0"
+                                 x:Uid="SalesChannelOverviewPage.Kpi.TopPerformer"
+                                 Style="{StaticResource LabelLarge}"
+                                 Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                      <Border Grid.Row="0" Grid.Column="1"
+                              Background="{ThemeResource TertiaryContainerBrush}"
+                              CornerRadius="20" Width="40" Height="40">
+                        <FontIcon Glyph="&#xE735;" FontSize="18"
+                                  Foreground="{ThemeResource OnTertiaryContainerBrush}"
+                                  HorizontalAlignment="Center" VerticalAlignment="Center" />
+                      </Border>
+                      <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                                 Text="{Binding Data.TopChannelName}"
+                                 Style="{StaticResource TitleMedium}"
+                                 Foreground="{ThemeResource OnSurfaceBrush}"
+                                 TextTrimming="CharacterEllipsis"
+                                 Margin="0,8,0,0" />
+                      <TextBlock Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
+                                 Style="{StaticResource BodySmall}"
+                                 Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                 Margin="0,4,0,0">
+                        <Run Text="{Binding Data.TopChannelTypeLabel}" />
+                        <Run Text=" · " />
+                        <Run Text="{Binding Data.TopChannelRevenueFormatted}" />
+                      </TextBlock>
+                    </Grid>
+                  </Border>
+                </Grid>
+
+                <!-- Channel Cards Section -->
+                <StackPanel Spacing="12"
+                            Visibility="{Binding Data.HasChannels, Converter={StaticResource BoolToVisibilityConverter}}">
+                  <TextBlock x:Uid="SalesChannelOverviewPage.Section.Channels"
+                             Style="{StaticResource TitleSmall}"
+                             Foreground="{ThemeResource OnBackgroundBrush}" />
+
+                  <ItemsRepeater ItemsSource="{Binding Data.Channels}">
+                    <ItemsRepeater.Layout>
+                      <UniformGridLayout Orientation="Horizontal"
+                                         MinItemWidth="320"
+                                         MinItemHeight="220"
+                                         MinColumnSpacing="12"
+                                         MinRowSpacing="12"
+                                         ItemsStretch="Fill" />
+                    </ItemsRepeater.Layout>
+                    <ItemsRepeater.ItemTemplate>
+                      <DataTemplate>
+                        <Button Style="{StaticResource TextButtonStyle}"
+                                HorizontalAlignment="Stretch"
+                                HorizontalContentAlignment="Stretch"
+                                VerticalContentAlignment="Stretch"
+                                Padding="0"
+                                Click="ChannelCard_Click">
+                          <Border Background="{ThemeResource SurfaceBrush}"
+                                  CornerRadius="12"
+                                  Padding="20"
+                                  Translation="0,0,8">
+                            <Border.Shadow><ThemeShadow /></Border.Shadow>
+                            <Grid>
+                              <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                              </Grid.RowDefinitions>
+
+                              <!-- Header: Type chip + Name -->
+                              <Grid Grid.Row="0">
+                                <Grid.ColumnDefinitions>
+                                  <ColumnDefinition Width="Auto" />
+                                  <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Border Grid.Column="0"
+                                        Background="{Binding TypeAccentBrush}"
+                                        CornerRadius="6"
+                                        Padding="8,3"
+                                        Margin="0,0,10,0"
+                                        VerticalAlignment="Center">
+                                  <TextBlock Text="{Binding TypeLabel}"
+                                             Style="{StaticResource LabelSmall}"
+                                             Foreground="White"
+                                             FontWeight="SemiBold" />
+                                </Border>
+                                <TextBlock Grid.Column="1"
+                                           Text="{Binding Name}"
+                                           Style="{StaticResource TitleMedium}"
+                                           Foreground="{ThemeResource OnSurfaceBrush}"
+                                           TextTrimming="CharacterEllipsis"
+                                           VerticalAlignment="Center" />
+                              </Grid>
+
+                              <!-- URL -->
+                              <TextBlock Grid.Row="1"
+                                         Text="{Binding Url}"
+                                         Style="{StaticResource BodySmall}"
+                                         Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                         TextTrimming="CharacterEllipsis"
+                                         Margin="0,2,0,12" />
+
+                              <!-- Revenue This Month (primary) -->
+                              <StackPanel Grid.Row="2" Spacing="2">
+                                <TextBlock x:Uid="SalesChannelOverviewPage.Card.RevenueMonth"
+                                           Style="{StaticResource LabelSmall}"
+                                           Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                                <TextBlock Text="{Binding RevenueThisMonthFormatted}"
+                                           Style="{StaticResource HeadlineSmall}"
+                                           Foreground="{ThemeResource OnSurfaceBrush}" />
+                              </StackPanel>
+
+                              <!-- Today / Week split -->
+                              <Grid Grid.Row="3" Margin="0,12,0,0">
+                                <Grid.ColumnDefinitions>
+                                  <ColumnDefinition Width="*" />
+                                  <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Grid.Column="0" Spacing="2">
+                                  <TextBlock x:Uid="SalesChannelOverviewPage.Card.RevenueToday"
+                                             Style="{StaticResource LabelSmall}"
+                                             Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                                  <TextBlock Text="{Binding RevenueTodayFormatted}"
+                                             Style="{StaticResource BodyLarge}"
+                                             Foreground="{ThemeResource OnSurfaceBrush}"
+                                             FontWeight="SemiBold" />
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="1" Spacing="2">
+                                  <TextBlock x:Uid="SalesChannelOverviewPage.Card.RevenueWeek"
+                                             Style="{StaticResource LabelSmall}"
+                                             Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                                  <TextBlock Text="{Binding RevenueThisWeekFormatted}"
+                                             Style="{StaticResource BodyLarge}"
+                                             Foreground="{ThemeResource OnSurfaceBrush}"
+                                             FontWeight="SemiBold" />
+                                </StackPanel>
+                              </Grid>
+
+                              <!-- Saless count + change vs last week -->
+                              <Grid Grid.Row="4" Margin="0,12,0,0">
+                                <Grid.ColumnDefinitions>
+                                  <ColumnDefinition Width="*" />
+                                  <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="6">
+                                  <FontIcon Glyph="&#xE7BF;" FontSize="12"
+                                            Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                            VerticalAlignment="Center" />
+                                  <TextBlock Style="{StaticResource BodySmall}"
+                                             Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                             VerticalAlignment="Center">
+                                    <Run Text="{Binding SalessThisWeek}" />
+                                    <Run Text=" " />
+                                    <Run x:Uid="SalesChannelOverviewPage.Card.SalessWeekSuffix" />
+                                  </TextBlock>
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="4"
+                                            Visibility="{Binding RevenueChangePositive, Converter={StaticResource BoolToVisibilityConverter}}">
+                                  <FontIcon Glyph="&#xE74A;" FontSize="10"
+                                            Foreground="{StaticResource PositiveChangeBrush}"
+                                            VerticalAlignment="Center" />
+                                  <TextBlock Text="{Binding RevenueChangeFormatted}"
+                                             Style="{StaticResource LabelSmall}"
+                                             Foreground="{StaticResource PositiveChangeBrush}"
+                                             VerticalAlignment="Center" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="4"
+                                            Visibility="{Binding RevenueChangePositive, Converter={StaticResource BoolToInverseVisibilityConverter}}">
+                                  <FontIcon Glyph="&#xE74B;" FontSize="10"
+                                            Foreground="{StaticResource NegativeChangeBrush}"
+                                            VerticalAlignment="Center" />
+                                  <TextBlock Text="{Binding RevenueChangeFormatted}"
+                                             Style="{StaticResource LabelSmall}"
+                                             Foreground="{StaticResource NegativeChangeBrush}"
+                                             VerticalAlignment="Center" />
+                                </StackPanel>
+                              </Grid>
+
+                              <!-- Share-of-revenue bar -->
+                              <StackPanel Grid.Row="5" Spacing="4" Margin="0,12,0,0">
+                                <Grid>
+                                  <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                  </Grid.ColumnDefinitions>
+                                  <TextBlock Grid.Column="0"
+                                             x:Uid="SalesChannelOverviewPage.Card.Share"
+                                             Style="{StaticResource LabelSmall}"
+                                             Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                                  <TextBlock Grid.Column="1"
+                                             Text="{Binding SharePercentFormatted}"
+                                             Style="{StaticResource LabelSmall}"
+                                             Foreground="{ThemeResource OnSurfaceBrush}"
+                                             FontWeight="SemiBold" />
+                                </Grid>
+                                <ProgressBar Value="{Binding SharePercent}"
+                                             Maximum="100"
+                                             Height="6"
+                                             Background="{ThemeResource SurfaceVariantBrush}"
+                                             CornerRadius="3" />
+                              </StackPanel>
+                            </Grid>
+                          </Border>
+                        </Button>
+                      </DataTemplate>
+                    </ItemsRepeater.ItemTemplate>
+                  </ItemsRepeater>
+                </StackPanel>
+
+              </StackPanel>
+            </DataTemplate>
+          </mvux:FeedView.ValueTemplate>
+
+          <mvux:FeedView.ProgressTemplate>
+            <DataTemplate>
+              <Border Background="{ThemeResource SurfaceBrush}"
+                      CornerRadius="12"
+                      Padding="48"
+                      Translation="0,0,8">
+                <Border.Shadow><ThemeShadow /></Border.Shadow>
+                <ProgressRing IsActive="True" Width="48" Height="48"
+                              HorizontalAlignment="Center" VerticalAlignment="Center" />
+              </Border>
+            </DataTemplate>
+          </mvux:FeedView.ProgressTemplate>
+
+          <mvux:FeedView.ErrorTemplate>
+            <DataTemplate>
+              <Border CornerRadius="12"
+                      Background="{ThemeResource ErrorContainerBrush}"
+                      BorderBrush="{ThemeResource ErrorBrush}"
+                      BorderThickness="1"
+                      Padding="32">
+                <StackPanel HorizontalAlignment="Center" Spacing="12">
+                  <FontIcon Glyph="&#xE783;" FontSize="40"
+                            Foreground="{ThemeResource ErrorBrush}"
+                            HorizontalAlignment="Center" />
+                  <TextBlock x:Uid="SalesChannelOverviewPage.LoadError"
+                             Style="{StaticResource BodyMedium}"
+                             Foreground="{ThemeResource OnErrorContainerBrush}"
+                             HorizontalAlignment="Center"
+                             TextAlignment="Center"
+                             TextWrapping="Wrap" />
+                </StackPanel>
+              </Border>
+            </DataTemplate>
+          </mvux:FeedView.ErrorTemplate>
+        </mvux:FeedView>
+      </Grid>
+    </ScrollViewer>
+  </Grid>
+</Page>

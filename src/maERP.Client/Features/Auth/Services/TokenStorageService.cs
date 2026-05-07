@@ -10,12 +10,16 @@ public class TokenStorageService : ITokenStorageService
     private const string ServerUrlKey = "server_url";
     private const string TenantIdKey = "current_tenant_id";
     private const string RememberMeKey = "remember_me";
+    private const string RefreshTokenKey = "refresh_token";
+    private const string RefreshTokenExpiryKey = "refresh_token_expires_at";
     private const string RoleClaimType = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role";
 
+    private readonly ISecureCredentialStore _secureStore;
     private readonly ILogger<TokenStorageService> _logger;
 
-    public TokenStorageService(ILogger<TokenStorageService> logger)
+    public TokenStorageService(ISecureCredentialStore secureStore, ILogger<TokenStorageService> logger)
     {
+        _secureStore = secureStore;
         _logger = logger;
     }
 
@@ -64,13 +68,23 @@ public class TokenStorageService : ITokenStorageService
             var localSettings = ApplicationData.Current.LocalSettings;
             localSettings.Values.Remove(TokenKey);
             localSettings.Values.Remove(TenantIdKey);
+            localSettings.Values.Remove(RefreshTokenExpiryKey);
             _logger.LogInformation("Authentication data cleared from local storage");
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error clearing authentication data from local storage");
         }
-        await Task.CompletedTask;
+
+        // Refresh token lives in the secure store — clear it through the same channel.
+        try
+        {
+            await _secureStore.RemoveAsync(RefreshTokenKey);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error clearing refresh token from secure store");
+        }
     }
 
     public async Task<string?> GetServerUrlAsync()
@@ -316,6 +330,74 @@ public class TokenStorageService : ITokenStorageService
         }
 
         return roles;
+    }
+
+    public async Task<string?> GetRefreshTokenAsync()
+    {
+        try
+        {
+            return await _secureStore.GetAsync(RefreshTokenKey);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error retrieving refresh token from secure store");
+            return null;
+        }
+    }
+
+    public async Task SetRefreshTokenAsync(string refreshToken, DateTime? expiresAt)
+    {
+        try
+        {
+            await _secureStore.SetAsync(RefreshTokenKey, refreshToken);
+
+            if (expiresAt.HasValue)
+            {
+                ApplicationData.Current.LocalSettings.Values[RefreshTokenExpiryKey] =
+                    expiresAt.Value.ToUniversalTime().ToString("O");
+            }
+            else
+            {
+                ApplicationData.Current.LocalSettings.Values.Remove(RefreshTokenExpiryKey);
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error storing refresh token in secure store");
+        }
+    }
+
+    public async Task ClearRefreshTokenAsync()
+    {
+        try
+        {
+            await _secureStore.RemoveAsync(RefreshTokenKey);
+            ApplicationData.Current.LocalSettings.Values.Remove(RefreshTokenExpiryKey);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error clearing refresh token from secure store");
+        }
+    }
+
+    public Task<DateTime?> GetRefreshTokenExpiryAsync()
+    {
+        try
+        {
+            var values = ApplicationData.Current.LocalSettings.Values;
+            if (values.TryGetValue(RefreshTokenExpiryKey, out var raw)
+                && DateTime.TryParse(raw?.ToString(), null,
+                    System.Globalization.DateTimeStyles.RoundtripKind, out var dt))
+            {
+                return Task.FromResult<DateTime?>(dt);
+            }
+            return Task.FromResult<DateTime?>(null);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error reading refresh token expiry");
+            return Task.FromResult<DateTime?>(null);
+        }
     }
 
     private static void ExtractRolesFromElement(JsonElement element, List<string> roles)

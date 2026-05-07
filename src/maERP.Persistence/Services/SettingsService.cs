@@ -50,6 +50,10 @@ public class SettingsService : ISettingsService
                     if (int.TryParse(setting.Value, out var refreshDays))
                         jwtSettings.RefreshTokenExpireDays = refreshDays;
                     break;
+                case "Jwt.RefreshTokenExpireDaysShort":
+                    if (int.TryParse(setting.Value, out var refreshDaysShort))
+                        jwtSettings.RefreshTokenExpireDaysShort = refreshDaysShort;
+                    break;
             }
         }
 

@@ -55,6 +55,13 @@ public class MaErpAuthenticationService : IMaErpAuthenticationService
             await _tokenStorage.SetTokenAsync(loginResponse.Token);
             await _tokenStorage.SetServerUrlAsync(request.Server);
 
+            if (!string.IsNullOrEmpty(loginResponse.RefreshToken))
+            {
+                await _tokenStorage.SetRefreshTokenAsync(loginResponse.RefreshToken, loginResponse.RefreshTokenExpiresAt);
+            }
+
+            await _tokenStorage.SetRememberMeAsync(request.RememberMe);
+
             // Store available tenants in context (handles current tenant selection)
             if (loginResponse.AvailableTenants != null)
             {
@@ -102,6 +109,11 @@ public class MaErpAuthenticationService : IMaErpAuthenticationService
             await _tokenStorage.SetTokenAsync(registerResponse.Token);
             await _tokenStorage.SetServerUrlAsync(serverUrl);
 
+            if (!string.IsNullOrEmpty(registerResponse.RefreshToken))
+            {
+                await _tokenStorage.SetRefreshTokenAsync(registerResponse.RefreshToken, registerResponse.RefreshTokenExpiresAt);
+            }
+
             if (registerResponse.AvailableTenants != null)
             {
                 if (registerResponse.CurrentTenantId.HasValue)
@@ -120,24 +132,39 @@ public class MaErpAuthenticationService : IMaErpAuthenticationService
 
     public async Task<LoginResponseDto?> RefreshTokenAsync(CancellationToken cancellationToken = default)
     {
-        _logger.LogInformation("Refreshing JWT token");
+        _logger.LogInformation("Refreshing JWT token via refresh-token");
 
         var serverUrl = await _tokenStorage.GetServerUrlAsync();
-        var token = await _tokenStorage.GetTokenAsync();
+        var refreshToken = await _tokenStorage.GetRefreshTokenAsync();
 
-        if (string.IsNullOrEmpty(serverUrl) || string.IsNullOrEmpty(token))
+        if (string.IsNullOrEmpty(serverUrl) || string.IsNullOrEmpty(refreshToken))
         {
-            _logger.LogWarning("Token refresh failed: No server URL or token configured");
+            _logger.LogWarning("Token refresh failed: No server URL or refresh token configured");
             return null;
         }
 
         var httpClient = _httpClientFactory.CreateClient();
         httpClient.BaseAddress = new Uri(serverUrl);
-        httpClient.DefaultRequestHeaders.Authorization =
-            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
-        var response = await httpClient.PostAsync("/api/v1/auth/refresh-token", null, cancellationToken);
-        await response.EnsureSuccessOrThrowApiExceptionAsync(cancellationToken);
+        // Anonymous endpoint: send only the refresh token. Crucially, we do NOT attach the
+        // (likely-expired) Bearer token here — that's the bug the new flow fixes.
+        var requestBody = new RefreshTokenRequestDto { RefreshToken = refreshToken };
+        var response = await httpClient.PostAsJsonAsync(
+            "/api/v1/auth/refresh-token",
+            requestBody,
+            AppJsonSerializerContext.Default.RefreshTokenRequestDto,
+            cancellationToken);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            // Refresh failed → the stored refresh token is dead. Clean up so the user gets a
+            // fresh login prompt instead of being stuck in a 401-spam loop.
+            _logger.LogWarning("Refresh token rejected by server with {StatusCode} — clearing stored credentials",
+                response.StatusCode);
+            await _tokenStorage.ClearRefreshTokenAsync();
+            await _tokenStorage.ClearTokenAsync();
+            return null;
+        }
 
         var rawJson = await response.Content.ReadAsStringAsync(cancellationToken);
         _logger.LogDebug("Refresh token response JSON: {Json}", rawJson);
@@ -148,6 +175,11 @@ public class MaErpAuthenticationService : IMaErpAuthenticationService
         if (apiResponse?.Succeeded == true && refreshResponse?.Succeeded == true && !string.IsNullOrEmpty(refreshResponse.Token))
         {
             await _tokenStorage.SetTokenAsync(refreshResponse.Token);
+
+            if (!string.IsNullOrEmpty(refreshResponse.RefreshToken))
+            {
+                await _tokenStorage.SetRefreshTokenAsync(refreshResponse.RefreshToken, refreshResponse.RefreshTokenExpiresAt);
+            }
 
             if (refreshResponse.AvailableTenants != null)
             {
@@ -164,6 +196,37 @@ public class MaErpAuthenticationService : IMaErpAuthenticationService
         }
 
         return refreshResponse;
+    }
+
+    public async Task LogoutAsync(CancellationToken cancellationToken = default)
+    {
+        var serverUrl = await _tokenStorage.GetServerUrlAsync();
+        var refreshToken = await _tokenStorage.GetRefreshTokenAsync();
+
+        // Always clear local first — even if the server call fails, the user wants to be logged out locally.
+        try
+        {
+            if (!string.IsNullOrEmpty(serverUrl) && !string.IsNullOrEmpty(refreshToken))
+            {
+                var httpClient = _httpClientFactory.CreateClient();
+                httpClient.BaseAddress = new Uri(serverUrl);
+
+                var body = new RefreshTokenRequestDto { RefreshToken = refreshToken };
+                using var response = await httpClient.PostAsJsonAsync(
+                    "/api/v1/auth/logout",
+                    body,
+                    AppJsonSerializerContext.Default.RefreshTokenRequestDto,
+                    cancellationToken);
+                // Don't throw — server-side revocation is best-effort.
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Server-side logout failed; clearing local credentials anyway");
+        }
+
+        await _tokenStorage.ClearRefreshTokenAsync();
+        await _tokenStorage.ClearTokenAsync();
     }
 
     public async Task<bool> ValidateTokenAsync(string token, CancellationToken cancellationToken = default)

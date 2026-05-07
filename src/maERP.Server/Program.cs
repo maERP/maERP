@@ -251,6 +251,7 @@ builder.Services.AddScoped<ICustomerDedupeService, CustomerDedupeService>();
 builder.Services.AddScoped<IOAuthAppSettingsService, OAuthAppSettingsService>();
 builder.Services.AddScoped<ITenantOAuthAppSettingsRepository, TenantOAuthAppSettingsRepository>();
 builder.Services.AddScoped<IOAuthStateRepository, OAuthStateRepository>();
+builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 builder.Services.AddScoped<IOAuthTokenExchanger, HttpOAuthTokenExchanger>();
 builder.Services.AddScoped<ITenantEmailSettingsRepository, TenantEmailSettingsRepository>();
 

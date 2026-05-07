@@ -8,4 +8,7 @@ public interface IMaErpAuthenticationService
     Task<LoginResponseDto?> RegisterAsync(string serverUrl, RegisterRequestDto request, CancellationToken cancellationToken = default);
     Task<bool> ValidateTokenAsync(string token, CancellationToken cancellationToken = default);
     Task<LoginResponseDto?> RefreshTokenAsync(CancellationToken cancellationToken = default);
+
+    /// <summary>Revokes the stored refresh token server-side and clears it locally. Best-effort.</summary>
+    Task LogoutAsync(CancellationToken cancellationToken = default);
 }
