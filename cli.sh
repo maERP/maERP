@@ -16,6 +16,11 @@
 #   ./cli.sh db     restore <file>   Restore <file> from ./backups/ into the database
 #   ./cli.sh db     restore <file> --clean
 #                                    Drop & recreate the schema/database before restore
+#   ./cli.sh db     purge            Wipe the database (drop & recreate the schema).
+#                                    Asks for confirmation; ALL data is lost.
+#   ./cli.sh superadmin create       Interactively create a Superadmin user
+#   ./cli.sh superadmin delete <email>
+#                                    Delete the Superadmin user with the given email
 #
 # Database backend is selected via DB_MODE in .env:
 #   internal (default) → docker-compose runs an embedded postgres container.
@@ -45,7 +50,7 @@ fi
 COMPOSE=("${COMPOSE_BIN[@]}")
 
 usage() {
-    sed -n '3,27p' "$0" | sed 's/^# \{0,1\}//'
+    sed -n '3,30p' "$0" | sed 's/^# \{0,1\}//'
 }
 
 # Print an error message followed by the full usage block, then exit 1.
@@ -312,11 +317,12 @@ cmd_db() {
     case "$sub" in
         backup)  db_backup ;;
         restore) shift; db_restore "$@" ;;
+        purge)   db_purge ;;
         "")
-            die_usage "'db' requires a subcommand (backup|restore)."
+            die_usage "'db' requires a subcommand (backup|restore|purge)."
             ;;
         *)
-            die_usage "unknown db subcommand '$sub' (expected: backup|restore)."
+            die_usage "unknown db subcommand '$sub' (expected: backup|restore|purge)."
             ;;
     esac
 }
@@ -427,7 +433,8 @@ SQL
 
 main() {
     if [[ $# -lt 1 ]]; then
-        die_usage "no command given (expected: deploy|start|stop|logs|db)."
+        usage
+        return 0
     fi
 
     local command="$1"
@@ -445,15 +452,121 @@ main() {
     load_env
 
     case "$command" in
-        deploy) cmd_deploy "$@" ;;
-        start)  cmd_start  "$@" ;;
-        stop)   cmd_stop   "$@" ;;
-        logs)   cmd_logs   "$@" ;;
-        db)     cmd_db     "$@" ;;
+        deploy)     cmd_deploy     "$@" ;;
+        start)      cmd_start      "$@" ;;
+        stop)       cmd_stop       "$@" ;;
+        logs)       cmd_logs       "$@" ;;
+        db)         cmd_db         "$@" ;;
+        superadmin) cmd_superadmin "$@" ;;
         *)
-            die_usage "unknown command '$command' (expected: deploy|start|stop|logs|db)."
+            die_usage "unknown command '$command' (expected: deploy|start|stop|logs|db|superadmin)."
             ;;
     esac
+}
+
+db_purge() {
+    if [[ "$DB_ENGINE" == "mssql" ]]; then
+        echo "error: 'db purge' is not implemented for DB_MODE=mssql." >&2
+        exit 1
+    fi
+
+    echo "WARNING: This will DROP and recreate the schema in '${DB_NAME}' on ${DB_HOST}:${DB_PORT}"
+    echo "         (mode: ${DB_MODE}). ALL data will be permanently lost."
+    echo
+    read -rp "To confirm, type the database name '${DB_NAME}': " confirm
+    if [[ "$confirm" != "$DB_NAME" ]]; then
+        echo "Aborted." >&2
+        exit 1
+    fi
+
+    echo ">>> Purging schema in '${DB_NAME}'"
+    case "$DB_ENGINE" in
+        postgres)
+            pg_run psql -v ON_ERROR_STOP=1 <<SQL
+SELECT pg_terminate_backend(pid)
+  FROM pg_stat_activity
+ WHERE datname = current_database()
+   AND pid <> pg_backend_pid();
+DROP SCHEMA IF EXISTS public CASCADE;
+CREATE SCHEMA public;
+GRANT ALL ON SCHEMA public TO ${DB_USER};
+GRANT ALL ON SCHEMA public TO public;
+SQL
+            ;;
+    esac
+    echo ">>> Database purged. Restart the server stack to re-apply migrations and seed data."
+}
+
+# --- Superadmin --------------------------------------------------------------
+# These delegate to the server binary's CLI mode (see Cli/CliRunner.cs).
+# We exec inside the running server container so it picks up the same DB
+# connection string the server is configured with — no need to duplicate
+# config here.
+
+require_server_running() {
+    local cid
+    cid="$("${COMPOSE[@]}" --profile server ps -q server 2>/dev/null || true)"
+    if [[ -z "$cid" ]] || [[ "$(docker inspect -f '{{.State.Running}}' "$cid" 2>/dev/null)" != "true" ]]; then
+        echo "error: server container is not running. Start it with: ./cli.sh start server" >&2
+        exit 1
+    fi
+}
+
+cmd_superadmin() {
+    local sub="${1:-}"
+    case "$sub" in
+        create) shift; superadmin_create "$@" ;;
+        delete) shift; superadmin_delete "$@" ;;
+        "")
+            die_usage "'superadmin' requires a subcommand (create|delete)."
+            ;;
+        *)
+            die_usage "unknown superadmin subcommand '$sub' (expected: create|delete)."
+            ;;
+    esac
+}
+
+superadmin_create() {
+    require_server_running
+
+    local email firstname lastname password password_confirm
+    read -rp "Email: " email
+    if [[ -z "$email" ]]; then
+        echo "error: email must not be empty." >&2
+        exit 1
+    fi
+    read -rp "First name [Super]: " firstname
+    read -rp "Last name [Admin]: " lastname
+
+    read -rsp "Password: " password
+    echo
+    read -rsp "Confirm password: " password_confirm
+    echo
+    if [[ -z "$password" ]]; then
+        echo "error: password must not be empty." >&2
+        exit 1
+    fi
+    if [[ "$password" != "$password_confirm" ]]; then
+        echo "error: passwords do not match." >&2
+        exit 1
+    fi
+
+    "${COMPOSE[@]}" --profile server exec -T \
+        -e MAERP_CLI_EMAIL="$email" \
+        -e MAERP_CLI_FIRSTNAME="$firstname" \
+        -e MAERP_CLI_LASTNAME="$lastname" \
+        -e MAERP_CLI_PASSWORD="$password" \
+        server dotnet maERP.Server.dll cli superadmin create
+}
+
+superadmin_delete() {
+    local email="${1:-}"
+    if [[ -z "$email" ]]; then
+        die_usage "'superadmin delete' requires <email>."
+    fi
+    require_server_running
+    "${COMPOSE[@]}" --profile server exec -T \
+        server dotnet maERP.Server.dll cli superadmin delete "$email"
 }
 
 main "$@"

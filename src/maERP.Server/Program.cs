@@ -31,6 +31,13 @@ using System.Threading.RateLimiting;
 using Serilog;
 using Serilog.Sinks.Grafana.Loki;
 
+// Out-of-band CLI mode: `dotnet maERP.Server.dll cli ...` runs an admin task
+// against the configured database and exits without bringing up Kestrel.
+if (args.Length > 0 && args[0] == "cli")
+{
+    return await maERP.Server.Cli.CliRunner.RunAsync(args[1..]);
+}
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.WebHost.ConfigureKestrel(options =>
@@ -487,6 +494,8 @@ Console.WriteLine("========================================");
 Console.WriteLine();
 
 app.Run();
+
+return 0;
 
 // Make the implicit Program class public so test projects can access it
 namespace maERP.Server
