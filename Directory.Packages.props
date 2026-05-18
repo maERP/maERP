@@ -8,7 +8,7 @@
     <PackageVersion Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.7" />
     <PackageVersion Include="Microsoft.Extensions.Identity.Stores" Version="10.0.7" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Console" Version="10.0.7" />
-    <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.0.7" />
+    <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.0.8" />
     <PackageVersion Include="Microsoft.DotNet.HotReload.WebAssembly.Browser" Version="10.0.203" />
     <PackageVersion Include="SkiaSharp.Skottie" Version="3.119.1" />
     <PackageVersion Include="SkiaSharp.Views.Uno.WinUI" Version="3.119.1" />
