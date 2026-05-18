@@ -12,6 +12,7 @@
 		<PackageReference Include="FluentValidation" />
 		<PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
 		<PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Analyzers" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
 		<PackageReference Include="System.Linq.Dynamic.Core" />
 	</ItemGroup>
